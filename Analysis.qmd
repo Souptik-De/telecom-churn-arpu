@@ -1,0 +1,27 @@
+---
+title: "Telecom Subscriber Churn and ARPU Analytics"
+subtitle: "Revenue-at-Risk Churn Prediction & Retention ROI Optimization for an Indian Telecom Operator"
+format : gfm
+engine : jupyter
+---
+
+## Problem Statement
+
+This project models subscriber churn and Average Revenue Per User (ARPU)
+for an Indian telecom operator, combining:
+
+-  **Revenue-at-Risk Churn Prediction** — churn probability weighted by
+    each customer's ARPU, so business impact (not just accuracy) drives
+    prioritization.
+-  **Customer Segmentation** — unsupervised clustering to identify
+    distinct subscriber groups (e.g. high-value data users,
+    price-sensitive prepaid, loyal low-usage) with different churn
+    drivers.
+-   **Explainable Root-Cause Diagnosis** — SHAP-based explanations per
+    segment, translating model output into specific, actionable churn
+    drivers.
+-  **Differentiated Retention Strategy & ROI** — segment-specific
+    retention recommendations, costed against projected revenue saved.
+-  **Competitive Tariff Context** — TRAI market-level ARPU/tariff/MOU
+    data used to benchmark findings against real Indian telecom market
+    trends.
