@@ -28,4 +28,4 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render Document
-        run: quarto render document.qmd
+        run: quarto render *.qmd
