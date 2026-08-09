@@ -5,23 +5,29 @@ format : gfm
 engine : jupyter
 ---
 
-## Problem Statement
+# Analytics Investigation 1: Descriptive Analytics
 
-This project models subscriber churn and Average Revenue Per User (ARPU)
-for an Indian telecom operator, combining:
+## 1. Analytics Type Selected
 
--  **Revenue-at-Risk Churn Prediction** — churn probability weighted by
-    each customer's ARPU, so business impact (not just accuracy) drives
-    prioritization.
--  **Customer Segmentation** — unsupervised clustering to identify
-    distinct subscriber groups (e.g. high-value data users,
-    price-sensitive prepaid, loyal low-usage) with different churn
-    drivers.
--   **Explainable Root-Cause Diagnosis** — SHAP-based explanations per
-    segment, translating model output into specific, actionable churn
-    drivers.
--  **Differentiated Retention Strategy & ROI** — segment-specific
-    retention recommendations, costed against projected revenue saved.
--  **Competitive Tariff Context** — TRAI market-level ARPU/tariff/MOU
-    data used to benchmark findings against real Indian telecom market
-    trends.
+**Descriptive Analytics** : understanding "what is happening" in the subscriber base before attempting to explain, predict, or act on it.
+
+## 2. Framed Question
+
+**"What is the churn rate and average revenue per user (ARPU) across different customer segments (e.g. by usage level, plan/recharge behavior, and tenure), and how does ARPU differ between customers who churn and those who don't, for an Indian telecom operator?"**
+
+## 3. Dataset(s) Required
+
+| Dataset | Purpose | Level |
+|-------------------------|-------------------------|----------------------|
+| **Telecom Churn Case Study** (customer-level, Indian telecom operator; monthly ARPU, recharge amount/frequency, 2G/3G data usage, call minutes, churn label) | Compute churn rate, ARPU distribution and segment-level breakdowns at the customer level | Micro (customer-level) |
+| **TRAI Performance Indicator Reports** (quarterly, national regulator data — subscriber counts, prepaid/postpaid ARPU, MOU, tele-density) | Benchmark the dataset's churn/ARPU figures against actual current Indian market-level ARPU and usage trends | Macro (market-level) |
+
+## 4. Access Plan
+
+1.  **Telecom Churn Case Study dataset**
+2.  **TRAI Performance Indicator Reports**
+    - Source: https://www.trai.gov.in/release-publication/reports (official regulator, publicly accessible, no login required)
+    - Access method: Direct PDF download of the latest quarterly report(s)
+    - Format: PDF — relevant ARPU/subscriber/MOU tables manually extracted and compiled into a small structured CSV (`data/processed/trai_arpu_timeseries.csv`) for use alongside the customer-level dataset
+    - No API/licensing restrictions; freely republishable as it's government open data
+
