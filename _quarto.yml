@@ -1,0 +1,35 @@
+project:
+  title: "Telecom Subscriber Churn and ARPU Analytics"
+  type: default
+
+execute:
+  freeze: auto
+  echo: true
+  warning: false
+  message: false
+
+format:
+  html:
+    theme:
+      light: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: true
+    code-fold: show
+    code-tools: true
+    code-line-numbers: true
+    smooth-scroll: true
+    fig-align: center
+    fig-responsive: true
+    df-print: paged
+    css: styles.css
+  typst:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    papersize: a4
+    margin:
+      x: 20mm
+      y: 25mm
+    section-numbering: "1.1.a"

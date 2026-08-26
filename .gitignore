@@ -1,4 +1,24 @@
-.vscode
+.vscode/
 .env
-.venv
-Analysis_files
+.venv/
+.quarto/
+Analysis_files/
+*_files/
+*.log
+*.tex
+*.typ
+
+# Raw Data (large files gitignored, README tracked)
+data/raw/*
+!data/raw/README.md
+!data/raw/trai/
+data/raw/trai/*
+!data/raw/trai/.gitkeep
+
+# Processed data (track small TRAI series, ignore large generated 60MB CSV)
+data/processed/*
+!data/processed/trai_arpu_timeseries.csv
+!data/processed/.gitkeep
+
+/.quarto/
+**/*.quarto_ipynb
