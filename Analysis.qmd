@@ -18,7 +18,7 @@ engine : jupyter
 ## 3. Dataset(s) Required
 
 | Dataset | Purpose | Level |
-|---------------------------|----------------------------|------------------|
+|---------------------------|---------------------------|-------------------|
 | **Telecom Churn Case Study** (customer-level, Indian telecom operator; monthly ARPU, recharge amount/frequency, 2G/3G data usage, call minutes, churn label) | Compute churn rate, ARPU distribution and segment-level breakdowns at the customer level | Micro (customer-level) |
 | **TRAI Performance Indicator Reports** (quarterly, national regulator data — subscriber counts, prepaid/postpaid ARPU, MOU, tele-density) | Benchmark the dataset's churn/ARPU figures against actual current Indian market-level ARPU and usage trends | Macro (market-level) |
 
@@ -30,3 +30,4 @@ engine : jupyter
     - Access method: Direct PDF download of the latest quarterly report(s)
     - Format: PDF — relevant ARPU/subscriber/MOU tables manually extracted and compiled into a small structured CSV (`data/processed/trai_arpu_timeseries.csv`) for use alongside the customer-level dataset
     - No API/licensing restrictions; freely republishable as it's government open data
+    
