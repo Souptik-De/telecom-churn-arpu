@@ -22,7 +22,6 @@ format:
     smooth-scroll: true
     fig-align: center
     fig-responsive: true
-    df-print: paged
     css: styles.css
   typst:
     toc: true

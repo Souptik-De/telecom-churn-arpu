@@ -2,6 +2,7 @@
 .env
 .venv/
 .quarto/
+_freeze/
 Analysis_files/
 *_files/
 *.log
