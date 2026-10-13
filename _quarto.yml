@@ -23,6 +23,7 @@ format:
     fig-align: center
     fig-responsive: true
     css: styles.css
+    embed-resources: true
   typst:
     toc: true
     toc-depth: 3

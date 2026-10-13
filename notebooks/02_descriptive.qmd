@@ -1,14 +1,23 @@
 ---
-title: "02 - Descriptive Analytics & Exploratory Data Analysis"
-subtitle: "Answering the Framed Business Question on Churn Rate, ARPU Distributions, and Market Benchmarks"
+title: "02 - Descriptive Analytics"
+subtitle: "Churn Rate, ARPU Distributions, Segment Breakdowns and TRAI Benchmarks"
 format:
   html:
     theme: cosmo
     toc: true
     code-fold: show
+    embed-resources: true
+  typst:
+    toc: true
+    number-sections: true
+    papersize: a4
+    margin:
+      x: 20mm
+      y: 25mm
 execute:
   echo: true
   warning: false
+  message: false
 ---
 
 # Framed Business Question

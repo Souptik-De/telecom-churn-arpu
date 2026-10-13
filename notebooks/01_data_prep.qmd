@@ -6,9 +6,18 @@ format:
     theme: cosmo
     toc: true
     code-fold: show
+    embed-resources: true
+  typst:
+    toc: true
+    number-sections: true
+    papersize: a4
+    margin:
+      x: 20mm
+      y: 25mm
 execute:
   echo: true
   warning: false
+  message: false
 ---
 
 # Section 1: Environment Setup & Core Imports

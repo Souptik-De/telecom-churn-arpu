@@ -1,8 +1,8 @@
 ---
 title: "Telecom Subscriber Churn & ARPU Analytics"
-subtitle: "Descriptive Analytics & Revenue-at-Risk Assessment for an Indian Telecom Operator"
+subtitle: "Descriptive, Diagnostic, Predictive & Prescriptive Analytics for an Indian Telecom Operator"
 author: "Souptik De"
-date: "August 26, 2026"
+date: "October 13, 2026"
 format:
   html:
     theme: cosmo
@@ -17,6 +17,7 @@ format:
     fig-align: center
     fig-responsive: true
     css: ../styles.css
+    embed-resources: true
   typst:
     toc: true
     toc-depth: 3
@@ -80,6 +81,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 from IPython.display import Markdown, display
+from scipy import stats
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -635,9 +637,244 @@ Subscriber attrition in this 70k sample base represents an annualized direct top
 
 ---
 
+# Diagnostic Analytics: Why Do Subscribers Churn?
+
+> **"Which Good-Phase behaviours (usage, recharge, tenure, data adoption, value tier) significantly distinguish future churners, and how large are those effects?"**
+
+All explanatory comparisons use Good-Phase M6/M7 only. M8 is used solely for decay attribution.
+
+```{python}
+#| label: m-diag-continuous
+#| echo: true
+ret_m = df_clean[df_clean["churn_probability"] == 0]
+chu_m = df_clean[df_clean["churn_probability"] == 1]
+
+def cohens_d(a, b):
+    a = np.asarray(a, dtype=float); b = np.asarray(b, dtype=float)
+    a = a[~np.isnan(a)]; b = b[~np.isnan(b)]
+    n1, n2 = len(a), len(b)
+    s1, s2 = np.var(a, ddof=1), np.var(b, ddof=1)
+    pooled = np.sqrt(((n1 - 1) * s1 + (n2 - 1) * s2) / (n1 + n2 - 2))
+    return (np.mean(a) - np.mean(b)) / pooled if pooled > 0 else 0.0
+
+cont_vars = ["arpu_6", "arpu_7", "avg_arpu_6_7", "total_og_mou_6", "total_ic_mou_6",
+             "total_rech_num_6", "total_rech_amt_6", "aon", "avg_rech_amt_6_7"]
+rows = []
+for v in cont_vars:
+    x = ret_m[v].dropna(); y = chu_m[v].dropna()
+    t, p = stats.ttest_ind(x, y, equal_var=False)
+    d = cohens_d(x.values, y.values)
+    mag = "negligible" if abs(d) < 0.2 else ("small" if abs(d) < 0.5 else ("medium" if abs(d) < 0.8 else "large"))
+    rows.append({"Feature": v, "Retained": f"{x.mean():.2f}", "Churned": f"{y.mean():.2f}",
+                 "p-value": f"{p:.2e}", "Cohen d": f"{d:.3f}", "Effect": mag})
+display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
+```
+
+```{python}
+#| label: fig-m-diag-categorical
+#| echo: true
+#| fig-cap: "Churn rate by tenure, data adoption and recharge frequency (master)"
+#| fig-width: 9
+#| fig-height: 4.2
+#| out-width: "95%"
+#| fig-align: center
+fig, axes = plt.subplots(1, 3, figsize=(9, 4.2))
+for ax, col, ttl in zip(axes,
+    ["tenure_group", "data_user_label", "rech_freq_bucket_6"],
+    ["Tenure group", "Data adoption", "Recharge frequency (M6)"]):
+    g = df_clean.groupby(col, observed=True)["churn_probability"].mean().mul(100)
+    g.plot(kind="bar", ax=ax, color="#e41a1c", alpha=0.85, edgecolor="white")
+    ax.set_title(ttl, fontweight="bold", fontsize=10)
+    ax.set_ylabel("Churn rate (%)")
+    ax.set_xlabel("")
+    ax.tick_params(axis="x", rotation=20)
+    for i, v in enumerate(g.values):
+        ax.text(i, v + 0.25, f"{v:.1f}%", ha="center", fontsize=8.5, fontweight="bold")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: m-diag-decay
+#| echo: true
+dec = df_clean.groupby("churn_label")[["arpu_7", "arpu_8", "total_og_mou_7",
+    "total_og_mou_8", "total_rech_amt_7", "total_rech_amt_8"]].mean().round(2)
+rows = []
+for cohort in ["Retained", "Churned"]:
+    rows.append({"Cohort": cohort,
+        "ARPU M7→M8 %": f"{(dec.loc[cohort,'arpu_8']-dec.loc[cohort,'arpu_7'])/dec.loc[cohort,'arpu_7']*100:.1f}%",
+        "OG MOU M7→M8 %": f"{(dec.loc[cohort,'total_og_mou_8']-dec.loc[cohort,'total_og_mou_7'])/dec.loc[cohort,'total_og_mou_7']*100:.1f}%",
+        "Rech Amt M7→M8 %": f"{(dec.loc[cohort,'total_rech_amt_8']-dec.loc[cohort,'total_rech_amt_7'])/dec.loc[cohort,'total_rech_amt_7']*100:.1f}%"})
+display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
+```
+
+**Diagnostic takeaway:** Tenure is the dominant protector (0-1 yr ~15.9% vs 4+ yrs ~4.7%); recharge frequency beats raw spend (churners can be high-ARPU but infrequent); data adoption cuts ~2pp of churn; HVC churns less often but each event destroys more revenue; M8 collapse (55-70% drops) mediates M9 silence.
+
+---
+
+# Predictive Analytics: Who Will Churn?
+
+> **"Which subscribers will churn next month using only pre-Action-Phase information, and how much revenue does each risk decile represent?"**
+
+Leakage guard: Good-Phase M6/M7 features only; all `*_8` columns excluded.
+
+```{python}
+#| label: m-pred-train
+#| echo: true
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score,
+    roc_auc_score, average_precision_score, confusion_matrix, roc_curve, precision_recall_curve)
+
+num_features = ["arpu_6", "arpu_7", "avg_arpu_6_7", "arpu_diff_7_6",
+    "total_og_mou_6", "total_og_mou_7", "total_ic_mou_6", "total_ic_mou_7",
+    "total_rech_num_6", "total_rech_num_7", "total_rech_amt_6", "total_rech_amt_7",
+    "max_rech_amt_6", "max_rech_amt_7", "vol_2g_mb_6", "vol_3g_mb_6",
+    "aon", "tenure_months", "avg_rech_amt_6_7", "is_high_value", "has_data_plan"]
+cat_features = ["tenure_group", "rech_freq_bucket_6", "data_user_label"]
+X = df_clean[num_features + cat_features].copy()
+y = df_clean["churn_probability"].astype(int)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, stratify=y, random_state=42)
+
+num_pipe = Pipeline([("imp", SimpleImputer(strategy="median")), ("sc", StandardScaler())])
+cat_pipe = Pipeline([("imp", SimpleImputer(strategy="most_frequent")),
+    ("oh", OneHotEncoder(handle_unknown="ignore"))])
+pre = ColumnTransformer([("num", num_pipe, num_features), ("cat", cat_pipe, cat_features)])
+logreg = Pipeline([("pre", pre), ("clf", LogisticRegression(max_iter=1000, class_weight="balanced"))])
+rf = Pipeline([("pre", pre), ("clf", RandomForestClassifier(n_estimators=200, min_samples_leaf=5,
+    class_weight="balanced_subsample", n_jobs=-1, random_state=42))])
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+for name, model in [("LogReg", logreg), ("RF", rf)]:
+    s = cross_val_score(model, X_train, y_train, cv=cv, scoring="roc_auc", n_jobs=-1)
+    print(f"{name}: ROC-AUC {s.mean():.4f} +/- {s.std():.4f}")
+logreg.fit(X_train, y_train); rf.fit(X_train, y_train)
+p_log = logreg.predict_proba(X_test)[:, 1]; p_rf = rf.predict_proba(X_test)[:, 1]
+y_log = (p_log >= 0.5).astype(int); y_rf = (p_rf >= 0.5).astype(int)
+
+def mrow(name, yt, yp, ps):
+    return {"Model": name, "Acc": f"{accuracy_score(yt, yp):.4f}",
+        "Prec": f"{precision_score(yt, yp, zero_division=0):.4f}",
+        "Rec": f"{recall_score(yt, yp, zero_division=0):.4f}",
+        "F1": f"{f1_score(yt, yp, zero_division=0):.4f}",
+        "ROC-AUC": f"{roc_auc_score(yt, ps):.4f}",
+        "PR-AUC": f"{average_precision_score(yt, ps):.4f}"}
+display(Markdown(pd.DataFrame([
+    mrow("LogReg thr 0.5", y_test, y_log, p_log),
+    mrow("RF thr 0.5", y_test, y_rf, p_rf)]).to_markdown(index=False)))
+```
+
+```{python}
+#| label: fig-m-pred-curves
+#| echo: true
+#| fig-cap: "ROC and Precision-Recall curves on held-out test set (master)"
+#| fig-width: 9
+#| fig-height: 4.0
+#| out-width: "95%"
+#| fig-align: center
+fig, axes = plt.subplots(1, 2, figsize=(9, 4.0))
+for ps, nm, cl in [(p_log, "LogReg", "#2b8cbe"), (p_rf, "RF", "#e41a1c")]:
+    fpr, tpr, _ = roc_curve(y_test, ps)
+    axes[0].plot(fpr, tpr, label=f"{nm} (AUC={roc_auc_score(y_test, ps):.3f})", color=cl, linewidth=2)
+    prec, rec, _ = precision_recall_curve(y_test, ps)
+    axes[1].plot(rec, prec, label=f"{nm} (AP={average_precision_score(y_test, ps):.3f})", color=cl, linewidth=2)
+axes[0].plot([0, 1], [0, 1], "k--", linewidth=1)
+axes[0].set_title("ROC curve", fontweight="bold"); axes[0].set_xlabel("FPR"); axes[0].set_ylabel("TPR")
+axes[0].legend(frameon=True, fontsize=9)
+axes[1].set_title("Precision-Recall curve", fontweight="bold"); axes[1].set_xlabel("Recall"); axes[1].set_ylabel("Precision")
+axes[1].legend(frameon=True, fontsize=9)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: m-pred-lift
+#| echo: true
+test_rev = df_clean.loc[X_test.index, "avg_arpu_6_7"].values * 12
+lift = pd.DataFrame({"p": p_rf, "y": y_test.values, "rev": test_rev}).sort_values("p", ascending=False).reset_index(drop=True)
+lift["decile"] = pd.qcut(lift.index, 10, labels=[f"D{i}" for i in range(1, 11)])
+g = lift.groupby("decile", observed=True).agg(n=("y", "size"), churners=("y", "sum"),
+    churn_rate=("y", "mean"), revenue=("rev", "sum"))
+g["cum_churners_pct"] = (g["churners"].cumsum() / g["churners"].sum() * 100).round(1)
+out = g.reset_index()
+out["churn_rate"] = (out["churn_rate"] * 100).round(2).astype(str) + "%"
+out["revenue_lakh"] = (out["revenue"] / 1e5).round(2)
+display(Markdown(out[["decile", "n", "churners", "churn_rate", "revenue_lakh", "cum_churners_pct"]].to_markdown(index=False)))
+feat_names = logreg.named_steps["pre"].get_feature_names_out()
+rf_imp = pd.DataFrame({"feature": feat_names,
+    "rf_importance": rf.named_steps["clf"].feature_importances_}).sort_values("rf_importance", ascending=False)
+display(Markdown("**Top 8 RF drivers:**"))
+display(Markdown(rf_imp.head(8).round(4).to_markdown(index=False)))
+```
+
+**Predictive takeaway:** RF dominates LogReg on ROC/PR-AUC with leak-free Good-Phase features; operating threshold 0.3-0.4 balances recall vs offer waste; top 20-30% of scores capture the majority of churners and at-risk revenue.
+
+---
+
+# Prescriptive Analytics: What Should We Do?
+
+> **"Which subscribers should receive which retention action under a fixed budget to maximise net retained revenue?"**
+
+Economics: `Expected net = p x V x success_rate − offer − contact(Rs 10)`, with annual value `V = avg_arpu_6_7 x 12`.
+
+```{python}
+#| label: m-presc-roi
+#| echo: true
+v_te = df_clean.loc[X_test.index, "avg_arpu_6_7"].clip(lower=0).values * 12
+scale = len(df_clean) / len(X_test)
+res = []
+for thr in [0.2, 0.3, 0.4, 0.5]:
+    flag = p_rf >= thr
+    n = int(flag.sum())
+    tp = int(((p_rf >= thr) & (y_test.values == 1)).sum())
+    for offer, s in [(150, 0.20), (300, 0.20), (150, 0.30)]:
+        saved_rev = (v_te[flag & (y_test.values == 1)].sum()) * s
+        cost = n * (offer + 10)
+        net = saved_rev - cost
+        res.append({"Thr": f"{thr:.1f}", "Offer": f"Rs {offer}", "Succ": f"{int(s*100)}%",
+            "Contacted": f"{n:,}", "Hit": f"{tp:,}",
+            "Net scaled 70k Rs": f"{net*scale:,.0f}",
+            "ROI": f"{(saved_rev/cost-1)*100:.0f}%" if cost > 0 else "—"})
+display(Markdown(pd.DataFrame(res).to_markdown(index=False)))
+
+OFFER, S = 150, 0.20
+rank = pd.DataFrame({"p": p_rf, "y": y_test.values, "V": v_te})
+rank["exp_save"] = rank["p"] * rank["V"] * S - (OFFER + 10)
+rank = rank.sort_values("exp_save", ascending=False).reset_index(drop=True)
+rows = []
+for k in [500, 1000, 2000, 3000]:
+    top = rank.head(k)
+    saved_rev = top[top["y"] == 1]["V"].sum() * S
+    cost = k * (OFFER + 10)
+    rows.append({"Top-K test": f"{k:,}", "Top-K scaled": f"{int(k*scale):,}",
+        "Churners in K": f"{int((top['y']==1).sum()):,}",
+        "Net test Rs": f"{saved_rev-cost:,.0f}", "Net scaled Rs": f"{(saved_rev-cost)*scale:,.0f}"})
+display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
+```
+
+**Prescriptive takeaway:** Contact rule `p x V x 0.20 > Rs 160` (≈ threshold 0.3, lower for HVC); rank by expected saving under budget; pair early RF scores (M7) with M8-collapse triggers; prioritise HVC and sub-1-year voice-only cohorts; pilot with a 10% control before scaling.
+
+| Priority | Segment | Action | Timing |
+|:---|:---|:---|:---|
+| P0 | HVC + M8 drop >30% | Personal outreach + bonus data/validity | Days after M8 signal, up to Rs 300 |
+| P1 | Tenure <1 yr, voice-only, RF top decile | Onboarding bundle + data trial | M7, cap Rs 150 |
+| P2 | Mid-value RF deciles 2-3 | SMS/IVR recharge nudge | M7-M8 boundary, cap Rs 150 |
+| P3 | Long-tenure low risk | Monitor only | Rs 0 |
+
+---
+
 # Conclusion & Next Steps
 
-This descriptive investigation successfully fulfills the requirements of **Task 1 (Data Acquisition)** and **Task 2 (Descriptive Analytics)**:
-- Full data provenance and verified regulatory metrics have been established.
-- The framed business question on churn rates, ARPU distributions, and segment breakdowns has been answered with exact statistics and reproducible code.
-- The pre-Jio vs. post-Jio market context provides an academically sound foundation for subsequent **diagnostic**, **predictive**, and **prescriptive** modeling phases.
+This end-to-end investigation now fulfills **descriptive, diagnostic, predictive, and prescriptive** analytics:
+
+- **Descriptive:** 10.19% churn baseline, HVC 8.28% at Rs 558.59 ARPU, 62.95% pre-churn ARPU collapse, tenure loyalty (15.85% vs 4.71%), data stickiness (8.72% vs 10.88%), TRAI benchmarking with the September 2016 Jio structural break.
+- **Diagnostic:** tenure, recharge frequency, MOU engagement, and data adoption are the significant drivers; M8 collapse mediates M9 silence.
+- **Predictive:** leak-free RF (Good-Phase only) beats LogReg; threshold 0.3-0.4; top deciles concentrate revenue at risk.
+- **Prescriptive:** threshold-priced, budget-ranked retention playbook with positive expected net at Rs 150 / 20% success; pilot with control, retrain quarterly, audit fairness.
+
+Modular notebooks `01_data_prep`, `02_descriptive`, `03_diagnostic`, `04_predictive`, `05_prescriptive` reproduce each stage independently; this master `Analysis.qmd` reproduces the single combined report.
