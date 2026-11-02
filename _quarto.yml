@@ -32,4 +32,6 @@ format:
     margin:
       x: 20mm
       y: 25mm
+    include-in-header:
+      - typst/table-style.typ
     section-numbering: "1.1.a"

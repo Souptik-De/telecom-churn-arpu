@@ -8,6 +8,7 @@ Analysis_files/
 *.log
 *.tex
 *.typ
+!typst/table-style.typ
 
 # Raw Data (large files gitignored, README tracked)
 data/raw/*

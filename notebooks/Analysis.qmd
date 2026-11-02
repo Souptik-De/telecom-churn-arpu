@@ -56,17 +56,17 @@ All data acquisition is completely reproducible via automated scripts and offici
 
 1. **Customer-Level Dataset**: Acquired via Kaggle CLI from competition `telecom-churn-case-study-hackathon-gc1` into `data/raw/telecom-churn/train.csv`.
 2. **TRAI Regulatory Reports**: Downloaded directly from the official portal of the Telecom Regulatory Authority of India (TRAI):
-   - **2014 Benchmark Report**: `TRAI_PIR_QE_Sep_2014.pdf` (Quarter ending September 2014).
-   - **Modern Market Report**: `TRAI_PIR_QE_Mar_2025.pdf` (Quarter ending March 2025).
+   - **2014 Benchmark Report**: `TRAI_​PIR_​QE_​Sep_​2014.pdf` (Quarter ending September 2014).
+   - **Modern Market Report**: `TRAI_​PIR_​QE_​Mar_​2025.pdf` (Quarter ending March 2025).
 
 ### Provenance Summary Table
 
 | File Name | Source Platform / URL | Acquisition Date | Period / Quarter Represented | Size / Format |
 |:---|:---|:---|:---|:---|
 | `train.csv` | [Kaggle Competition](https://www.kaggle.com/competitions/telecom-churn-case-study-hackathon-gc1/data) | August 26, 2026 | June – September 2014 | 69,999 rows × 172 cols (50.5 MB CSV) |
-| `TRAI_PIR_QE_Sep_2014.pdf` | [TRAI Official Reports](https://www.trai.gov.in/sites/default/files/2024-09/Indicator-Reports29012015.pdf) | August 26, 2026 | QE September 2014 (Q2 FY 2014-15) | 178 pages (3.48 MB PDF) |
-| `TRAI_PIR_QE_Mar_2025.pdf` | [TRAI Official Reports](https://www.trai.gov.in/sites/default/files/2025-06/QPIR_19062025.pdf) | August 26, 2026 | QE March 2025 (Q4 FY 2024-25) | 214 pages (5.47 MB PDF) |
-| `trai_arpu_timeseries.csv` | Extracted from official TRAI PDFs | August 26, 2026 | 2014 vs. 2025 Comparative Anchors | Structured CSV (Processed) |
+| `TRAI_​PIR_​QE_​Sep_​2014.pdf` | [TRAI Official Reports](https://www.trai.gov.in/sites/default/files/2024-09/Indicator-Reports29012015.pdf) | August 26, 2026 | QE September 2014 (Q2 FY 2014-15) | 178 pages (3.48 MB PDF) |
+| `TRAI_​PIR_​QE_​Mar_​2025.pdf` | [TRAI Official Reports](https://www.trai.gov.in/sites/default/files/2025-06/QPIR_19062025.pdf) | August 26, 2026 | QE March 2025 (Q4 FY 2024-25) | 214 pages (5.47 MB PDF) |
+| `trai_​arpu_​timeseries.csv` | Extracted from official TRAI PDFs | August 26, 2026 | 2014 vs. 2025 Comparative Anchors | Structured CSV (Processed) |
 
 ---
 
@@ -111,7 +111,7 @@ def get_data_path(rel_path):
 
 ## Macro Regulatory Data Extraction (TRAI)
 
-To guarantee 100% reproducibility without human transcription errors, the function below parses the official TRAI reports and exports `trai_arpu_timeseries.csv`:
+To guarantee 100% reproducibility without human transcription errors, the function below parses the official TRAI reports and exports `trai_​arpu_​timeseries.csv`:
 
 ```{python}
 #| label: extract-trai-data
@@ -540,7 +540,7 @@ display(Markdown(formatted_seg_table.to_markdown(index=False)))
 
 ## Question 5: Macro Benchmark Comparison (TRAI Market Context)
 
-Using `trai_arpu_timeseries.csv`, compare the 2014 national regulatory figure against our dataset, and contrast with modern market performance:
+Using `trai_​arpu_​timeseries.csv`, compare the 2014 national regulatory figure against our dataset, and contrast with modern market performance:
 
 ```{python}
 #| label: q5-macro-benchmarking
