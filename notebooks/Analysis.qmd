@@ -33,7 +33,7 @@ execute:
   message: false
 ---
 
-# Analytics Investigation 1: Descriptive Analytics
+# Analytics Investigation Brief: Framing & Data Access
 
 ## 1. Analytics Type Selected
 
@@ -111,7 +111,7 @@ def get_data_path(rel_path):
 
 ## Macro Regulatory Data Extraction (TRAI)
 
-To guarantee 100% reproducibility without human transcription errors, the function below parses the official TRAI reports and exports `trai_​arpu_​timeseries.csv`:
+Values are manually extracted from the official TRAI Performance Indicator Report tables and cross-verified against the source PDFs (page references kept in `scripts/extract_trai_data.py`), then stored in `trai_arpu_timeseries.csv`:
 
 ```{python}
 #| label: extract-trai-data
@@ -159,7 +159,7 @@ display(Markdown(df_trai_display.to_markdown(index=False)))
 
 ---
 
-# Data Preparation & Feature Engineering (Task 2)
+# Data Preparation & Feature Engineering
 
 ## Loading Customer-Level Raw Dataset
 
@@ -188,7 +188,7 @@ missing_table = pd.DataFrame({
 display(Markdown(missing_table.to_markdown(index=False)))
 ```
 
-> **Missingness Note:** Columns associated with 2G/3G mobile data recharge packs (e.g., `total_rech_data_6`, `max_rech_data_6`, `av_rech_amt_data_6`) have ~74.8% missing values. This reflects that approximately 75% of Indian mobile subscribers in 2014 did not purchase specialized monthly mobile data add-ons and used voice/SMS services exclusively.
+> **Missingness Note:** Columns associated with 2G/3G mobile data recharge packs (e.g., `total_rech_data_6`, `max_rech_data_6`, `av_rech_amt_data_6`) have ~74.90% missing values. This reflects that roughly three quarters of subscribers **in this sample** did not purchase specialized monthly mobile data add-ons and used voice/SMS services exclusively.
 
 ## Behavioral Churn Definition
 
@@ -490,7 +490,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-> **Key Behavioral Finding:** In the "Good Phase" (Month 6), churners actually generated **₹308.29 mean ARPU**, higher than retained subscribers (₹280.28). However, during the "Action Phase" (Month 8), churner ARPU plummeted by **-62.95% to ₹114.23**, providing a strong leading diagnostic signal prior to complete cessation of activity in Month 9.
+> **Key Behavioral Finding:** In the "Good Phase" (Month 6), churners actually generated **₹308.29 mean ARPU**, higher than retained subscribers (₹280.28) — though the difference is practically negligible (Cohen's d ≈ +0.08). However, during the "Action Phase" (Month 8), churner ARPU plummeted by **-62.95% to ₹114.23**, providing a strong leading diagnostic signal prior to complete cessation of activity in Month 9. Note that decay is already visible in July (M7): churner ARPU ₹219.08 vs ₹284.89 for retained subscribers — which is why Month-7 usage features dominate the model's feature importances despite July being labelled part of the "Good" phase.
 
 ## Question 4: Segment-Level Breakdown
 
@@ -590,15 +590,17 @@ bench_table = pd.DataFrame([
 display(Markdown(bench_table.to_markdown(index=False)))
 ```
 
+> **Comparison caveat:** the customer dataset is assumed prepaid-dominant, so "Prepaid Monthly ARPU" and "Monthly MOU" are compared against the dataset base-as-is; the "Blended" row uses the same dataset base only for scale context. The dataset sample covers active accounts, so comparisons to national blended figures (which include inactive subscribers) will read high.
+
 ### Analytical Note on the Reliance Jio Structural Break
 
 > **CRITICAL MARKET BREAKDOWN (September 2016):**
 >
 > Direct comparisons between 2014 and 2025 ARPU figures must account for the structural transformation triggered by **Reliance Jio's market entry in September 2016**:
 >
-> 1. **Pricing Paradigm Shift:** In 2014, mobile operators operated on separate metered billing for voice calls (~50p/min) and expensive 2G/3G data packs (~₹250 per GB). Modern 2025 plans bundle unlimited nationwide voice calls with 1.5–2.0 GB/day of 4G/5G data for fixed monthly commitments (~₹200–₹350).
+> 1. **Pricing Paradigm Shift:** In 2014, mobile operators operated on separate metered billing for voice calls (roughly 50 paise per minute) and expensive 2G/3G data packs (roughly ₹250 per GB), as commonly reported for the period. Modern 2025 plans bundle unlimited nationwide voice calls with 1.5–2.0 GB/day of 4G/5G data for fixed monthly commitments (approximately ₹200–₹350).
 > 2. **Voice MOU Inflation:** Because calls became completely unmetered over VoLTE/5G networks, national minutes of usage per subscriber expanded by **+173%**, rising from **376 minutes/month in 2014** to **1,026 minutes/month in 2025**.
-> 3. **Market Consolidation:** Over 10 active operators competed in 2014 (Airtel, Vodafone, Idea, BSNL, Reliance Communications, Aircel, Tata Docomo, Telenor), whereas the industry has consolidated into a private duopoly/oligopoly (Jio, Airtel, Vi) alongside public operator BSNL.
+> 3. **Market Consolidation:** Around 10 active operators competed in 2014 — the largest including Airtel, Vodafone, Idea, BSNL, Reliance Communications, Aircel, Tata Docomo and Telenor — whereas the industry has consolidated into a private duopoly/oligopoly (Jio, Airtel, Vi) alongside public operator BSNL.
 
 ---
 
@@ -610,18 +612,25 @@ display(Markdown(bench_table.to_markdown(index=False)))
 monthly_rev_loss = churned_sub["avg_arpu_6_7"].sum()
 annual_rev_loss = monthly_rev_loss * 12
 
+# Computed HVC concentration (not asserted)
+hvc = df_clean[df_clean["is_high_value"] == 1]
+hvc_share_revenue = hvc["avg_arpu_6_7"].sum() / df_clean["avg_arpu_6_7"].sum()
+hvc_share_exposure = hvc.loc[hvc["churn_probability"] == 1, "avg_arpu_6_7"].sum() / monthly_rev_loss
+
 kpi_table = pd.DataFrame([
     {"Financial Metric": "Total Churned Subscriber Count", "Value": f"{churned_subs:,} subscribers"},
     {"Financial Metric": "Mean Good-Phase ARPU (Churned Cohort)", "Value": f"₹{churned_sub['avg_arpu_6_7'].mean():.2f} / month"},
     {"Financial Metric": "Monthly Direct Revenue Lost to Churn", "Value": f"₹{monthly_rev_loss:,.2f}"},
-    {"Financial Metric": "Annualized Direct Revenue at Risk", "Value": f"₹{annual_rev_loss:,.2f} (~₹{annual_rev_loss/1e7:.2f} Crore)"}
+    {"Financial Metric": "Annualized Direct Revenue at Risk", "Value": f"₹{annual_rev_loss:,.2f} (~₹{annual_rev_loss/1e7:.2f} Crore)"},
+    {"Financial Metric": "HVC Share of Base Monthly Revenue", "Value": f"{hvc_share_revenue * 100:.1f}%"},
+    {"Financial Metric": "HVC Share of Churn-Exposed Monthly Revenue", "Value": f"{hvc_share_exposure * 100:.1f}%"}
 ])
 
 display(Markdown(kpi_table.to_markdown(index=False)))
 ```
 
 ::: {.callout-important appearance="simple" title="Executive Financial Takeaway"}
-Subscriber attrition in this 70k sample base represents an annualized direct top-line revenue risk of **₹2.26 Crore**. Concentrating retention interventions on high-value subscribers before their Month 8 revenue collapse protects over 60% of this exposure.
+Subscriber attrition in this 70k sample base represents an annualized direct top-line revenue risk of **₹2.26 Crore**. High-value (top 30%) subscribers account for **59.7% of base monthly revenue**; concentrating retention interventions on them before the Month 8 revenue collapse addresses about **55% of the churn-exposed revenue** in this sample (see the two computed shares above).
 :::
 
 ---
@@ -629,11 +638,11 @@ Subscriber attrition in this 70k sample base represents an annualized direct top
 # Summary of Findings
 
 1. **Baseline Churn Rate:** The overall customer churn rate is **10.19%** (7,132 churners out of 69,999 subscribers), establishing a substantial attrition baseline.
-2. **High-Value Concentration:** The top 30% high-value customer segment (average recharge $\ge$ ₹477.50 in months 6 & 7) experiences an **8.28% churn rate** with **₹558.59 mean ARPU**, generating over 60% of total operator cash flow.
+2. **High-Value Concentration:** The top 30% high-value customer segment (average recharge $\ge$ ₹477.50 in months 6 & 7) experiences an **8.28% churn rate** with **₹558.59 mean ARPU (average of months 6 & 7)**, generating about **59.7% of base monthly revenue** (computed in the Revenue-at-Risk assessment).
 3. **Pre-Churn ARPU Decay:** Subscribers who churn exhibit a dramatic **62.95% drop in ARPU** from June (₹308.29) to August (₹114.23), while retained subscribers exhibit steady growth (+6.16%, from ₹280.28 to ₹297.54).
 4. **Tenure Loyalty Effect:** Early-tenure subscribers (<1 year) have a churn rate of **15.85%**, which steadily decreases to **4.71%** among subscribers with 4+ years of tenure (a >3x retention differential).
 5. **Data Service Stickiness:** Subscribers who actively use 2G/3G mobile data packs have lower churn (**8.72%**) and higher revenue (**₹368.52 ARPU**) compared to voice/SMS-only subscribers (**10.88% churn**, **₹239.16 ARPU**).
-6. **Macro Benchmarking & Jio Break:** The 2014 dataset ARPU (₹283.13) reflects active, primary SIM accounts and aligns realistically above the TRAI 2014 national blended figure (₹115.72), which included inactive secondary SIMs. Modern TRAI ARPU (₹182.95 in 2025) reflects market recovery following the transformative September 2016 Reliance Jio structural break.
+6. **Macro Benchmarking & Jio Break:** The 2014 dataset ARPU (₹283.13) reflects active, primary SIM accounts and sits realistically above the TRAI 2014 national blended figure (₹115.72) — likely because the TRAI blended figure includes inactive secondary SIMs. Modern TRAI ARPU (₹182.95 in 2025) reflects market recovery following the transformative September 2016 Reliance Jio structural break.
 
 ---
 
@@ -708,7 +717,7 @@ for cohort in ["Retained", "Churned"]:
 display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
 ```
 
-**Diagnostic takeaway:** Tenure is the dominant protector (0-1 yr ~15.9% vs 4+ yrs ~4.7%); recharge frequency beats raw spend (churners can be high-ARPU but infrequent); data adoption cuts ~2pp of churn; HVC churns less often but each event destroys more revenue; M8 collapse (55-70% drops) mediates M9 silence.
+**Diagnostic takeaway:** Tenure is the dominant protector (age-on-network d ≈ −0.50; churn 15.9% for <1 yr vs 4.7% for 4+ yrs) and incoming-call activity the strongest behavioural signal (July incoming MOU d ≈ −0.44); recharge frequency shows **no consistent relationship with churn** (Low 10.5%, Medium 8.5%, High 11.7%) — churners can have high ARPU, so raw spend is not protective by itself; data adoption cuts ~2pp of churn; each churn event destroys about **3.8× more revenue among HVCs** (₹7,145 vs ₹1,881 mean annualised value per churner). The M8 collapse (55–70% drops) is an **early-warning signal** of M9 silence — since churn is *defined* as zero September activity, part of that decay reflects the same disengagement process rather than an independently tested cause.
 
 ---
 
@@ -768,6 +777,8 @@ display(Markdown(pd.DataFrame([
     mrow("LogReg thr 0.5", y_test, y_log, p_log),
     mrow("RF thr 0.5", y_test, y_rf, p_rf)]).to_markdown(index=False)))
 ```
+
+> **Reading the metrics note:** raw accuracy is misleading under this class imbalance — the trivial "predict nobody churns" rule scores **~89.8% accuracy** on this test set while catching zero churners, so read Recall / F1 / PR-AUC for business use. The identical appearing LogReg F1 (0.2751) and PR-AUC (0.2751) values are a verified numerical coincidence, not a reporting bug.
 
 ```{python}
 #| label: fig-m-pred-curves
@@ -855,9 +866,25 @@ for k in [500, 1000, 2000, 3000]:
         "Churners in K": f"{int((top['y']==1).sum()):,}",
         "Net test Rs": f"{saved_rev-cost:,.0f}", "Net scaled Rs": f"{(saved_rev-cost)*scale:,.0f}"})
 display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
+
+# P0 tailoring check: does the Rs 300 tier turn profitable when restricted to HVC only?
+hvc_te = (X_test["is_high_value"] == 1).values
+seg_rows = []
+for seg_name, seg_mask in [("Base (all)", np.ones(len(X_test), dtype=bool)), ("HVC only", hvc_te)]:
+    flag = (p_rf >= 0.4) & seg_mask
+    saved = v_te[flag & (y_test.values == 1)].sum() * 0.20
+    cost = int(flag.sum()) * (300 + 10)
+    seg_rows.append({"Segment (thr 0.4)": seg_name, "Offer": "Rs 300", "Succ": "20%",
+        "Contacted": f"{int(flag.sum()):,}",
+        "Net scaled 70k Rs": f"{(saved - cost) * scale:,.0f}",
+        "ROI": f"{(saved/cost-1)*100:.0f}%" if cost > 0 else "—"})
+display(Markdown("**Rs 300 offer by segment (P0 tailoring check):**"))
+display(Markdown(pd.DataFrame(seg_rows).to_markdown(index=False)))
 ```
 
-**Prescriptive takeaway:** Contact rule `p x V x 0.20 > Rs 160` (≈ threshold 0.3, lower for HVC); rank by expected saving under budget; pair early RF scores (M7) with M8-collapse triggers; prioritise HVC and sub-1-year voice-only cohorts; pilot with a 10% control before scaling.
+**Prescriptive takeaway:** Per-customer break-even rule `p > (offer + 10) / (0.20 x V)` — for the average churned customer (V ≈ Rs 3,164 annualised) that is ≈ **0.25**, lower for higher-value customers. Rank candidates by expected saving under budget rather than a fixed threshold. The Rs 300 tier is **not** profitable across the base (negative ROI in the table above) but turns profitable when restricted to HVC subscribers (higher V); pair early RF scores (M7) with M8-collapse triggers; prioritise HVC and sub-1-year voice-only cohorts; pilot with a 10% control before scaling.
+
+> **Assumptions & caveats (prescriptive section):** success rates (20–30%), offer costs (Rs 150–300) and contact cost (Rs 10) are **illustrative assumptions, not estimated from data** — the tables above are a sensitivity analysis, and a randomised pilot is required to estimate real uplift. Figures treat ARPU as revenue, not profit (margins would be lower) and assume a 12-month horizon. RF probabilities from `class_weight="balanced_subsample"` are not calibrated — treat `p` as a relative risk score for ranking (or calibrate before using it as a true churn probability). Thresholds were read off test-set results for illustration; in production the threshold should be fixed once on a validation split and the policy then evaluated on test.
 
 | Priority | Segment | Action | Timing |
 |:---|:---|:---|:---|
@@ -872,9 +899,19 @@ display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
 
 This end-to-end investigation now fulfills **descriptive, diagnostic, predictive, and prescriptive** analytics:
 
-- **Descriptive:** 10.19% churn baseline, HVC 8.28% at Rs 558.59 ARPU, 62.95% pre-churn ARPU collapse, tenure loyalty (15.85% vs 4.71%), data stickiness (8.72% vs 10.88%), TRAI benchmarking with the September 2016 Jio structural break.
-- **Diagnostic:** tenure, recharge frequency, MOU engagement, and data adoption are the significant drivers; M8 collapse mediates M9 silence.
+- **Descriptive:** 10.19% churn baseline, HVC 8.28% at Rs 558.59 ARPU (avg. months 6 & 7), 62.95% pre-churn ARPU collapse, tenure loyalty (15.85% vs 4.71%), data stickiness (8.72% vs 10.88%), TRAI benchmarking with the September 2016 Jio structural break.
+- **Diagnostic:** tenure (d ≈ 0.50) and incoming-call minutes (d ≈ 0.44) are the only features with non-negligible effect sizes; recharge frequency shows no consistent relationship with churn; the remaining features are individually weak but jointly predictive; the M8 collapse is an early-warning signal of M9 silence, not a tested cause.
 - **Predictive:** leak-free RF (Good-Phase only) beats LogReg; threshold 0.3-0.4; top deciles concentrate revenue at risk.
-- **Prescriptive:** threshold-priced, budget-ranked retention playbook with positive expected net at Rs 150 / 20% success; pilot with control, retrain quarterly, audit fairness.
+- **Prescriptive:** threshold-priced, budget-ranked retention playbook with positive expected net at Rs 150 / 20% success; the Rs 300 tier is profitable for HVC cohorts only; pilot with control, retrain quarterly, audit fairness.
 
 Modular notebooks `01_data_prep`, `02_descriptive`, `03_diagnostic`, `04_predictive`, `05_prescriptive` reproduce each stage independently; this master `Analysis.qmd` reproduces the single combined report.
+
+# Limitations & Caveats
+
+- **Population & window:** one operator, a 69,999-account sample, and a single June–September 2014 window; results concern this sample, not the full operator base or other markets/years.
+- **Churn definition:** churn is a usage-based proxy (zero activity in September), not a verified contract cancellation; some apparent churn may reflect secondary-SIM dormancy or migration.
+- **Validation design:** records were split randomly with stratification; there is no out-of-time (later-months) validation, so reported metrics may be optimistic.
+- **Associations only:** diagnostic findings are correlational; no causal claims are made and unobserved confounders (e.g., competitor switching) are possible.
+- **Model probabilities:** RF probabilities under `class_weight="balanced_subsample"` are inflated relative to true rates; they are used for ranking, or explicitly hedged, in the prescriptive section.
+- **Prescriptive economics:** success rates, offer costs and contact cost are illustrative assumptions; net-value figures are scenario/sensitivity outputs, and ARPU is treated as top-line revenue rather than margin.
+- **Temporal context:** the 2014 sample predates Reliance Jio; the 2025 TRAI figures included in the report are market context, not modelled data.

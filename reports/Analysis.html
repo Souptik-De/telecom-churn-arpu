@@ -2427,7 +2427,7 @@ padding: 0.35em 0.65em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#analytics-investigation-1-descriptive-analytics" id="toc-analytics-investigation-1-descriptive-analytics" class="nav-link active" data-scroll-target="#analytics-investigation-1-descriptive-analytics"><span class="header-section-number">1</span> Analytics Investigation 1: Descriptive Analytics</a>
+  <li><a href="#analytics-investigation-brief-framing-data-access" id="toc-analytics-investigation-brief-framing-data-access" class="nav-link active" data-scroll-target="#analytics-investigation-brief-framing-data-access"><span class="header-section-number">1</span> Analytics Investigation Brief: Framing &amp; Data Access</a>
   <ul class="collapse">
   <li><a href="#analytics-type-selected" id="toc-analytics-type-selected" class="nav-link" data-scroll-target="#analytics-type-selected"><span class="header-section-number">1.1</span> 1. Analytics Type Selected</a></li>
   <li><a href="#framed-business-question" id="toc-framed-business-question" class="nav-link" data-scroll-target="#framed-business-question"><span class="header-section-number">1.2</span> 2. Framed Business Question</a></li>
@@ -2441,7 +2441,7 @@ padding: 0.35em 0.65em;
   <ul class="collapse">
   <li><a href="#macro-regulatory-data-extraction-trai" id="toc-macro-regulatory-data-extraction-trai" class="nav-link" data-scroll-target="#macro-regulatory-data-extraction-trai"><span class="header-section-number">2.1</span> Macro Regulatory Data Extraction (TRAI)</a></li>
   </ul></li>
-  <li><a href="#data-preparation-feature-engineering-task-2" id="toc-data-preparation-feature-engineering-task-2" class="nav-link" data-scroll-target="#data-preparation-feature-engineering-task-2"><span class="header-section-number">3</span> Data Preparation &amp; Feature Engineering (Task 2)</a>
+  <li><a href="#data-preparation-feature-engineering" id="toc-data-preparation-feature-engineering" class="nav-link" data-scroll-target="#data-preparation-feature-engineering"><span class="header-section-number">3</span> Data Preparation &amp; Feature Engineering</a>
   <ul class="collapse">
   <li><a href="#loading-customer-level-raw-dataset" id="toc-loading-customer-level-raw-dataset" class="nav-link" data-scroll-target="#loading-customer-level-raw-dataset"><span class="header-section-number">3.1</span> Loading Customer-Level Raw Dataset</a></li>
   <li><a href="#schema-missing-value-diagnostics" id="toc-schema-missing-value-diagnostics" class="nav-link" data-scroll-target="#schema-missing-value-diagnostics"><span class="header-section-number">3.2</span> Schema &amp; Missing Value Diagnostics</a></li>
@@ -2466,6 +2466,7 @@ padding: 0.35em 0.65em;
   <li><a href="#predictive-analytics-who-will-churn" id="toc-predictive-analytics-who-will-churn" class="nav-link" data-scroll-target="#predictive-analytics-who-will-churn"><span class="header-section-number">8</span> Predictive Analytics: Who Will Churn?</a></li>
   <li><a href="#prescriptive-analytics-what-should-we-do" id="toc-prescriptive-analytics-what-should-we-do" class="nav-link" data-scroll-target="#prescriptive-analytics-what-should-we-do"><span class="header-section-number">9</span> Prescriptive Analytics: What Should We Do?</a></li>
   <li><a href="#conclusion-next-steps" id="toc-conclusion-next-steps" class="nav-link" data-scroll-target="#conclusion-next-steps"><span class="header-section-number">10</span> Conclusion &amp; Next Steps</a></li>
+  <li><a href="#limitations-caveats" id="toc-limitations-caveats" class="nav-link" data-scroll-target="#limitations-caveats"><span class="header-section-number">11</span> Limitations &amp; Caveats</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Analysis.pdf"><i class="bi bi-file-pdf"></i>Typst</a></li></ul></div></nav>
 </div>
@@ -2505,8 +2506,8 @@ padding: 0.35em 0.65em;
 </header>
 
 
-<section id="analytics-investigation-1-descriptive-analytics" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Analytics Investigation 1: Descriptive Analytics</h1>
+<section id="analytics-investigation-brief-framing-data-access" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Analytics Investigation Brief: Framing &amp; Data Access</h1>
 <section id="analytics-type-selected" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="analytics-type-selected"><span class="header-section-number">1.1</span> 1. Analytics Type Selected</h2>
 <p><strong>Descriptive Analytics</strong>: Understanding “what is happening” within the subscriber base before attempting to diagnose causes, predict future attrition, or prescribe retention interventions.</p>
@@ -2649,7 +2650,7 @@ padding: 0.35em 0.65em;
 </div>
 <section id="macro-regulatory-data-extraction-trai" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="macro-regulatory-data-extraction-trai"><span class="header-section-number">2.1</span> Macro Regulatory Data Extraction (TRAI)</h2>
-<p>To guarantee 100% reproducibility without human transcription errors, the function below parses the official TRAI reports and exports <code>trai_​arpu_​timeseries.csv</code>:</p>
+<p>Values are manually extracted from the official TRAI Performance Indicator Report tables and cross-verified against the source PDFs (page references kept in <code>scripts/extract_trai_data.py</code>), then stored in <code>trai_arpu_timeseries.csv</code>:</p>
 <div id="cell-extract-trai-data" class="cell" data-execution_count="2">
 <details open class="code-fold">
 <summary>Code</summary>
@@ -2745,8 +2746,8 @@ padding: 0.35em 0.65em;
 <hr>
 </section>
 </section>
-<section id="data-preparation-feature-engineering-task-2" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Data Preparation &amp; Feature Engineering (Task 2)</h1>
+<section id="data-preparation-feature-engineering" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Data Preparation &amp; Feature Engineering</h1>
 <section id="loading-customer-level-raw-dataset" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="loading-customer-level-raw-dataset"><span class="header-section-number">3.1</span> Loading Customer-Level Raw Dataset</h2>
 <div id="load-customer-data" class="cell" data-execution_count="3">
@@ -2838,7 +2839,7 @@ padding: 0.35em 0.65em;
 </div>
 </div>
 <blockquote class="blockquote">
-<p><strong>Missingness Note:</strong> Columns associated with 2G/3G mobile data recharge packs (e.g., <code>total_rech_data_6</code>, <code>max_rech_data_6</code>, <code>av_rech_amt_data_6</code>) have ~74.8% missing values. This reflects that approximately 75% of Indian mobile subscribers in 2014 did not purchase specialized monthly mobile data add-ons and used voice/SMS services exclusively.</p>
+<p><strong>Missingness Note:</strong> Columns associated with 2G/3G mobile data recharge packs (e.g., <code>total_rech_data_6</code>, <code>max_rech_data_6</code>, <code>av_rech_amt_data_6</code>) have ~74.90% missing values. This reflects that roughly three quarters of subscribers <strong>in this sample</strong> did not purchase specialized monthly mobile data add-ons and used voice/SMS services exclusively.</p>
 </blockquote>
 </section>
 <section id="behavioral-churn-definition" class="level2" data-number="3.3">
@@ -3353,7 +3354,7 @@ Figure 3: Pre-Churn ARPU Trajectory: Churners vs. Retained Subscribers
 </div>
 </div>
 <blockquote class="blockquote">
-<p><strong>Key Behavioral Finding:</strong> In the “Good Phase” (Month 6), churners actually generated <strong>₹308.29 mean ARPU</strong>, higher than retained subscribers (₹280.28). However, during the “Action Phase” (Month 8), churner ARPU plummeted by <strong>-62.95% to ₹114.23</strong>, providing a strong leading diagnostic signal prior to complete cessation of activity in Month 9.</p>
+<p><strong>Key Behavioral Finding:</strong> In the “Good Phase” (Month 6), churners actually generated <strong>₹308.29 mean ARPU</strong>, higher than retained subscribers (₹280.28) — though the difference is practically negligible (Cohen’s d ≈ +0.08). However, during the “Action Phase” (Month 8), churner ARPU plummeted by <strong>-62.95% to ₹114.23</strong>, providing a strong leading diagnostic signal prior to complete cessation of activity in Month 9. Note that decay is already visible in July (M7): churner ARPU ₹219.08 vs ₹284.89 for retained subscribers — which is why Month-7 usage features dominate the model’s feature importances despite July being labelled part of the “Good” phase.</p>
 </blockquote>
 </section>
 <section id="question-4-segment-level-breakdown" class="level2" data-number="4.4">
@@ -3641,15 +3642,18 @@ Figure 3: Pre-Churn ARPU Trajectory: Churners vs. Retained Subscribers
 </table>
 </div>
 </div>
+<blockquote class="blockquote">
+<p><strong>Comparison caveat:</strong> the customer dataset is assumed prepaid-dominant, so “Prepaid Monthly ARPU” and “Monthly MOU” are compared against the dataset base-as-is; the “Blended” row uses the same dataset base only for scale context. The dataset sample covers active accounts, so comparisons to national blended figures (which include inactive subscribers) will read high.</p>
+</blockquote>
 <section id="analytical-note-on-the-reliance-jio-structural-break" class="level3" data-number="4.5.1">
 <h3 data-number="4.5.1" class="anchored" data-anchor-id="analytical-note-on-the-reliance-jio-structural-break"><span class="header-section-number">4.5.1</span> Analytical Note on the Reliance Jio Structural Break</h3>
 <blockquote class="blockquote">
 <p><strong>CRITICAL MARKET BREAKDOWN (September 2016):</strong></p>
 <p>Direct comparisons between 2014 and 2025 ARPU figures must account for the structural transformation triggered by <strong>Reliance Jio’s market entry in September 2016</strong>:</p>
 <ol type="1">
-<li><strong>Pricing Paradigm Shift:</strong> In 2014, mobile operators operated on separate metered billing for voice calls (~50p/min) and expensive 2G/3G data packs (~₹250 per GB). Modern 2025 plans bundle unlimited nationwide voice calls with 1.5–2.0 GB/day of 4G/5G data for fixed monthly commitments (~₹200–₹350).</li>
+<li><strong>Pricing Paradigm Shift:</strong> In 2014, mobile operators operated on separate metered billing for voice calls (roughly 50 paise per minute) and expensive 2G/3G data packs (roughly ₹250 per GB), as commonly reported for the period. Modern 2025 plans bundle unlimited nationwide voice calls with 1.5–2.0 GB/day of 4G/5G data for fixed monthly commitments (approximately ₹200–₹350).</li>
 <li><strong>Voice MOU Inflation:</strong> Because calls became completely unmetered over VoLTE/5G networks, national minutes of usage per subscriber expanded by <strong>+173%</strong>, rising from <strong>376 minutes/month in 2014</strong> to <strong>1,026 minutes/month in 2025</strong>.</li>
-<li><strong>Market Consolidation:</strong> Over 10 active operators competed in 2014 (Airtel, Vodafone, Idea, BSNL, Reliance Communications, Aircel, Tata Docomo, Telenor), whereas the industry has consolidated into a private duopoly/oligopoly (Jio, Airtel, Vi) alongside public operator BSNL.</li>
+<li><strong>Market Consolidation:</strong> Around 10 active operators competed in 2014 — the largest including Airtel, Vodafone, Idea, BSNL, Reliance Communications, Aircel, Tata Docomo and Telenor — whereas the industry has consolidated into a private duopoly/oligopoly (Jio, Airtel, Vi) alongside public operator BSNL.</li>
 </ol>
 </blockquote>
 <hr>
@@ -3664,20 +3668,27 @@ Figure 3: Pre-Churn ARPU Trajectory: Churners vs. Retained Subscribers
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a>monthly_rev_loss <span class="op">=</span> churned_sub[<span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>()</span>
 <span id="cb15-2"><a href="#cb15-2" aria-label="2"></a>annual_rev_loss <span class="op">=</span> monthly_rev_loss <span class="op">*</span> <span class="dv">12</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-label="3"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-label="4"></a>kpi_table <span class="op">=</span> pd.DataFrame([</span>
-<span id="cb15-5"><a href="#cb15-5" aria-label="5"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Total Churned Subscriber Count&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>churned_subs<span class="sc">:,}</span><span class="ss"> subscribers&quot;</span>},</span>
-<span id="cb15-6"><a href="#cb15-6" aria-label="6"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Mean Good-Phase ARPU (Churned Cohort)&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>churned_sub[<span class="st">&#39;avg_arpu_6_7&#39;</span>]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss"> / month&quot;</span>},</span>
-<span id="cb15-7"><a href="#cb15-7" aria-label="7"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Monthly Direct Revenue Lost to Churn&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>monthly_rev_loss<span class="sc">:,.2f}</span><span class="ss">&quot;</span>},</span>
-<span id="cb15-8"><a href="#cb15-8" aria-label="8"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Annualized Direct Revenue at Risk&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>annual_rev_loss<span class="sc">:,.2f}</span><span class="ss"> (~₹</span><span class="sc">{</span>annual_rev_loss<span class="op">/</span><span class="fl">1e7</span><span class="sc">:.2f}</span><span class="ss"> Crore)&quot;</span>}</span>
-<span id="cb15-9"><a href="#cb15-9" aria-label="9"></a>])</span>
-<span id="cb15-10"><a href="#cb15-10" aria-label="10"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-label="11"></a>display(Markdown(kpi_table.to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-4"><a href="#cb15-4" aria-label="4"></a><span class="co"># Computed HVC concentration (not asserted)</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-label="5"></a>hvc <span class="op">=</span> df_clean[df_clean[<span class="st">&quot;is_high_value&quot;</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-label="6"></a>hvc_share_revenue <span class="op">=</span> hvc[<span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>() <span class="op">/</span> df_clean[<span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>()</span>
+<span id="cb15-7"><a href="#cb15-7" aria-label="7"></a>hvc_share_exposure <span class="op">=</span> hvc.loc[hvc[<span class="st">&quot;churn_probability&quot;</span>] <span class="op">==</span> <span class="dv">1</span>, <span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>() <span class="op">/</span> monthly_rev_loss</span>
+<span id="cb15-8"><a href="#cb15-8" aria-label="8"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-label="9"></a>kpi_table <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb15-10"><a href="#cb15-10" aria-label="10"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Total Churned Subscriber Count&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>churned_subs<span class="sc">:,}</span><span class="ss"> subscribers&quot;</span>},</span>
+<span id="cb15-11"><a href="#cb15-11" aria-label="11"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Mean Good-Phase ARPU (Churned Cohort)&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>churned_sub[<span class="st">&#39;avg_arpu_6_7&#39;</span>]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss"> / month&quot;</span>},</span>
+<span id="cb15-12"><a href="#cb15-12" aria-label="12"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Monthly Direct Revenue Lost to Churn&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>monthly_rev_loss<span class="sc">:,.2f}</span><span class="ss">&quot;</span>},</span>
+<span id="cb15-13"><a href="#cb15-13" aria-label="13"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Annualized Direct Revenue at Risk&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>annual_rev_loss<span class="sc">:,.2f}</span><span class="ss"> (~₹</span><span class="sc">{</span>annual_rev_loss<span class="op">/</span><span class="fl">1e7</span><span class="sc">:.2f}</span><span class="ss"> Crore)&quot;</span>},</span>
+<span id="cb15-14"><a href="#cb15-14" aria-label="14"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;HVC Share of Base Monthly Revenue&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>hvc_share_revenue <span class="op">*</span> <span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>},</span>
+<span id="cb15-15"><a href="#cb15-15" aria-label="15"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;HVC Share of Churn-Exposed Monthly Revenue&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>hvc_share_exposure <span class="op">*</span> <span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>}</span>
+<span id="cb15-16"><a href="#cb15-16" aria-label="16"></a>])</span>
+<span id="cb15-17"><a href="#cb15-17" aria-label="17"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-label="18"></a>display(Markdown(kpi_table.to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="revenue-at-risk-table" class="cell-output cell-output-display cell-output-markdown">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 55%">
-<col style="width: 44%">
+<col style="width: 58%">
+<col style="width: 41%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -3702,6 +3713,14 @@ Figure 3: Pre-Churn ARPU Trajectory: Churners vs. Retained Subscribers
 <td style="text-align: left;">Annualized Direct Revenue at Risk</td>
 <td style="text-align: left;">₹22,567,237.04 (~₹2.26 Crore)</td>
 </tr>
+<tr class="odd">
+<td style="text-align: left;">HVC Share of Base Monthly Revenue</td>
+<td style="text-align: left;">59.7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HVC Share of Churn-Exposed Monthly Revenue</td>
+<td style="text-align: left;">55.1%</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -3716,7 +3735,7 @@ Figure 3: Pre-Churn ARPU Trajectory: Churners vs. Retained Subscribers
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Subscriber attrition in this 70k sample base represents an annualized direct top-line revenue risk of <strong>₹2.26 Crore</strong>. Concentrating retention interventions on high-value subscribers before their Month 8 revenue collapse protects over 60% of this exposure.</p>
+<p>Subscriber attrition in this 70k sample base represents an annualized direct top-line revenue risk of <strong>₹2.26 Crore</strong>. High-value (top 30%) subscribers account for <strong>59.7% of base monthly revenue</strong>; concentrating retention interventions on them before the Month 8 revenue collapse addresses about <strong>55% of the churn-exposed revenue</strong> in this sample (see the two computed shares above).</p>
 </div>
 </div>
 <hr>
@@ -3725,11 +3744,11 @@ Figure 3: Pre-Churn ARPU Trajectory: Churners vs. Retained Subscribers
 <h1 data-number="6"><span class="header-section-number">6</span> Summary of Findings</h1>
 <ol type="1">
 <li><strong>Baseline Churn Rate:</strong> The overall customer churn rate is <strong>10.19%</strong> (7,132 churners out of 69,999 subscribers), establishing a substantial attrition baseline.</li>
-<li><strong>High-Value Concentration:</strong> The top 30% high-value customer segment (average recharge <span class="math inline">\(\ge\)</span> ₹477.50 in months 6 &amp; 7) experiences an <strong>8.28% churn rate</strong> with <strong>₹558.59 mean ARPU</strong>, generating over 60% of total operator cash flow.</li>
+<li><strong>High-Value Concentration:</strong> The top 30% high-value customer segment (average recharge <span class="math inline">\(\ge\)</span> ₹477.50 in months 6 &amp; 7) experiences an <strong>8.28% churn rate</strong> with <strong>₹558.59 mean ARPU (average of months 6 &amp; 7)</strong>, generating about <strong>59.7% of base monthly revenue</strong> (computed in the Revenue-at-Risk assessment).</li>
 <li><strong>Pre-Churn ARPU Decay:</strong> Subscribers who churn exhibit a dramatic <strong>62.95% drop in ARPU</strong> from June (₹308.29) to August (₹114.23), while retained subscribers exhibit steady growth (+6.16%, from ₹280.28 to ₹297.54).</li>
 <li><strong>Tenure Loyalty Effect:</strong> Early-tenure subscribers (&lt;1 year) have a churn rate of <strong>15.85%</strong>, which steadily decreases to <strong>4.71%</strong> among subscribers with 4+ years of tenure (a &gt;3x retention differential).</li>
 <li><strong>Data Service Stickiness:</strong> Subscribers who actively use 2G/3G mobile data packs have lower churn (<strong>8.72%</strong>) and higher revenue (<strong>₹368.52 ARPU</strong>) compared to voice/SMS-only subscribers (<strong>10.88% churn</strong>, <strong>₹239.16 ARPU</strong>).</li>
-<li><strong>Macro Benchmarking &amp; Jio Break:</strong> The 2014 dataset ARPU (₹283.13) reflects active, primary SIM accounts and aligns realistically above the TRAI 2014 national blended figure (₹115.72), which included inactive secondary SIMs. Modern TRAI ARPU (₹182.95 in 2025) reflects market recovery following the transformative September 2016 Reliance Jio structural break.</li>
+<li><strong>Macro Benchmarking &amp; Jio Break:</strong> The 2014 dataset ARPU (₹283.13) reflects active, primary SIM accounts and sits realistically above the TRAI 2014 national blended figure (₹115.72) — likely because the TRAI blended figure includes inactive secondary SIMs. Modern TRAI ARPU (₹182.95 in 2025) reflects market recovery following the transformative September 2016 Reliance Jio structural break.</li>
 </ol>
 <hr>
 </section>
@@ -3933,7 +3952,7 @@ Figure 4: Churn rate by tenure, data adoption and recharge frequency (master)
 </table>
 </div>
 </div>
-<p><strong>Diagnostic takeaway:</strong> Tenure is the dominant protector (0-1 yr ~15.9% vs 4+ yrs ~4.7%); recharge frequency beats raw spend (churners can be high-ARPU but infrequent); data adoption cuts ~2pp of churn; HVC churns less often but each event destroys more revenue; M8 collapse (55-70% drops) mediates M9 silence.</p>
+<p><strong>Diagnostic takeaway:</strong> Tenure is the dominant protector (age-on-network d ≈ −0.50; churn 15.9% for &lt;1 yr vs 4.7% for 4+ yrs) and incoming-call activity the strongest behavioural signal (July incoming MOU d ≈ −0.44); recharge frequency shows <strong>no consistent relationship with churn</strong> (Low 10.5%, Medium 8.5%, High 11.7%) — churners can have high ARPU, so raw spend is not protective by itself; data adoption cuts ~2pp of churn; each churn event destroys about <strong>3.8× more revenue among HVCs</strong> (₹7,145 vs ₹1,881 mean annualised value per churner). The M8 collapse (55–70% drops) is an <strong>early-warning signal</strong> of M9 silence — since churn is <em>defined</em> as zero September activity, part of that decay reflects the same disengagement process rather than an independently tested cause.</p>
 <hr>
 </section>
 <section id="predictive-analytics-who-will-churn" class="level1" data-number="8">
@@ -4041,6 +4060,9 @@ RF: ROC-AUC 0.8095 +/- 0.0026</code></pre>
 </table>
 </div>
 </div>
+<blockquote class="blockquote">
+<p><strong>Reading the metrics note:</strong> raw accuracy is misleading under this class imbalance — the trivial “predict nobody churns” rule scores <strong>~89.8% accuracy</strong> on this test set while catching zero churners, so read Recall / F1 / PR-AUC for business use. The identical appearing LogReg F1 (0.2751) and PR-AUC (0.2751) values are a verified numerical coincidence, not a reporting bug.</p>
+</blockquote>
 <div id="cell-fig-m-pred-curves" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="20">
 <details open class="code-fold">
 <summary>Code</summary>
@@ -4283,7 +4305,21 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 <span id="cb23-27"><a href="#cb23-27" aria-label="27"></a>    rows.append({<span class="st">&quot;Top-K test&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>k<span class="sc">:,}</span><span class="ss">&quot;</span>, <span class="st">&quot;Top-K scaled&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>(k<span class="op">*</span>scale)<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
 <span id="cb23-28"><a href="#cb23-28" aria-label="28"></a>        <span class="st">&quot;Churners in K&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>((top[<span class="st">&#39;y&#39;</span>]<span class="op">==</span><span class="dv">1</span>).<span class="bu">sum</span>())<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
 <span id="cb23-29"><a href="#cb23-29" aria-label="29"></a>        <span class="st">&quot;Net test Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>saved_rev<span class="op">-</span>cost<span class="sc">:,.0f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Net scaled Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved_rev<span class="op">-</span>cost)<span class="op">*</span>scale<span class="sc">:,.0f}</span><span class="ss">&quot;</span>})</span>
-<span id="cb23-30"><a href="#cb23-30" aria-label="30"></a>display(Markdown(pd.DataFrame(rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-30"><a href="#cb23-30" aria-label="30"></a>display(Markdown(pd.DataFrame(rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb23-31"><a href="#cb23-31" aria-label="31"></a></span>
+<span id="cb23-32"><a href="#cb23-32" aria-label="32"></a><span class="co"># P0 tailoring check: does the Rs 300 tier turn profitable when restricted to HVC only?</span></span>
+<span id="cb23-33"><a href="#cb23-33" aria-label="33"></a>hvc_te <span class="op">=</span> (X_test[<span class="st">&quot;is_high_value&quot;</span>] <span class="op">==</span> <span class="dv">1</span>).values</span>
+<span id="cb23-34"><a href="#cb23-34" aria-label="34"></a>seg_rows <span class="op">=</span> []</span>
+<span id="cb23-35"><a href="#cb23-35" aria-label="35"></a><span class="cf">for</span> seg_name, seg_mask <span class="kw">in</span> [(<span class="st">&quot;Base (all)&quot;</span>, np.ones(<span class="bu">len</span>(X_test), dtype<span class="op">=</span><span class="bu">bool</span>)), (<span class="st">&quot;HVC only&quot;</span>, hvc_te)]:</span>
+<span id="cb23-36"><a href="#cb23-36" aria-label="36"></a>    flag <span class="op">=</span> (p_rf <span class="op">&gt;=</span> <span class="fl">0.4</span>) <span class="op">&amp;</span> seg_mask</span>
+<span id="cb23-37"><a href="#cb23-37" aria-label="37"></a>    saved <span class="op">=</span> v_te[flag <span class="op">&amp;</span> (y_test.values <span class="op">==</span> <span class="dv">1</span>)].<span class="bu">sum</span>() <span class="op">*</span> <span class="fl">0.20</span></span>
+<span id="cb23-38"><a href="#cb23-38" aria-label="38"></a>    cost <span class="op">=</span> <span class="bu">int</span>(flag.<span class="bu">sum</span>()) <span class="op">*</span> (<span class="dv">300</span> <span class="op">+</span> <span class="dv">10</span>)</span>
+<span id="cb23-39"><a href="#cb23-39" aria-label="39"></a>    seg_rows.append({<span class="st">&quot;Segment (thr 0.4)&quot;</span>: seg_name, <span class="st">&quot;Offer&quot;</span>: <span class="st">&quot;Rs 300&quot;</span>, <span class="st">&quot;Succ&quot;</span>: <span class="st">&quot;20%&quot;</span>,</span>
+<span id="cb23-40"><a href="#cb23-40" aria-label="40"></a>        <span class="st">&quot;Contacted&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>(flag.<span class="bu">sum</span>())<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
+<span id="cb23-41"><a href="#cb23-41" aria-label="41"></a>        <span class="st">&quot;Net scaled 70k Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved <span class="op">-</span> cost) <span class="op">*</span> scale<span class="sc">:,.0f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb23-42"><a href="#cb23-42" aria-label="42"></a>        <span class="st">&quot;ROI&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved<span class="op">/</span>cost<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span><span class="dv">100</span><span class="sc">:.0f}</span><span class="ss">%&quot;</span> <span class="cf">if</span> cost <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">&quot;—&quot;</span>})</span>
+<span id="cb23-43"><a href="#cb23-43" aria-label="43"></a>display(Markdown(<span class="st">&quot;**Rs 300 offer by segment (P0 tailoring check):**&quot;</span>))</span>
+<span id="cb23-44"><a href="#cb23-44" aria-label="44"></a>display(Markdown(pd.DataFrame(seg_rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="m-presc-roi-1" class="cell-output cell-output-display cell-output-markdown">
 <table class="caption-top table table-sm table-striped small">
@@ -4469,8 +4505,54 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 </tbody>
 </table>
 </div>
+<div id="m-presc-roi-3" class="cell-output cell-output-display cell-output-markdown">
+<p><strong>Rs 300 offer by segment (P0 tailoring check):</strong></p>
 </div>
-<p><strong>Prescriptive takeaway:</strong> Contact rule <code>p x V x 0.20 &gt; Rs 160</code> (≈ threshold 0.3, lower for HVC); rank by expected saving under budget; pair early RF scores (M7) with M8-collapse triggers; prioritise HVC and sub-1-year voice-only cohorts; pilot with a 10% control before scaling.</p>
+<div id="m-presc-roi-4" class="cell-output cell-output-display cell-output-markdown">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 11%">
+<col style="width: 10%">
+<col style="width: 16%">
+<col style="width: 26%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Segment (thr 0.4)</th>
+<th style="text-align: left;">Offer</th>
+<th style="text-align: left;">Succ</th>
+<th style="text-align: right;">Contacted</th>
+<th style="text-align: right;">Net scaled 70k Rs</th>
+<th style="text-align: left;">ROI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Base (all)</td>
+<td style="text-align: left;">Rs 300</td>
+<td style="text-align: left;">20%</td>
+<td style="text-align: right;">1,573</td>
+<td style="text-align: right;">-819,222</td>
+<td style="text-align: left;">-34%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HVC only</td>
+<td style="text-align: left;">Rs 300</td>
+<td style="text-align: left;">20%</td>
+<td style="text-align: right;">249</td>
+<td style="text-align: right;">297,807</td>
+<td style="text-align: left;">77%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Prescriptive takeaway:</strong> Per-customer break-even rule <code>p &gt; (offer + 10) / (0.20 x V)</code> — for the average churned customer (V ≈ Rs 3,164 annualised) that is ≈ <strong>0.25</strong>, lower for higher-value customers. Rank candidates by expected saving under budget rather than a fixed threshold. The Rs 300 tier is <strong>not</strong> profitable across the base (negative ROI in the table above) but turns profitable when restricted to HVC subscribers (higher V); pair early RF scores (M7) with M8-collapse triggers; prioritise HVC and sub-1-year voice-only cohorts; pilot with a 10% control before scaling.</p>
+<blockquote class="blockquote">
+<p><strong>Assumptions &amp; caveats (prescriptive section):</strong> success rates (20–30%), offer costs (Rs 150–300) and contact cost (Rs 10) are <strong>illustrative assumptions, not estimated from data</strong> — the tables above are a sensitivity analysis, and a randomised pilot is required to estimate real uplift. Figures treat ARPU as revenue, not profit (margins would be lower) and assume a 12-month horizon. RF probabilities from <code>class_weight=&quot;balanced_subsample&quot;</code> are not calibrated — treat <code>p</code> as a relative risk score for ranking (or calibrate before using it as a true churn probability). Thresholds were read off test-set results for illustration; in production the threshold should be fixed once on a validation split and the policy then evaluated on test.</p>
+</blockquote>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -4519,12 +4601,24 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 <h1 data-number="10"><span class="header-section-number">10</span> Conclusion &amp; Next Steps</h1>
 <p>This end-to-end investigation now fulfills <strong>descriptive, diagnostic, predictive, and prescriptive</strong> analytics:</p>
 <ul>
-<li><strong>Descriptive:</strong> 10.19% churn baseline, HVC 8.28% at Rs 558.59 ARPU, 62.95% pre-churn ARPU collapse, tenure loyalty (15.85% vs 4.71%), data stickiness (8.72% vs 10.88%), TRAI benchmarking with the September 2016 Jio structural break.</li>
-<li><strong>Diagnostic:</strong> tenure, recharge frequency, MOU engagement, and data adoption are the significant drivers; M8 collapse mediates M9 silence.</li>
+<li><strong>Descriptive:</strong> 10.19% churn baseline, HVC 8.28% at Rs 558.59 ARPU (avg. months 6 &amp; 7), 62.95% pre-churn ARPU collapse, tenure loyalty (15.85% vs 4.71%), data stickiness (8.72% vs 10.88%), TRAI benchmarking with the September 2016 Jio structural break.</li>
+<li><strong>Diagnostic:</strong> tenure (d ≈ 0.50) and incoming-call minutes (d ≈ 0.44) are the only features with non-negligible effect sizes; recharge frequency shows no consistent relationship with churn; the remaining features are individually weak but jointly predictive; the M8 collapse is an early-warning signal of M9 silence, not a tested cause.</li>
 <li><strong>Predictive:</strong> leak-free RF (Good-Phase only) beats LogReg; threshold 0.3-0.4; top deciles concentrate revenue at risk.</li>
-<li><strong>Prescriptive:</strong> threshold-priced, budget-ranked retention playbook with positive expected net at Rs 150 / 20% success; pilot with control, retrain quarterly, audit fairness.</li>
+<li><strong>Prescriptive:</strong> threshold-priced, budget-ranked retention playbook with positive expected net at Rs 150 / 20% success; the Rs 300 tier is profitable for HVC cohorts only; pilot with control, retrain quarterly, audit fairness.</li>
 </ul>
 <p>Modular notebooks <code>01_data_prep</code>, <code>02_descriptive</code>, <code>03_diagnostic</code>, <code>04_predictive</code>, <code>05_prescriptive</code> reproduce each stage independently; this master <code>Analysis.qmd</code> reproduces the single combined report.</p>
+</section>
+<section id="limitations-caveats" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Limitations &amp; Caveats</h1>
+<ul>
+<li><strong>Population &amp; window:</strong> one operator, a 69,999-account sample, and a single June–September 2014 window; results concern this sample, not the full operator base or other markets/years.</li>
+<li><strong>Churn definition:</strong> churn is a usage-based proxy (zero activity in September), not a verified contract cancellation; some apparent churn may reflect secondary-SIM dormancy or migration.</li>
+<li><strong>Validation design:</strong> records were split randomly with stratification; there is no out-of-time (later-months) validation, so reported metrics may be optimistic.</li>
+<li><strong>Associations only:</strong> diagnostic findings are correlational; no causal claims are made and unobserved confounders (e.g., competitor switching) are possible.</li>
+<li><strong>Model probabilities:</strong> RF probabilities under <code>class_weight=&quot;balanced_subsample&quot;</code> are inflated relative to true rates; they are used for ranking, or explicitly hedged, in the prescriptive section.</li>
+<li><strong>Prescriptive economics:</strong> success rates, offer costs and contact cost are illustrative assumptions; net-value figures are scenario/sensitivity outputs, and ARPU is treated as top-line revenue rather than margin.</li>
+<li><strong>Temporal context:</strong> the 2014 sample predates Reliance Jio; the 2025 TRAI figures included in the report are market context, not modelled data.</li>
+</ul>
 <!-- -->
 
 </section>
@@ -5017,7 +5111,7 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 <span id="cb24-33"><a href="#cb24-33" aria-label="33"></a><span class="co">  message: false</span></span>
 <span id="cb24-34"><a href="#cb24-34" aria-label="34"></a><span class="co">---</span></span>
 <span id="cb24-35"><a href="#cb24-35" aria-label="35"></a></span>
-<span id="cb24-36"><a href="#cb24-36" aria-label="36"></a><span class="fu"># Analytics Investigation 1: Descriptive Analytics</span></span>
+<span id="cb24-36"><a href="#cb24-36" aria-label="36"></a><span class="fu"># Analytics Investigation Brief: Framing &amp; Data Access</span></span>
 <span id="cb24-37"><a href="#cb24-37" aria-label="37"></a></span>
 <span id="cb24-38"><a href="#cb24-38" aria-label="38"></a><span class="fu">## 1. Analytics Type Selected</span></span>
 <span id="cb24-39"><a href="#cb24-39" aria-label="39"></a></span>
@@ -5095,7 +5189,7 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 <span id="cb24-113"><a href="#cb24-113" aria-label="111"></a></span>
 <span id="cb24-114"><a href="#cb24-114" aria-label="112"></a><span class="fu">## Macro Regulatory Data Extraction (TRAI)</span></span>
 <span id="cb24-115"><a href="#cb24-115" aria-label="113"></a></span>
-<span id="cb24-116"><a href="#cb24-116" aria-label="114"></a>To guarantee 100% reproducibility without human transcription errors, the function below parses the official TRAI reports and exports <span class="in">`trai_​arpu_​timeseries.csv`</span>:</span>
+<span id="cb24-116"><a href="#cb24-116" aria-label="114"></a>Values are manually extracted from the official TRAI Performance Indicator Report tables and cross-verified against the source PDFs (page references kept in <span class="in">`scripts/extract_trai_data.py`</span>), then stored in <span class="in">`trai_arpu_timeseries.csv`</span>:</span>
 <span id="cb24-117"><a href="#cb24-117" aria-label="115"></a></span>
 <span id="cb24-120"><a href="#cb24-120" aria-label="116"></a><span class="in">```{python}</span></span>
 <span id="cb24-121"><a href="#cb24-121" aria-label="117"></a><span class="co">#| label: extract-trai-data</span></span>
@@ -5143,7 +5237,7 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 <span id="cb24-163"><a href="#cb24-163" aria-label="159"></a></span>
 <span id="cb24-164"><a href="#cb24-164" aria-label="160"></a>---</span>
 <span id="cb24-165"><a href="#cb24-165" aria-label="161"></a></span>
-<span id="cb24-166"><a href="#cb24-166" aria-label="162"></a><span class="fu"># Data Preparation &amp; Feature Engineering (Task 2)</span></span>
+<span id="cb24-166"><a href="#cb24-166" aria-label="162"></a><span class="fu"># Data Preparation &amp; Feature Engineering</span></span>
 <span id="cb24-167"><a href="#cb24-167" aria-label="163"></a></span>
 <span id="cb24-168"><a href="#cb24-168" aria-label="164"></a><span class="fu">## Loading Customer-Level Raw Dataset</span></span>
 <span id="cb24-169"><a href="#cb24-169" aria-label="165"></a></span>
@@ -5172,7 +5266,7 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 <span id="cb24-196"><a href="#cb24-196" aria-label="188"></a>display(Markdown(missing_table.to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
 <span id="cb24-197"><a href="#cb24-197" aria-label="189"></a><span class="in">```</span></span>
 <span id="cb24-198"><a href="#cb24-198" aria-label="190"></a></span>
-<span id="cb24-199"><a href="#cb24-199" aria-label="191"></a><span class="at">&gt; **Missingness Note:** Columns associated with 2G/3G mobile data recharge packs (e.g., </span><span class="in">`total_rech_data_6`</span><span class="at">, </span><span class="in">`max_rech_data_6`</span><span class="at">, </span><span class="in">`av_rech_amt_data_6`</span><span class="at">) have ~74.8% missing values. This reflects that approximately 75% of Indian mobile subscribers in 2014 did not purchase specialized monthly mobile data add-ons and used voice/SMS services exclusively.</span></span>
+<span id="cb24-199"><a href="#cb24-199" aria-label="191"></a><span class="at">&gt; **Missingness Note:** Columns associated with 2G/3G mobile data recharge packs (e.g., `total_rech_data_6`, `max_rech_data_6`, `av_rech_amt_data_6`) have ~74.90% missing values. This reflects that roughly three quarters of subscribers **in this sample** did not purchase specialized monthly mobile data add-ons and used voice/SMS services exclusively.</span></span>
 <span id="cb24-200"><a href="#cb24-200" aria-label="192"></a></span>
 <span id="cb24-201"><a href="#cb24-201" aria-label="193"></a><span class="fu">## Behavioral Churn Definition</span></span>
 <span id="cb24-202"><a href="#cb24-202" aria-label="194"></a></span>
@@ -5474,7 +5568,7 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 <span id="cb24-514"><a href="#cb24-514" aria-label="490"></a>plt.show()</span>
 <span id="cb24-515"><a href="#cb24-515" aria-label="491"></a><span class="in">```</span></span>
 <span id="cb24-516"><a href="#cb24-516" aria-label="492"></a></span>
-<span id="cb24-517"><a href="#cb24-517" aria-label="493"></a><span class="at">&gt; **Key Behavioral Finding:** In the &quot;Good Phase&quot; (Month 6), churners actually generated **₹308.29 mean ARPU**, higher than retained subscribers (₹280.28). However, during the &quot;Action Phase&quot; (Month 8), churner ARPU plummeted by **-62.95% to ₹114.23**, providing a strong leading diagnostic signal prior to complete cessation of activity in Month 9.</span></span>
+<span id="cb24-517"><a href="#cb24-517" aria-label="493"></a><span class="at">&gt; **Key Behavioral Finding:** In the &quot;Good Phase&quot; (Month 6), churners actually generated **₹308.29 mean ARPU**, higher than retained subscribers (₹280.28) — though the difference is practically negligible (Cohen&#39;s d ≈ +0.08). However, during the &quot;Action Phase&quot; (Month 8), churner ARPU plummeted by **-62.95% to ₹114.23**, providing a strong leading diagnostic signal prior to complete cessation of activity in Month 9. Note that decay is already visible in July (M7): churner ARPU ₹219.08 vs ₹284.89 for retained subscribers — which is why Month-7 usage features dominate the model&#39;s feature importances despite July being labelled part of the &quot;Good&quot; phase.</span></span>
 <span id="cb24-518"><a href="#cb24-518" aria-label="494"></a></span>
 <span id="cb24-519"><a href="#cb24-519" aria-label="495"></a><span class="fu">## Question 4: Segment-Level Breakdown</span></span>
 <span id="cb24-520"><a href="#cb24-520" aria-label="496"></a></span>
@@ -5574,294 +5668,331 @@ Figure 5: ROC and Precision-Recall curves on held-out test set (master)
 <span id="cb24-618"><a href="#cb24-618" aria-label="590"></a>display(Markdown(bench_table.to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
 <span id="cb24-619"><a href="#cb24-619" aria-label="591"></a><span class="in">```</span></span>
 <span id="cb24-620"><a href="#cb24-620" aria-label="592"></a></span>
-<span id="cb24-621"><a href="#cb24-621" aria-label="593"></a><span class="fu">### Analytical Note on the Reliance Jio Structural Break</span></span>
+<span id="cb24-621"><a href="#cb24-621" aria-label="593"></a><span class="at">&gt; **Comparison caveat:** the customer dataset is assumed prepaid-dominant, so &quot;Prepaid Monthly ARPU&quot; and &quot;Monthly MOU&quot; are compared against the dataset base-as-is; the &quot;Blended&quot; row uses the same dataset base only for scale context. The dataset sample covers active accounts, so comparisons to national blended figures (which include inactive subscribers) will read high.</span></span>
 <span id="cb24-622"><a href="#cb24-622" aria-label="594"></a></span>
-<span id="cb24-623"><a href="#cb24-623" aria-label="595"></a><span class="at">&gt; **CRITICAL MARKET BREAKDOWN (September 2016):**</span></span>
-<span id="cb24-624"><a href="#cb24-624" aria-label="596"></a><span class="at">&gt;</span></span>
-<span id="cb24-625"><a href="#cb24-625" aria-label="597"></a><span class="at">&gt; Direct comparisons between 2014 and 2025 ARPU figures must account for the structural transformation triggered by **Reliance Jio&#39;s market entry in September 2016**:</span></span>
+<span id="cb24-623"><a href="#cb24-623" aria-label="595"></a><span class="fu">### Analytical Note on the Reliance Jio Structural Break</span></span>
+<span id="cb24-624"><a href="#cb24-624" aria-label="596"></a></span>
+<span id="cb24-625"><a href="#cb24-625" aria-label="597"></a><span class="at">&gt; **CRITICAL MARKET BREAKDOWN (September 2016):**</span></span>
 <span id="cb24-626"><a href="#cb24-626" aria-label="598"></a><span class="at">&gt;</span></span>
-<span id="cb24-627"><a href="#cb24-627" aria-label="599"></a><span class="at">&gt; 1. **Pricing Paradigm Shift:** In 2014, mobile operators operated on separate metered billing for voice calls (~50p/min) and expensive 2G/3G data packs (~₹250 per GB). Modern 2025 plans bundle unlimited nationwide voice calls with 1.5–2.0 GB/day of 4G/5G data for fixed monthly commitments (~₹200–₹350).</span></span>
-<span id="cb24-628"><a href="#cb24-628" aria-label="600"></a><span class="at">&gt; 2. **Voice MOU Inflation:** Because calls became completely unmetered over VoLTE/5G networks, national minutes of usage per subscriber expanded by **+173%**, rising from **376 minutes/month in 2014** to **1,026 minutes/month in 2025**.</span></span>
-<span id="cb24-629"><a href="#cb24-629" aria-label="601"></a><span class="at">&gt; 3. **Market Consolidation:** Over 10 active operators competed in 2014 (Airtel, Vodafone, Idea, BSNL, Reliance Communications, Aircel, Tata Docomo, Telenor), whereas the industry has consolidated into a private duopoly/oligopoly (Jio, Airtel, Vi) alongside public operator BSNL.</span></span>
-<span id="cb24-630"><a href="#cb24-630" aria-label="602"></a></span>
-<span id="cb24-631"><a href="#cb24-631" aria-label="603"></a>---</span>
+<span id="cb24-627"><a href="#cb24-627" aria-label="599"></a><span class="at">&gt; Direct comparisons between 2014 and 2025 ARPU figures must account for the structural transformation triggered by **Reliance Jio&#39;s market entry in September 2016**:</span></span>
+<span id="cb24-628"><a href="#cb24-628" aria-label="600"></a><span class="at">&gt;</span></span>
+<span id="cb24-629"><a href="#cb24-629" aria-label="601"></a><span class="at">&gt; 1. **Pricing Paradigm Shift:** In 2014, mobile operators operated on separate metered billing for voice calls (roughly 50 paise per minute) and expensive 2G/3G data packs (roughly ₹250 per GB), as commonly reported for the period. Modern 2025 plans bundle unlimited nationwide voice calls with 1.5–2.0 GB/day of 4G/5G data for fixed monthly commitments (approximately ₹200–₹350).</span></span>
+<span id="cb24-630"><a href="#cb24-630" aria-label="602"></a><span class="at">&gt; 2. **Voice MOU Inflation:** Because calls became completely unmetered over VoLTE/5G networks, national minutes of usage per subscriber expanded by **+173%**, rising from **376 minutes/month in 2014** to **1,026 minutes/month in 2025**.</span></span>
+<span id="cb24-631"><a href="#cb24-631" aria-label="603"></a><span class="at">&gt; 3. **Market Consolidation:** Around 10 active operators competed in 2014 — the largest including Airtel, Vodafone, Idea, BSNL, Reliance Communications, Aircel, Tata Docomo and Telenor — whereas the industry has consolidated into a private duopoly/oligopoly (Jio, Airtel, Vi) alongside public operator BSNL.</span></span>
 <span id="cb24-632"><a href="#cb24-632" aria-label="604"></a></span>
-<span id="cb24-633"><a href="#cb24-633" aria-label="605"></a><span class="fu"># Revenue-at-Risk Assessment</span></span>
+<span id="cb24-633"><a href="#cb24-633" aria-label="605"></a>---</span>
 <span id="cb24-634"><a href="#cb24-634" aria-label="606"></a></span>
-<span id="cb24-637"><a href="#cb24-637" aria-label="607"></a><span class="in">```{python}</span></span>
-<span id="cb24-638"><a href="#cb24-638" aria-label="608"></a><span class="co">#| label: revenue-at-risk-table</span></span>
-<span id="cb24-639"><a href="#cb24-639" aria-label="609"></a><span class="co">#| echo: true</span></span>
-<span id="cb24-640"><a href="#cb24-640" aria-label="610"></a>monthly_rev_loss <span class="op">=</span> churned_sub[<span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>()</span>
-<span id="cb24-641"><a href="#cb24-641" aria-label="611"></a>annual_rev_loss <span class="op">=</span> monthly_rev_loss <span class="op">*</span> <span class="dv">12</span></span>
-<span id="cb24-642"><a href="#cb24-642" aria-label="612"></a></span>
-<span id="cb24-643"><a href="#cb24-643" aria-label="613"></a>kpi_table <span class="op">=</span> pd.DataFrame([</span>
-<span id="cb24-644"><a href="#cb24-644" aria-label="614"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Total Churned Subscriber Count&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>churned_subs<span class="sc">:,}</span><span class="ss"> subscribers&quot;</span>},</span>
-<span id="cb24-645"><a href="#cb24-645" aria-label="615"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Mean Good-Phase ARPU (Churned Cohort)&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>churned_sub[<span class="st">&#39;avg_arpu_6_7&#39;</span>]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss"> / month&quot;</span>},</span>
-<span id="cb24-646"><a href="#cb24-646" aria-label="616"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Monthly Direct Revenue Lost to Churn&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>monthly_rev_loss<span class="sc">:,.2f}</span><span class="ss">&quot;</span>},</span>
-<span id="cb24-647"><a href="#cb24-647" aria-label="617"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Annualized Direct Revenue at Risk&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>annual_rev_loss<span class="sc">:,.2f}</span><span class="ss"> (~₹</span><span class="sc">{</span>annual_rev_loss<span class="op">/</span><span class="fl">1e7</span><span class="sc">:.2f}</span><span class="ss"> Crore)&quot;</span>}</span>
-<span id="cb24-648"><a href="#cb24-648" aria-label="618"></a>])</span>
+<span id="cb24-635"><a href="#cb24-635" aria-label="607"></a><span class="fu"># Revenue-at-Risk Assessment</span></span>
+<span id="cb24-636"><a href="#cb24-636" aria-label="608"></a></span>
+<span id="cb24-639"><a href="#cb24-639" aria-label="609"></a><span class="in">```{python}</span></span>
+<span id="cb24-640"><a href="#cb24-640" aria-label="610"></a><span class="co">#| label: revenue-at-risk-table</span></span>
+<span id="cb24-641"><a href="#cb24-641" aria-label="611"></a><span class="co">#| echo: true</span></span>
+<span id="cb24-642"><a href="#cb24-642" aria-label="612"></a>monthly_rev_loss <span class="op">=</span> churned_sub[<span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>()</span>
+<span id="cb24-643"><a href="#cb24-643" aria-label="613"></a>annual_rev_loss <span class="op">=</span> monthly_rev_loss <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb24-644"><a href="#cb24-644" aria-label="614"></a></span>
+<span id="cb24-645"><a href="#cb24-645" aria-label="615"></a><span class="co"># Computed HVC concentration (not asserted)</span></span>
+<span id="cb24-646"><a href="#cb24-646" aria-label="616"></a>hvc <span class="op">=</span> df_clean[df_clean[<span class="st">&quot;is_high_value&quot;</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
+<span id="cb24-647"><a href="#cb24-647" aria-label="617"></a>hvc_share_revenue <span class="op">=</span> hvc[<span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>() <span class="op">/</span> df_clean[<span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>()</span>
+<span id="cb24-648"><a href="#cb24-648" aria-label="618"></a>hvc_share_exposure <span class="op">=</span> hvc.loc[hvc[<span class="st">&quot;churn_probability&quot;</span>] <span class="op">==</span> <span class="dv">1</span>, <span class="st">&quot;avg_arpu_6_7&quot;</span>].<span class="bu">sum</span>() <span class="op">/</span> monthly_rev_loss</span>
 <span id="cb24-649"><a href="#cb24-649" aria-label="619"></a></span>
-<span id="cb24-650"><a href="#cb24-650" aria-label="620"></a>display(Markdown(kpi_table.to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
-<span id="cb24-651"><a href="#cb24-651" aria-label="621"></a><span class="in">```</span></span>
-<span id="cb24-652"><a href="#cb24-652" aria-label="622"></a></span>
-<span id="cb24-653"><a href="#cb24-653" aria-label="623"></a>::: {.callout-important appearance=&quot;simple&quot; title=&quot;Executive Financial Takeaway&quot;}</span>
-<span id="cb24-654"><a href="#cb24-654" aria-label="624"></a>Subscriber attrition in this 70k sample base represents an annualized direct top-line revenue risk of **₹2.26 Crore**. Concentrating retention interventions on high-value subscribers before their Month 8 revenue collapse protects over 60% of this exposure.</span>
-<span id="cb24-655"><a href="#cb24-655" aria-label="625"></a>:::</span>
-<span id="cb24-656"><a href="#cb24-656" aria-label="626"></a></span>
-<span id="cb24-657"><a href="#cb24-657" aria-label="627"></a>---</span>
+<span id="cb24-650"><a href="#cb24-650" aria-label="620"></a>kpi_table <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb24-651"><a href="#cb24-651" aria-label="621"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Total Churned Subscriber Count&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>churned_subs<span class="sc">:,}</span><span class="ss"> subscribers&quot;</span>},</span>
+<span id="cb24-652"><a href="#cb24-652" aria-label="622"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Mean Good-Phase ARPU (Churned Cohort)&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>churned_sub[<span class="st">&#39;avg_arpu_6_7&#39;</span>]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss"> / month&quot;</span>},</span>
+<span id="cb24-653"><a href="#cb24-653" aria-label="623"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Monthly Direct Revenue Lost to Churn&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>monthly_rev_loss<span class="sc">:,.2f}</span><span class="ss">&quot;</span>},</span>
+<span id="cb24-654"><a href="#cb24-654" aria-label="624"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;Annualized Direct Revenue at Risk&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;₹</span><span class="sc">{</span>annual_rev_loss<span class="sc">:,.2f}</span><span class="ss"> (~₹</span><span class="sc">{</span>annual_rev_loss<span class="op">/</span><span class="fl">1e7</span><span class="sc">:.2f}</span><span class="ss"> Crore)&quot;</span>},</span>
+<span id="cb24-655"><a href="#cb24-655" aria-label="625"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;HVC Share of Base Monthly Revenue&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>hvc_share_revenue <span class="op">*</span> <span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>},</span>
+<span id="cb24-656"><a href="#cb24-656" aria-label="626"></a>    {<span class="st">&quot;Financial Metric&quot;</span>: <span class="st">&quot;HVC Share of Churn-Exposed Monthly Revenue&quot;</span>, <span class="st">&quot;Value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>hvc_share_exposure <span class="op">*</span> <span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>}</span>
+<span id="cb24-657"><a href="#cb24-657" aria-label="627"></a>])</span>
 <span id="cb24-658"><a href="#cb24-658" aria-label="628"></a></span>
-<span id="cb24-659"><a href="#cb24-659" aria-label="629"></a><span class="fu"># Summary of Findings</span></span>
-<span id="cb24-660"><a href="#cb24-660" aria-label="630"></a></span>
-<span id="cb24-661"><a href="#cb24-661" aria-label="631"></a><span class="ss">1. </span>**Baseline Churn Rate:** The overall customer churn rate is **10.19%** (7,132 churners out of 69,999 subscribers), establishing a substantial attrition baseline.</span>
-<span id="cb24-662"><a href="#cb24-662" aria-label="632"></a><span class="ss">2. </span>**High-Value Concentration:** The top 30% high-value customer segment (average recharge $\ge$ ₹477.50 in months 6 &amp; 7) experiences an **8.28% churn rate** with **₹558.59 mean ARPU**, generating over 60% of total operator cash flow.</span>
-<span id="cb24-663"><a href="#cb24-663" aria-label="633"></a><span class="ss">3. </span>**Pre-Churn ARPU Decay:** Subscribers who churn exhibit a dramatic **62.95% drop in ARPU** from June (₹308.29) to August (₹114.23), while retained subscribers exhibit steady growth (+6.16%, from ₹280.28 to ₹297.54).</span>
-<span id="cb24-664"><a href="#cb24-664" aria-label="634"></a><span class="ss">4. </span>**Tenure Loyalty Effect:** Early-tenure subscribers (&lt;1 year) have a churn rate of **15.85%**, which steadily decreases to **4.71%** among subscribers with 4+ years of tenure (a &gt;3x retention differential).</span>
-<span id="cb24-665"><a href="#cb24-665" aria-label="635"></a><span class="ss">5. </span>**Data Service Stickiness:** Subscribers who actively use 2G/3G mobile data packs have lower churn (**8.72%**) and higher revenue (**₹368.52 ARPU**) compared to voice/SMS-only subscribers (**10.88% churn**, **₹239.16 ARPU**).</span>
-<span id="cb24-666"><a href="#cb24-666" aria-label="636"></a><span class="ss">6. </span>**Macro Benchmarking &amp; Jio Break:** The 2014 dataset ARPU (₹283.13) reflects active, primary SIM accounts and aligns realistically above the TRAI 2014 national blended figure (₹115.72), which included inactive secondary SIMs. Modern TRAI ARPU (₹182.95 in 2025) reflects market recovery following the transformative September 2016 Reliance Jio structural break.</span>
+<span id="cb24-659"><a href="#cb24-659" aria-label="629"></a>display(Markdown(kpi_table.to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-660"><a href="#cb24-660" aria-label="630"></a><span class="in">```</span></span>
+<span id="cb24-661"><a href="#cb24-661" aria-label="631"></a></span>
+<span id="cb24-662"><a href="#cb24-662" aria-label="632"></a>::: {.callout-important appearance=&quot;simple&quot; title=&quot;Executive Financial Takeaway&quot;}</span>
+<span id="cb24-663"><a href="#cb24-663" aria-label="633"></a>Subscriber attrition in this 70k sample base represents an annualized direct top-line revenue risk of **₹2.26 Crore**. High-value (top 30%) subscribers account for **59.7% of base monthly revenue**; concentrating retention interventions on them before the Month 8 revenue collapse addresses about **55% of the churn-exposed revenue** in this sample (see the two computed shares above).</span>
+<span id="cb24-664"><a href="#cb24-664" aria-label="634"></a>:::</span>
+<span id="cb24-665"><a href="#cb24-665" aria-label="635"></a></span>
+<span id="cb24-666"><a href="#cb24-666" aria-label="636"></a>---</span>
 <span id="cb24-667"><a href="#cb24-667" aria-label="637"></a></span>
-<span id="cb24-668"><a href="#cb24-668" aria-label="638"></a>---</span>
+<span id="cb24-668"><a href="#cb24-668" aria-label="638"></a><span class="fu"># Summary of Findings</span></span>
 <span id="cb24-669"><a href="#cb24-669" aria-label="639"></a></span>
-<span id="cb24-670"><a href="#cb24-670" aria-label="640"></a><span class="fu"># Diagnostic Analytics: Why Do Subscribers Churn?</span></span>
-<span id="cb24-671"><a href="#cb24-671" aria-label="641"></a></span>
-<span id="cb24-672"><a href="#cb24-672" aria-label="642"></a><span class="at">&gt; **&quot;Which Good-Phase behaviours (usage, recharge, tenure, data adoption, value tier) significantly distinguish future churners, and how large are those effects?&quot;**</span></span>
-<span id="cb24-673"><a href="#cb24-673" aria-label="643"></a></span>
-<span id="cb24-674"><a href="#cb24-674" aria-label="644"></a>All explanatory comparisons use Good-Phase M6/M7 only. M8 is used solely for decay attribution.</span>
-<span id="cb24-675"><a href="#cb24-675" aria-label="645"></a></span>
-<span id="cb24-678"><a href="#cb24-678" aria-label="646"></a><span class="in">```{python}</span></span>
-<span id="cb24-679"><a href="#cb24-679" aria-label="647"></a><span class="co">#| label: m-diag-continuous</span></span>
-<span id="cb24-680"><a href="#cb24-680" aria-label="648"></a><span class="co">#| echo: true</span></span>
-<span id="cb24-681"><a href="#cb24-681" aria-label="649"></a>ret_m <span class="op">=</span> df_clean[df_clean[<span class="st">&quot;churn_probability&quot;</span>] <span class="op">==</span> <span class="dv">0</span>]</span>
-<span id="cb24-682"><a href="#cb24-682" aria-label="650"></a>chu_m <span class="op">=</span> df_clean[df_clean[<span class="st">&quot;churn_probability&quot;</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
-<span id="cb24-683"><a href="#cb24-683" aria-label="651"></a></span>
-<span id="cb24-684"><a href="#cb24-684" aria-label="652"></a><span class="kw">def</span> cohens_d(a, b):</span>
-<span id="cb24-685"><a href="#cb24-685" aria-label="653"></a>    a <span class="op">=</span> np.asarray(a, dtype<span class="op">=</span><span class="bu">float</span>)<span class="op">;</span> b <span class="op">=</span> np.asarray(b, dtype<span class="op">=</span><span class="bu">float</span>)</span>
-<span id="cb24-686"><a href="#cb24-686" aria-label="654"></a>    a <span class="op">=</span> a[<span class="op">~</span>np.isnan(a)]<span class="op">;</span> b <span class="op">=</span> b[<span class="op">~</span>np.isnan(b)]</span>
-<span id="cb24-687"><a href="#cb24-687" aria-label="655"></a>    n1, n2 <span class="op">=</span> <span class="bu">len</span>(a), <span class="bu">len</span>(b)</span>
-<span id="cb24-688"><a href="#cb24-688" aria-label="656"></a>    s1, s2 <span class="op">=</span> np.var(a, ddof<span class="op">=</span><span class="dv">1</span>), np.var(b, ddof<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb24-689"><a href="#cb24-689" aria-label="657"></a>    pooled <span class="op">=</span> np.sqrt(((n1 <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> s1 <span class="op">+</span> (n2 <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> s2) <span class="op">/</span> (n1 <span class="op">+</span> n2 <span class="op">-</span> <span class="dv">2</span>))</span>
-<span id="cb24-690"><a href="#cb24-690" aria-label="658"></a>    <span class="cf">return</span> (np.mean(a) <span class="op">-</span> np.mean(b)) <span class="op">/</span> pooled <span class="cf">if</span> pooled <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
-<span id="cb24-691"><a href="#cb24-691" aria-label="659"></a></span>
-<span id="cb24-692"><a href="#cb24-692" aria-label="660"></a>cont_vars <span class="op">=</span> [<span class="st">&quot;arpu_6&quot;</span>, <span class="st">&quot;arpu_7&quot;</span>, <span class="st">&quot;avg_arpu_6_7&quot;</span>, <span class="st">&quot;total_og_mou_6&quot;</span>, <span class="st">&quot;total_ic_mou_6&quot;</span>,</span>
-<span id="cb24-693"><a href="#cb24-693" aria-label="661"></a>             <span class="st">&quot;total_rech_num_6&quot;</span>, <span class="st">&quot;total_rech_amt_6&quot;</span>, <span class="st">&quot;aon&quot;</span>, <span class="st">&quot;avg_rech_amt_6_7&quot;</span>]</span>
-<span id="cb24-694"><a href="#cb24-694" aria-label="662"></a>rows <span class="op">=</span> []</span>
-<span id="cb24-695"><a href="#cb24-695" aria-label="663"></a><span class="cf">for</span> v <span class="kw">in</span> cont_vars:</span>
-<span id="cb24-696"><a href="#cb24-696" aria-label="664"></a>    x <span class="op">=</span> ret_m[v].dropna()<span class="op">;</span> y <span class="op">=</span> chu_m[v].dropna()</span>
-<span id="cb24-697"><a href="#cb24-697" aria-label="665"></a>    t, p <span class="op">=</span> stats.ttest_ind(x, y, equal_var<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb24-698"><a href="#cb24-698" aria-label="666"></a>    d <span class="op">=</span> cohens_d(x.values, y.values)</span>
-<span id="cb24-699"><a href="#cb24-699" aria-label="667"></a>    mag <span class="op">=</span> <span class="st">&quot;negligible&quot;</span> <span class="cf">if</span> <span class="bu">abs</span>(d) <span class="op">&lt;</span> <span class="fl">0.2</span> <span class="cf">else</span> (<span class="st">&quot;small&quot;</span> <span class="cf">if</span> <span class="bu">abs</span>(d) <span class="op">&lt;</span> <span class="fl">0.5</span> <span class="cf">else</span> (<span class="st">&quot;medium&quot;</span> <span class="cf">if</span> <span class="bu">abs</span>(d) <span class="op">&lt;</span> <span class="fl">0.8</span> <span class="cf">else</span> <span class="st">&quot;large&quot;</span>))</span>
-<span id="cb24-700"><a href="#cb24-700" aria-label="668"></a>    rows.append({<span class="st">&quot;Feature&quot;</span>: v, <span class="st">&quot;Retained&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>x<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Churned&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>y<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-701"><a href="#cb24-701" aria-label="669"></a>                 <span class="st">&quot;p-value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>p<span class="sc">:.2e}</span><span class="ss">&quot;</span>, <span class="st">&quot;Cohen d&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>d<span class="sc">:.3f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Effect&quot;</span>: mag})</span>
-<span id="cb24-702"><a href="#cb24-702" aria-label="670"></a>display(Markdown(pd.DataFrame(rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
-<span id="cb24-703"><a href="#cb24-703" aria-label="671"></a><span class="in">```</span></span>
-<span id="cb24-704"><a href="#cb24-704" aria-label="672"></a></span>
-<span id="cb24-707"><a href="#cb24-707" aria-label="673"></a><span class="in">```{python}</span></span>
-<span id="cb24-708"><a href="#cb24-708" aria-label="674"></a><span class="co">#| label: fig-m-diag-categorical</span></span>
-<span id="cb24-709"><a href="#cb24-709" aria-label="675"></a><span class="co">#| echo: true</span></span>
-<span id="cb24-710"><a href="#cb24-710" aria-label="676"></a><span class="co">#| fig-cap: &quot;Churn rate by tenure, data adoption and recharge frequency (master)&quot;</span></span>
-<span id="cb24-711"><a href="#cb24-711" aria-label="677"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb24-712"><a href="#cb24-712" aria-label="678"></a><span class="co">#| fig-height: 4.2</span></span>
-<span id="cb24-713"><a href="#cb24-713" aria-label="679"></a><span class="co">#| out-width: &quot;95%&quot;</span></span>
-<span id="cb24-714"><a href="#cb24-714" aria-label="680"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb24-715"><a href="#cb24-715" aria-label="681"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.2</span>))</span>
-<span id="cb24-716"><a href="#cb24-716" aria-label="682"></a><span class="cf">for</span> ax, col, ttl <span class="kw">in</span> <span class="bu">zip</span>(axes,</span>
-<span id="cb24-717"><a href="#cb24-717" aria-label="683"></a>    [<span class="st">&quot;tenure_group&quot;</span>, <span class="st">&quot;data_user_label&quot;</span>, <span class="st">&quot;rech_freq_bucket_6&quot;</span>],</span>
-<span id="cb24-718"><a href="#cb24-718" aria-label="684"></a>    [<span class="st">&quot;Tenure group&quot;</span>, <span class="st">&quot;Data adoption&quot;</span>, <span class="st">&quot;Recharge frequency (M6)&quot;</span>]):</span>
-<span id="cb24-719"><a href="#cb24-719" aria-label="685"></a>    g <span class="op">=</span> df_clean.groupby(col, observed<span class="op">=</span><span class="va">True</span>)[<span class="st">&quot;churn_probability&quot;</span>].mean().mul(<span class="dv">100</span>)</span>
-<span id="cb24-720"><a href="#cb24-720" aria-label="686"></a>    g.plot(kind<span class="op">=</span><span class="st">&quot;bar&quot;</span>, ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">&quot;#e41a1c&quot;</span>, alpha<span class="op">=</span><span class="fl">0.85</span>, edgecolor<span class="op">=</span><span class="st">&quot;white&quot;</span>)</span>
-<span id="cb24-721"><a href="#cb24-721" aria-label="687"></a>    ax.set_title(ttl, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb24-722"><a href="#cb24-722" aria-label="688"></a>    ax.set_ylabel(<span class="st">&quot;Churn rate (%)&quot;</span>)</span>
-<span id="cb24-723"><a href="#cb24-723" aria-label="689"></a>    ax.set_xlabel(<span class="st">&quot;&quot;</span>)</span>
-<span id="cb24-724"><a href="#cb24-724" aria-label="690"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">&quot;x&quot;</span>, rotation<span class="op">=</span><span class="dv">20</span>)</span>
-<span id="cb24-725"><a href="#cb24-725" aria-label="691"></a>    <span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(g.values):</span>
-<span id="cb24-726"><a href="#cb24-726" aria-label="692"></a>        ax.text(i, v <span class="op">+</span> <span class="fl">0.25</span>, <span class="ss">f&quot;</span><span class="sc">{</span>v<span class="sc">:.1f}</span><span class="ss">%&quot;</span>, ha<span class="op">=</span><span class="st">&quot;center&quot;</span>, fontsize<span class="op">=</span><span class="fl">8.5</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)</span>
-<span id="cb24-727"><a href="#cb24-727" aria-label="693"></a>plt.tight_layout()</span>
-<span id="cb24-728"><a href="#cb24-728" aria-label="694"></a>plt.show()</span>
-<span id="cb24-729"><a href="#cb24-729" aria-label="695"></a><span class="in">```</span></span>
-<span id="cb24-730"><a href="#cb24-730" aria-label="696"></a></span>
-<span id="cb24-733"><a href="#cb24-733" aria-label="697"></a><span class="in">```{python}</span></span>
-<span id="cb24-734"><a href="#cb24-734" aria-label="698"></a><span class="co">#| label: m-diag-decay</span></span>
-<span id="cb24-735"><a href="#cb24-735" aria-label="699"></a><span class="co">#| echo: true</span></span>
-<span id="cb24-736"><a href="#cb24-736" aria-label="700"></a>dec <span class="op">=</span> df_clean.groupby(<span class="st">&quot;churn_label&quot;</span>)[[<span class="st">&quot;arpu_7&quot;</span>, <span class="st">&quot;arpu_8&quot;</span>, <span class="st">&quot;total_og_mou_7&quot;</span>,</span>
-<span id="cb24-737"><a href="#cb24-737" aria-label="701"></a>    <span class="st">&quot;total_og_mou_8&quot;</span>, <span class="st">&quot;total_rech_amt_7&quot;</span>, <span class="st">&quot;total_rech_amt_8&quot;</span>]].mean().<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb24-738"><a href="#cb24-738" aria-label="702"></a>rows <span class="op">=</span> []</span>
-<span id="cb24-739"><a href="#cb24-739" aria-label="703"></a><span class="cf">for</span> cohort <span class="kw">in</span> [<span class="st">&quot;Retained&quot;</span>, <span class="st">&quot;Churned&quot;</span>]:</span>
-<span id="cb24-740"><a href="#cb24-740" aria-label="704"></a>    rows.append({<span class="st">&quot;Cohort&quot;</span>: cohort,</span>
-<span id="cb24-741"><a href="#cb24-741" aria-label="705"></a>        <span class="st">&quot;ARPU M7→M8 %&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(dec.loc[cohort,<span class="st">&#39;arpu_8&#39;</span>]<span class="op">-</span>dec.loc[cohort,<span class="st">&#39;arpu_7&#39;</span>])<span class="op">/</span>dec<span class="sc">.</span>loc[cohort,<span class="st">&#39;arpu_7&#39;</span>]<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>,</span>
-<span id="cb24-742"><a href="#cb24-742" aria-label="706"></a>        <span class="st">&quot;OG MOU M7→M8 %&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(dec.loc[cohort,<span class="st">&#39;total_og_mou_8&#39;</span>]<span class="op">-</span>dec.loc[cohort,<span class="st">&#39;total_og_mou_7&#39;</span>])<span class="op">/</span>dec<span class="sc">.</span>loc[cohort,<span class="st">&#39;total_og_mou_7&#39;</span>]<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>,</span>
-<span id="cb24-743"><a href="#cb24-743" aria-label="707"></a>        <span class="st">&quot;Rech Amt M7→M8 %&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(dec.loc[cohort,<span class="st">&#39;total_rech_amt_8&#39;</span>]<span class="op">-</span>dec.loc[cohort,<span class="st">&#39;total_rech_amt_7&#39;</span>])<span class="op">/</span>dec<span class="sc">.</span>loc[cohort,<span class="st">&#39;total_rech_amt_7&#39;</span>]<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>})</span>
-<span id="cb24-744"><a href="#cb24-744" aria-label="708"></a>display(Markdown(pd.DataFrame(rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
-<span id="cb24-745"><a href="#cb24-745" aria-label="709"></a><span class="in">```</span></span>
-<span id="cb24-746"><a href="#cb24-746" aria-label="710"></a></span>
-<span id="cb24-747"><a href="#cb24-747" aria-label="711"></a>**Diagnostic takeaway:** Tenure is the dominant protector (0-1 yr ~15.9% vs 4+ yrs ~4.7%); recharge frequency beats raw spend (churners can be high-ARPU but infrequent); data adoption cuts ~2pp of churn; HVC churns less often but each event destroys more revenue; M8 collapse (55-70% drops) mediates M9 silence.</span>
-<span id="cb24-748"><a href="#cb24-748" aria-label="712"></a></span>
-<span id="cb24-749"><a href="#cb24-749" aria-label="713"></a>---</span>
-<span id="cb24-750"><a href="#cb24-750" aria-label="714"></a></span>
-<span id="cb24-751"><a href="#cb24-751" aria-label="715"></a><span class="fu"># Predictive Analytics: Who Will Churn?</span></span>
-<span id="cb24-752"><a href="#cb24-752" aria-label="716"></a></span>
-<span id="cb24-753"><a href="#cb24-753" aria-label="717"></a><span class="at">&gt; **&quot;Which subscribers will churn next month using only pre-Action-Phase information, and how much revenue does each risk decile represent?&quot;**</span></span>
-<span id="cb24-754"><a href="#cb24-754" aria-label="718"></a></span>
-<span id="cb24-755"><a href="#cb24-755" aria-label="719"></a>Leakage guard: Good-Phase M6/M7 features only; all <span class="in">`*_8`</span> columns excluded.</span>
-<span id="cb24-756"><a href="#cb24-756" aria-label="720"></a></span>
-<span id="cb24-759"><a href="#cb24-759" aria-label="721"></a><span class="in">```{python}</span></span>
-<span id="cb24-760"><a href="#cb24-760" aria-label="722"></a><span class="co">#| label: m-pred-train</span></span>
-<span id="cb24-761"><a href="#cb24-761" aria-label="723"></a><span class="co">#| echo: true</span></span>
-<span id="cb24-762"><a href="#cb24-762" aria-label="724"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split, StratifiedKFold, cross_val_score</span>
-<span id="cb24-763"><a href="#cb24-763" aria-label="725"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
-<span id="cb24-764"><a href="#cb24-764" aria-label="726"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
-<span id="cb24-765"><a href="#cb24-765" aria-label="727"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer</span>
-<span id="cb24-766"><a href="#cb24-766" aria-label="728"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler, OneHotEncoder</span>
-<span id="cb24-767"><a href="#cb24-767" aria-label="729"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
-<span id="cb24-768"><a href="#cb24-768" aria-label="730"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
-<span id="cb24-769"><a href="#cb24-769" aria-label="731"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> (accuracy_score, precision_score, recall_score, f1_score,</span>
-<span id="cb24-770"><a href="#cb24-770" aria-label="732"></a>    roc_auc_score, average_precision_score, confusion_matrix, roc_curve, precision_recall_curve)</span>
-<span id="cb24-771"><a href="#cb24-771" aria-label="733"></a></span>
-<span id="cb24-772"><a href="#cb24-772" aria-label="734"></a>num_features <span class="op">=</span> [<span class="st">&quot;arpu_6&quot;</span>, <span class="st">&quot;arpu_7&quot;</span>, <span class="st">&quot;avg_arpu_6_7&quot;</span>, <span class="st">&quot;arpu_diff_7_6&quot;</span>,</span>
-<span id="cb24-773"><a href="#cb24-773" aria-label="735"></a>    <span class="st">&quot;total_og_mou_6&quot;</span>, <span class="st">&quot;total_og_mou_7&quot;</span>, <span class="st">&quot;total_ic_mou_6&quot;</span>, <span class="st">&quot;total_ic_mou_7&quot;</span>,</span>
-<span id="cb24-774"><a href="#cb24-774" aria-label="736"></a>    <span class="st">&quot;total_rech_num_6&quot;</span>, <span class="st">&quot;total_rech_num_7&quot;</span>, <span class="st">&quot;total_rech_amt_6&quot;</span>, <span class="st">&quot;total_rech_amt_7&quot;</span>,</span>
-<span id="cb24-775"><a href="#cb24-775" aria-label="737"></a>    <span class="st">&quot;max_rech_amt_6&quot;</span>, <span class="st">&quot;max_rech_amt_7&quot;</span>, <span class="st">&quot;vol_2g_mb_6&quot;</span>, <span class="st">&quot;vol_3g_mb_6&quot;</span>,</span>
-<span id="cb24-776"><a href="#cb24-776" aria-label="738"></a>    <span class="st">&quot;aon&quot;</span>, <span class="st">&quot;tenure_months&quot;</span>, <span class="st">&quot;avg_rech_amt_6_7&quot;</span>, <span class="st">&quot;is_high_value&quot;</span>, <span class="st">&quot;has_data_plan&quot;</span>]</span>
-<span id="cb24-777"><a href="#cb24-777" aria-label="739"></a>cat_features <span class="op">=</span> [<span class="st">&quot;tenure_group&quot;</span>, <span class="st">&quot;rech_freq_bucket_6&quot;</span>, <span class="st">&quot;data_user_label&quot;</span>]</span>
-<span id="cb24-778"><a href="#cb24-778" aria-label="740"></a>X <span class="op">=</span> df_clean[num_features <span class="op">+</span> cat_features].copy()</span>
-<span id="cb24-779"><a href="#cb24-779" aria-label="741"></a>y <span class="op">=</span> df_clean[<span class="st">&quot;churn_probability&quot;</span>].astype(<span class="bu">int</span>)</span>
-<span id="cb24-780"><a href="#cb24-780" aria-label="742"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
-<span id="cb24-781"><a href="#cb24-781" aria-label="743"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.20</span>, stratify<span class="op">=</span>y, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb24-782"><a href="#cb24-782" aria-label="744"></a></span>
-<span id="cb24-783"><a href="#cb24-783" aria-label="745"></a>num_pipe <span class="op">=</span> Pipeline([(<span class="st">&quot;imp&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;median&quot;</span>)), (<span class="st">&quot;sc&quot;</span>, StandardScaler())])</span>
-<span id="cb24-784"><a href="#cb24-784" aria-label="746"></a>cat_pipe <span class="op">=</span> Pipeline([(<span class="st">&quot;imp&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;most_frequent&quot;</span>)),</span>
-<span id="cb24-785"><a href="#cb24-785" aria-label="747"></a>    (<span class="st">&quot;oh&quot;</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">&quot;ignore&quot;</span>))])</span>
-<span id="cb24-786"><a href="#cb24-786" aria-label="748"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">&quot;num&quot;</span>, num_pipe, num_features), (<span class="st">&quot;cat&quot;</span>, cat_pipe, cat_features)])</span>
-<span id="cb24-787"><a href="#cb24-787" aria-label="749"></a>logreg <span class="op">=</span> Pipeline([(<span class="st">&quot;pre&quot;</span>, pre), (<span class="st">&quot;clf&quot;</span>, LogisticRegression(max_iter<span class="op">=</span><span class="dv">1000</span>, class_weight<span class="op">=</span><span class="st">&quot;balanced&quot;</span>))])</span>
-<span id="cb24-788"><a href="#cb24-788" aria-label="750"></a>rf <span class="op">=</span> Pipeline([(<span class="st">&quot;pre&quot;</span>, pre), (<span class="st">&quot;clf&quot;</span>, RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">200</span>, min_samples_leaf<span class="op">=</span><span class="dv">5</span>,</span>
-<span id="cb24-789"><a href="#cb24-789" aria-label="751"></a>    class_weight<span class="op">=</span><span class="st">&quot;balanced_subsample&quot;</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, random_state<span class="op">=</span><span class="dv">42</span>))])</span>
-<span id="cb24-790"><a href="#cb24-790" aria-label="752"></a>cv <span class="op">=</span> StratifiedKFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb24-791"><a href="#cb24-791" aria-label="753"></a><span class="cf">for</span> name, model <span class="kw">in</span> [(<span class="st">&quot;LogReg&quot;</span>, logreg), (<span class="st">&quot;RF&quot;</span>, rf)]:</span>
-<span id="cb24-792"><a href="#cb24-792" aria-label="754"></a>    s <span class="op">=</span> cross_val_score(model, X_train, y_train, cv<span class="op">=</span>cv, scoring<span class="op">=</span><span class="st">&quot;roc_auc&quot;</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb24-793"><a href="#cb24-793" aria-label="755"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: ROC-AUC </span><span class="sc">{</span>s<span class="sc">.</span>mean()<span class="sc">:.4f}</span><span class="ss"> +/- </span><span class="sc">{</span>s<span class="sc">.</span>std()<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span>
-<span id="cb24-794"><a href="#cb24-794" aria-label="756"></a>logreg.fit(X_train, y_train)<span class="op">;</span> rf.fit(X_train, y_train)</span>
-<span id="cb24-795"><a href="#cb24-795" aria-label="757"></a>p_log <span class="op">=</span> logreg.predict_proba(X_test)[:, <span class="dv">1</span>]<span class="op">;</span> p_rf <span class="op">=</span> rf.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
-<span id="cb24-796"><a href="#cb24-796" aria-label="758"></a>y_log <span class="op">=</span> (p_log <span class="op">&gt;=</span> <span class="fl">0.5</span>).astype(<span class="bu">int</span>)<span class="op">;</span> y_rf <span class="op">=</span> (p_rf <span class="op">&gt;=</span> <span class="fl">0.5</span>).astype(<span class="bu">int</span>)</span>
-<span id="cb24-797"><a href="#cb24-797" aria-label="759"></a></span>
-<span id="cb24-798"><a href="#cb24-798" aria-label="760"></a><span class="kw">def</span> mrow(name, yt, yp, ps):</span>
-<span id="cb24-799"><a href="#cb24-799" aria-label="761"></a>    <span class="cf">return</span> {<span class="st">&quot;Model&quot;</span>: name, <span class="st">&quot;Acc&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>accuracy_score(yt, yp)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-800"><a href="#cb24-800" aria-label="762"></a>        <span class="st">&quot;Prec&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>precision_score(yt, yp, zero_division<span class="op">=</span><span class="dv">0</span>)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-801"><a href="#cb24-801" aria-label="763"></a>        <span class="st">&quot;Rec&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>recall_score(yt, yp, zero_division<span class="op">=</span><span class="dv">0</span>)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-802"><a href="#cb24-802" aria-label="764"></a>        <span class="st">&quot;F1&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>f1_score(yt, yp, zero_division<span class="op">=</span><span class="dv">0</span>)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-803"><a href="#cb24-803" aria-label="765"></a>        <span class="st">&quot;ROC-AUC&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>roc_auc_score(yt, ps)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-804"><a href="#cb24-804" aria-label="766"></a>        <span class="st">&quot;PR-AUC&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>average_precision_score(yt, ps)<span class="sc">:.4f}</span><span class="ss">&quot;</span>}</span>
-<span id="cb24-805"><a href="#cb24-805" aria-label="767"></a>display(Markdown(pd.DataFrame([</span>
-<span id="cb24-806"><a href="#cb24-806" aria-label="768"></a>    mrow(<span class="st">&quot;LogReg thr 0.5&quot;</span>, y_test, y_log, p_log),</span>
-<span id="cb24-807"><a href="#cb24-807" aria-label="769"></a>    mrow(<span class="st">&quot;RF thr 0.5&quot;</span>, y_test, y_rf, p_rf)]).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
-<span id="cb24-808"><a href="#cb24-808" aria-label="770"></a><span class="in">```</span></span>
-<span id="cb24-809"><a href="#cb24-809" aria-label="771"></a></span>
-<span id="cb24-812"><a href="#cb24-812" aria-label="772"></a><span class="in">```{python}</span></span>
-<span id="cb24-813"><a href="#cb24-813" aria-label="773"></a><span class="co">#| label: fig-m-pred-curves</span></span>
-<span id="cb24-814"><a href="#cb24-814" aria-label="774"></a><span class="co">#| echo: true</span></span>
-<span id="cb24-815"><a href="#cb24-815" aria-label="775"></a><span class="co">#| fig-cap: &quot;ROC and Precision-Recall curves on held-out test set (master)&quot;</span></span>
-<span id="cb24-816"><a href="#cb24-816" aria-label="776"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb24-817"><a href="#cb24-817" aria-label="777"></a><span class="co">#| fig-height: 4.0</span></span>
-<span id="cb24-818"><a href="#cb24-818" aria-label="778"></a><span class="co">#| out-width: &quot;95%&quot;</span></span>
-<span id="cb24-819"><a href="#cb24-819" aria-label="779"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb24-820"><a href="#cb24-820" aria-label="780"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.0</span>))</span>
-<span id="cb24-821"><a href="#cb24-821" aria-label="781"></a><span class="cf">for</span> ps, nm, cl <span class="kw">in</span> [(p_log, <span class="st">&quot;LogReg&quot;</span>, <span class="st">&quot;#2b8cbe&quot;</span>), (p_rf, <span class="st">&quot;RF&quot;</span>, <span class="st">&quot;#e41a1c&quot;</span>)]:</span>
-<span id="cb24-822"><a href="#cb24-822" aria-label="782"></a>    fpr, tpr, _ <span class="op">=</span> roc_curve(y_test, ps)</span>
-<span id="cb24-823"><a href="#cb24-823" aria-label="783"></a>    axes[<span class="dv">0</span>].plot(fpr, tpr, label<span class="op">=</span><span class="ss">f&quot;</span><span class="sc">{</span>nm<span class="sc">}</span><span class="ss"> (AUC=</span><span class="sc">{</span>roc_auc_score(y_test, ps)<span class="sc">:.3f}</span><span class="ss">)&quot;</span>, color<span class="op">=</span>cl, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb24-824"><a href="#cb24-824" aria-label="784"></a>    prec, rec, _ <span class="op">=</span> precision_recall_curve(y_test, ps)</span>
-<span id="cb24-825"><a href="#cb24-825" aria-label="785"></a>    axes[<span class="dv">1</span>].plot(rec, prec, label<span class="op">=</span><span class="ss">f&quot;</span><span class="sc">{</span>nm<span class="sc">}</span><span class="ss"> (AP=</span><span class="sc">{</span>average_precision_score(y_test, ps)<span class="sc">:.3f}</span><span class="ss">)&quot;</span>, color<span class="op">=</span>cl, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb24-826"><a href="#cb24-826" aria-label="786"></a>axes[<span class="dv">0</span>].plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">&quot;k--&quot;</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb24-827"><a href="#cb24-827" aria-label="787"></a>axes[<span class="dv">0</span>].set_title(<span class="st">&quot;ROC curve&quot;</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_xlabel(<span class="st">&quot;FPR&quot;</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_ylabel(<span class="st">&quot;TPR&quot;</span>)</span>
-<span id="cb24-828"><a href="#cb24-828" aria-label="788"></a>axes[<span class="dv">0</span>].legend(frameon<span class="op">=</span><span class="va">True</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
-<span id="cb24-829"><a href="#cb24-829" aria-label="789"></a>axes[<span class="dv">1</span>].set_title(<span class="st">&quot;Precision-Recall curve&quot;</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Recall&quot;</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Precision&quot;</span>)</span>
-<span id="cb24-830"><a href="#cb24-830" aria-label="790"></a>axes[<span class="dv">1</span>].legend(frameon<span class="op">=</span><span class="va">True</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
-<span id="cb24-831"><a href="#cb24-831" aria-label="791"></a>plt.tight_layout()</span>
-<span id="cb24-832"><a href="#cb24-832" aria-label="792"></a>plt.show()</span>
-<span id="cb24-833"><a href="#cb24-833" aria-label="793"></a><span class="in">```</span></span>
-<span id="cb24-834"><a href="#cb24-834" aria-label="794"></a></span>
-<span id="cb24-837"><a href="#cb24-837" aria-label="795"></a><span class="in">```{python}</span></span>
-<span id="cb24-838"><a href="#cb24-838" aria-label="796"></a><span class="co">#| label: m-pred-lift</span></span>
-<span id="cb24-839"><a href="#cb24-839" aria-label="797"></a><span class="co">#| echo: true</span></span>
-<span id="cb24-840"><a href="#cb24-840" aria-label="798"></a>test_rev <span class="op">=</span> df_clean.loc[X_test.index, <span class="st">&quot;avg_arpu_6_7&quot;</span>].values <span class="op">*</span> <span class="dv">12</span></span>
-<span id="cb24-841"><a href="#cb24-841" aria-label="799"></a>lift <span class="op">=</span> pd.DataFrame({<span class="st">&quot;p&quot;</span>: p_rf, <span class="st">&quot;y&quot;</span>: y_test.values, <span class="st">&quot;rev&quot;</span>: test_rev}).sort_values(<span class="st">&quot;p&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb24-842"><a href="#cb24-842" aria-label="800"></a>lift[<span class="st">&quot;decile&quot;</span>] <span class="op">=</span> pd.qcut(lift.index, <span class="dv">10</span>, labels<span class="op">=</span>[<span class="ss">f&quot;D</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)])</span>
-<span id="cb24-843"><a href="#cb24-843" aria-label="801"></a>g <span class="op">=</span> lift.groupby(<span class="st">&quot;decile&quot;</span>, observed<span class="op">=</span><span class="va">True</span>).agg(n<span class="op">=</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;size&quot;</span>), churners<span class="op">=</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;sum&quot;</span>),</span>
-<span id="cb24-844"><a href="#cb24-844" aria-label="802"></a>    churn_rate<span class="op">=</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;mean&quot;</span>), revenue<span class="op">=</span>(<span class="st">&quot;rev&quot;</span>, <span class="st">&quot;sum&quot;</span>))</span>
-<span id="cb24-845"><a href="#cb24-845" aria-label="803"></a>g[<span class="st">&quot;cum_churners_pct&quot;</span>] <span class="op">=</span> (g[<span class="st">&quot;churners&quot;</span>].cumsum() <span class="op">/</span> g[<span class="st">&quot;churners&quot;</span>].<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb24-846"><a href="#cb24-846" aria-label="804"></a>out <span class="op">=</span> g.reset_index()</span>
-<span id="cb24-847"><a href="#cb24-847" aria-label="805"></a>out[<span class="st">&quot;churn_rate&quot;</span>] <span class="op">=</span> (out[<span class="st">&quot;churn_rate&quot;</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>).astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">&quot;%&quot;</span></span>
-<span id="cb24-848"><a href="#cb24-848" aria-label="806"></a>out[<span class="st">&quot;revenue_lakh&quot;</span>] <span class="op">=</span> (out[<span class="st">&quot;revenue&quot;</span>] <span class="op">/</span> <span class="fl">1e5</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb24-849"><a href="#cb24-849" aria-label="807"></a>display(Markdown(out[[<span class="st">&quot;decile&quot;</span>, <span class="st">&quot;n&quot;</span>, <span class="st">&quot;churners&quot;</span>, <span class="st">&quot;churn_rate&quot;</span>, <span class="st">&quot;revenue_lakh&quot;</span>, <span class="st">&quot;cum_churners_pct&quot;</span>]].to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
-<span id="cb24-850"><a href="#cb24-850" aria-label="808"></a>feat_names <span class="op">=</span> logreg.named_steps[<span class="st">&quot;pre&quot;</span>].get_feature_names_out()</span>
-<span id="cb24-851"><a href="#cb24-851" aria-label="809"></a>rf_imp <span class="op">=</span> pd.DataFrame({<span class="st">&quot;feature&quot;</span>: feat_names,</span>
-<span id="cb24-852"><a href="#cb24-852" aria-label="810"></a>    <span class="st">&quot;rf_importance&quot;</span>: rf.named_steps[<span class="st">&quot;clf&quot;</span>].feature_importances_}).sort_values(<span class="st">&quot;rf_importance&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb24-853"><a href="#cb24-853" aria-label="811"></a>display(Markdown(<span class="st">&quot;**Top 8 RF drivers:**&quot;</span>))</span>
-<span id="cb24-854"><a href="#cb24-854" aria-label="812"></a>display(Markdown(rf_imp.head(<span class="dv">8</span>).<span class="bu">round</span>(<span class="dv">4</span>).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
-<span id="cb24-855"><a href="#cb24-855" aria-label="813"></a><span class="in">```</span></span>
-<span id="cb24-856"><a href="#cb24-856" aria-label="814"></a></span>
-<span id="cb24-857"><a href="#cb24-857" aria-label="815"></a>**Predictive takeaway:** RF dominates LogReg on ROC/PR-AUC with leak-free Good-Phase features; operating threshold 0.3-0.4 balances recall vs offer waste; top 20-30% of scores capture the majority of churners and at-risk revenue.</span>
-<span id="cb24-858"><a href="#cb24-858" aria-label="816"></a></span>
-<span id="cb24-859"><a href="#cb24-859" aria-label="817"></a>---</span>
-<span id="cb24-860"><a href="#cb24-860" aria-label="818"></a></span>
-<span id="cb24-861"><a href="#cb24-861" aria-label="819"></a><span class="fu"># Prescriptive Analytics: What Should We Do?</span></span>
-<span id="cb24-862"><a href="#cb24-862" aria-label="820"></a></span>
-<span id="cb24-863"><a href="#cb24-863" aria-label="821"></a><span class="at">&gt; **&quot;Which subscribers should receive which retention action under a fixed budget to maximise net retained revenue?&quot;**</span></span>
-<span id="cb24-864"><a href="#cb24-864" aria-label="822"></a></span>
-<span id="cb24-865"><a href="#cb24-865" aria-label="823"></a>Economics: <span class="in">`Expected net = p x V x success_rate − offer − contact(Rs 10)`</span>, with annual value <span class="in">`V = avg_arpu_6_7 x 12`</span>.</span>
-<span id="cb24-866"><a href="#cb24-866" aria-label="824"></a></span>
-<span id="cb24-869"><a href="#cb24-869" aria-label="825"></a><span class="in">```{python}</span></span>
-<span id="cb24-870"><a href="#cb24-870" aria-label="826"></a><span class="co">#| label: m-presc-roi</span></span>
-<span id="cb24-871"><a href="#cb24-871" aria-label="827"></a><span class="co">#| echo: true</span></span>
-<span id="cb24-872"><a href="#cb24-872" aria-label="828"></a>v_te <span class="op">=</span> df_clean.loc[X_test.index, <span class="st">&quot;avg_arpu_6_7&quot;</span>].clip(lower<span class="op">=</span><span class="dv">0</span>).values <span class="op">*</span> <span class="dv">12</span></span>
-<span id="cb24-873"><a href="#cb24-873" aria-label="829"></a>scale <span class="op">=</span> <span class="bu">len</span>(df_clean) <span class="op">/</span> <span class="bu">len</span>(X_test)</span>
-<span id="cb24-874"><a href="#cb24-874" aria-label="830"></a>res <span class="op">=</span> []</span>
-<span id="cb24-875"><a href="#cb24-875" aria-label="831"></a><span class="cf">for</span> thr <span class="kw">in</span> [<span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span>]:</span>
-<span id="cb24-876"><a href="#cb24-876" aria-label="832"></a>    flag <span class="op">=</span> p_rf <span class="op">&gt;=</span> thr</span>
-<span id="cb24-877"><a href="#cb24-877" aria-label="833"></a>    n <span class="op">=</span> <span class="bu">int</span>(flag.<span class="bu">sum</span>())</span>
-<span id="cb24-878"><a href="#cb24-878" aria-label="834"></a>    tp <span class="op">=</span> <span class="bu">int</span>(((p_rf <span class="op">&gt;=</span> thr) <span class="op">&amp;</span> (y_test.values <span class="op">==</span> <span class="dv">1</span>)).<span class="bu">sum</span>())</span>
-<span id="cb24-879"><a href="#cb24-879" aria-label="835"></a>    <span class="cf">for</span> offer, s <span class="kw">in</span> [(<span class="dv">150</span>, <span class="fl">0.20</span>), (<span class="dv">300</span>, <span class="fl">0.20</span>), (<span class="dv">150</span>, <span class="fl">0.30</span>)]:</span>
-<span id="cb24-880"><a href="#cb24-880" aria-label="836"></a>        saved_rev <span class="op">=</span> (v_te[flag <span class="op">&amp;</span> (y_test.values <span class="op">==</span> <span class="dv">1</span>)].<span class="bu">sum</span>()) <span class="op">*</span> s</span>
-<span id="cb24-881"><a href="#cb24-881" aria-label="837"></a>        cost <span class="op">=</span> n <span class="op">*</span> (offer <span class="op">+</span> <span class="dv">10</span>)</span>
-<span id="cb24-882"><a href="#cb24-882" aria-label="838"></a>        net <span class="op">=</span> saved_rev <span class="op">-</span> cost</span>
-<span id="cb24-883"><a href="#cb24-883" aria-label="839"></a>        res.append({<span class="st">&quot;Thr&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>thr<span class="sc">:.1f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Offer&quot;</span>: <span class="ss">f&quot;Rs </span><span class="sc">{</span>offer<span class="sc">}</span><span class="ss">&quot;</span>, <span class="st">&quot;Succ&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>(s<span class="op">*</span><span class="dv">100</span>)<span class="sc">}</span><span class="ss">%&quot;</span>,</span>
-<span id="cb24-884"><a href="#cb24-884" aria-label="840"></a>            <span class="st">&quot;Contacted&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>n<span class="sc">:,}</span><span class="ss">&quot;</span>, <span class="st">&quot;Hit&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>tp<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-885"><a href="#cb24-885" aria-label="841"></a>            <span class="st">&quot;Net scaled 70k Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>net<span class="op">*</span>scale<span class="sc">:,.0f}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-886"><a href="#cb24-886" aria-label="842"></a>            <span class="st">&quot;ROI&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved_rev<span class="op">/</span>cost<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span><span class="dv">100</span><span class="sc">:.0f}</span><span class="ss">%&quot;</span> <span class="cf">if</span> cost <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">&quot;—&quot;</span>})</span>
-<span id="cb24-887"><a href="#cb24-887" aria-label="843"></a>display(Markdown(pd.DataFrame(res).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
-<span id="cb24-888"><a href="#cb24-888" aria-label="844"></a></span>
-<span id="cb24-889"><a href="#cb24-889" aria-label="845"></a>OFFER, S <span class="op">=</span> <span class="dv">150</span>, <span class="fl">0.20</span></span>
-<span id="cb24-890"><a href="#cb24-890" aria-label="846"></a>rank <span class="op">=</span> pd.DataFrame({<span class="st">&quot;p&quot;</span>: p_rf, <span class="st">&quot;y&quot;</span>: y_test.values, <span class="st">&quot;V&quot;</span>: v_te})</span>
-<span id="cb24-891"><a href="#cb24-891" aria-label="847"></a>rank[<span class="st">&quot;exp_save&quot;</span>] <span class="op">=</span> rank[<span class="st">&quot;p&quot;</span>] <span class="op">*</span> rank[<span class="st">&quot;V&quot;</span>] <span class="op">*</span> S <span class="op">-</span> (OFFER <span class="op">+</span> <span class="dv">10</span>)</span>
-<span id="cb24-892"><a href="#cb24-892" aria-label="848"></a>rank <span class="op">=</span> rank.sort_values(<span class="st">&quot;exp_save&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb24-893"><a href="#cb24-893" aria-label="849"></a>rows <span class="op">=</span> []</span>
-<span id="cb24-894"><a href="#cb24-894" aria-label="850"></a><span class="cf">for</span> k <span class="kw">in</span> [<span class="dv">500</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">3000</span>]:</span>
-<span id="cb24-895"><a href="#cb24-895" aria-label="851"></a>    top <span class="op">=</span> rank.head(k)</span>
-<span id="cb24-896"><a href="#cb24-896" aria-label="852"></a>    saved_rev <span class="op">=</span> top[top[<span class="st">&quot;y&quot;</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">&quot;V&quot;</span>].<span class="bu">sum</span>() <span class="op">*</span> S</span>
-<span id="cb24-897"><a href="#cb24-897" aria-label="853"></a>    cost <span class="op">=</span> k <span class="op">*</span> (OFFER <span class="op">+</span> <span class="dv">10</span>)</span>
-<span id="cb24-898"><a href="#cb24-898" aria-label="854"></a>    rows.append({<span class="st">&quot;Top-K test&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>k<span class="sc">:,}</span><span class="ss">&quot;</span>, <span class="st">&quot;Top-K scaled&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>(k<span class="op">*</span>scale)<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-899"><a href="#cb24-899" aria-label="855"></a>        <span class="st">&quot;Churners in K&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>((top[<span class="st">&#39;y&#39;</span>]<span class="op">==</span><span class="dv">1</span>).<span class="bu">sum</span>())<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
-<span id="cb24-900"><a href="#cb24-900" aria-label="856"></a>        <span class="st">&quot;Net test Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>saved_rev<span class="op">-</span>cost<span class="sc">:,.0f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Net scaled Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved_rev<span class="op">-</span>cost)<span class="op">*</span>scale<span class="sc">:,.0f}</span><span class="ss">&quot;</span>})</span>
-<span id="cb24-901"><a href="#cb24-901" aria-label="857"></a>display(Markdown(pd.DataFrame(rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
-<span id="cb24-902"><a href="#cb24-902" aria-label="858"></a><span class="in">```</span></span>
-<span id="cb24-903"><a href="#cb24-903" aria-label="859"></a></span>
-<span id="cb24-904"><a href="#cb24-904" aria-label="860"></a>**Prescriptive takeaway:** Contact rule <span class="in">`p x V x 0.20 &gt; Rs 160`</span> (≈ threshold 0.3, lower for HVC); rank by expected saving under budget; pair early RF scores (M7) with M8-collapse triggers; prioritise HVC and sub-1-year voice-only cohorts; pilot with a 10% control before scaling.</span>
-<span id="cb24-905"><a href="#cb24-905" aria-label="861"></a></span>
-<span id="cb24-906"><a href="#cb24-906" aria-label="862"></a><span class="pp">|</span> Priority <span class="pp">|</span> Segment <span class="pp">|</span> Action <span class="pp">|</span> Timing <span class="pp">|</span></span>
-<span id="cb24-907"><a href="#cb24-907" aria-label="863"></a><span class="pp">|:---|:---|:---|:---|</span></span>
-<span id="cb24-908"><a href="#cb24-908" aria-label="864"></a><span class="pp">|</span> P0 <span class="pp">|</span> HVC + M8 drop &gt;30% <span class="pp">|</span> Personal outreach + bonus data/validity <span class="pp">|</span> Days after M8 signal, up to Rs 300 <span class="pp">|</span></span>
-<span id="cb24-909"><a href="#cb24-909" aria-label="865"></a><span class="pp">|</span> P1 <span class="pp">|</span> Tenure &lt;1 yr, voice-only, RF top decile <span class="pp">|</span> Onboarding bundle + data trial <span class="pp">|</span> M7, cap Rs 150 <span class="pp">|</span></span>
-<span id="cb24-910"><a href="#cb24-910" aria-label="866"></a><span class="pp">|</span> P2 <span class="pp">|</span> Mid-value RF deciles 2-3 <span class="pp">|</span> SMS/IVR recharge nudge <span class="pp">|</span> M7-M8 boundary, cap Rs 150 <span class="pp">|</span></span>
-<span id="cb24-911"><a href="#cb24-911" aria-label="867"></a><span class="pp">|</span> P3 <span class="pp">|</span> Long-tenure low risk <span class="pp">|</span> Monitor only <span class="pp">|</span> Rs 0 <span class="pp">|</span></span>
-<span id="cb24-912"><a href="#cb24-912" aria-label="868"></a></span>
-<span id="cb24-913"><a href="#cb24-913" aria-label="869"></a>---</span>
-<span id="cb24-914"><a href="#cb24-914" aria-label="870"></a></span>
-<span id="cb24-915"><a href="#cb24-915" aria-label="871"></a><span class="fu"># Conclusion &amp; Next Steps</span></span>
-<span id="cb24-916"><a href="#cb24-916" aria-label="872"></a></span>
-<span id="cb24-917"><a href="#cb24-917" aria-label="873"></a>This end-to-end investigation now fulfills **descriptive, diagnostic, predictive, and prescriptive** analytics:</span>
-<span id="cb24-918"><a href="#cb24-918" aria-label="874"></a></span>
-<span id="cb24-919"><a href="#cb24-919" aria-label="875"></a><span class="ss">- </span>**Descriptive:** 10.19% churn baseline, HVC 8.28% at Rs 558.59 ARPU, 62.95% pre-churn ARPU collapse, tenure loyalty (15.85% vs 4.71%), data stickiness (8.72% vs 10.88%), TRAI benchmarking with the September 2016 Jio structural break.</span>
-<span id="cb24-920"><a href="#cb24-920" aria-label="876"></a><span class="ss">- </span>**Diagnostic:** tenure, recharge frequency, MOU engagement, and data adoption are the significant drivers; M8 collapse mediates M9 silence.</span>
-<span id="cb24-921"><a href="#cb24-921" aria-label="877"></a><span class="ss">- </span>**Predictive:** leak-free RF (Good-Phase only) beats LogReg; threshold 0.3-0.4; top deciles concentrate revenue at risk.</span>
-<span id="cb24-922"><a href="#cb24-922" aria-label="878"></a><span class="ss">- </span>**Prescriptive:** threshold-priced, budget-ranked retention playbook with positive expected net at Rs 150 / 20% success; pilot with control, retrain quarterly, audit fairness.</span>
-<span id="cb24-923"><a href="#cb24-923" aria-label="879"></a></span>
-<span id="cb24-924"><a href="#cb24-924" aria-label="880"></a>Modular notebooks <span class="in">`01_data_prep`</span>, <span class="in">`02_descriptive`</span>, <span class="in">`03_diagnostic`</span>, <span class="in">`04_predictive`</span>, <span class="in">`05_prescriptive`</span> reproduce each stage independently; this master <span class="in">`Analysis.qmd`</span> reproduces the single combined report.</span>
+<span id="cb24-670"><a href="#cb24-670" aria-label="640"></a><span class="ss">1. </span>**Baseline Churn Rate:** The overall customer churn rate is **10.19%** (7,132 churners out of 69,999 subscribers), establishing a substantial attrition baseline.</span>
+<span id="cb24-671"><a href="#cb24-671" aria-label="641"></a><span class="ss">2. </span>**High-Value Concentration:** The top 30% high-value customer segment (average recharge $\ge$ ₹477.50 in months 6 &amp; 7) experiences an **8.28% churn rate** with **₹558.59 mean ARPU (average of months 6 &amp; 7)**, generating about **59.7% of base monthly revenue** (computed in the Revenue-at-Risk assessment).</span>
+<span id="cb24-672"><a href="#cb24-672" aria-label="642"></a><span class="ss">3. </span>**Pre-Churn ARPU Decay:** Subscribers who churn exhibit a dramatic **62.95% drop in ARPU** from June (₹308.29) to August (₹114.23), while retained subscribers exhibit steady growth (+6.16%, from ₹280.28 to ₹297.54).</span>
+<span id="cb24-673"><a href="#cb24-673" aria-label="643"></a><span class="ss">4. </span>**Tenure Loyalty Effect:** Early-tenure subscribers (&lt;1 year) have a churn rate of **15.85%**, which steadily decreases to **4.71%** among subscribers with 4+ years of tenure (a &gt;3x retention differential).</span>
+<span id="cb24-674"><a href="#cb24-674" aria-label="644"></a><span class="ss">5. </span>**Data Service Stickiness:** Subscribers who actively use 2G/3G mobile data packs have lower churn (**8.72%**) and higher revenue (**₹368.52 ARPU**) compared to voice/SMS-only subscribers (**10.88% churn**, **₹239.16 ARPU**).</span>
+<span id="cb24-675"><a href="#cb24-675" aria-label="645"></a><span class="ss">6. </span>**Macro Benchmarking &amp; Jio Break:** The 2014 dataset ARPU (₹283.13) reflects active, primary SIM accounts and sits realistically above the TRAI 2014 national blended figure (₹115.72) — likely because the TRAI blended figure includes inactive secondary SIMs. Modern TRAI ARPU (₹182.95 in 2025) reflects market recovery following the transformative September 2016 Reliance Jio structural break.</span>
+<span id="cb24-676"><a href="#cb24-676" aria-label="646"></a></span>
+<span id="cb24-677"><a href="#cb24-677" aria-label="647"></a>---</span>
+<span id="cb24-678"><a href="#cb24-678" aria-label="648"></a></span>
+<span id="cb24-679"><a href="#cb24-679" aria-label="649"></a><span class="fu"># Diagnostic Analytics: Why Do Subscribers Churn?</span></span>
+<span id="cb24-680"><a href="#cb24-680" aria-label="650"></a></span>
+<span id="cb24-681"><a href="#cb24-681" aria-label="651"></a><span class="at">&gt; **&quot;Which Good-Phase behaviours (usage, recharge, tenure, data adoption, value tier) significantly distinguish future churners, and how large are those effects?&quot;**</span></span>
+<span id="cb24-682"><a href="#cb24-682" aria-label="652"></a></span>
+<span id="cb24-683"><a href="#cb24-683" aria-label="653"></a>All explanatory comparisons use Good-Phase M6/M7 only. M8 is used solely for decay attribution.</span>
+<span id="cb24-684"><a href="#cb24-684" aria-label="654"></a></span>
+<span id="cb24-687"><a href="#cb24-687" aria-label="655"></a><span class="in">```{python}</span></span>
+<span id="cb24-688"><a href="#cb24-688" aria-label="656"></a><span class="co">#| label: m-diag-continuous</span></span>
+<span id="cb24-689"><a href="#cb24-689" aria-label="657"></a><span class="co">#| echo: true</span></span>
+<span id="cb24-690"><a href="#cb24-690" aria-label="658"></a>ret_m <span class="op">=</span> df_clean[df_clean[<span class="st">&quot;churn_probability&quot;</span>] <span class="op">==</span> <span class="dv">0</span>]</span>
+<span id="cb24-691"><a href="#cb24-691" aria-label="659"></a>chu_m <span class="op">=</span> df_clean[df_clean[<span class="st">&quot;churn_probability&quot;</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
+<span id="cb24-692"><a href="#cb24-692" aria-label="660"></a></span>
+<span id="cb24-693"><a href="#cb24-693" aria-label="661"></a><span class="kw">def</span> cohens_d(a, b):</span>
+<span id="cb24-694"><a href="#cb24-694" aria-label="662"></a>    a <span class="op">=</span> np.asarray(a, dtype<span class="op">=</span><span class="bu">float</span>)<span class="op">;</span> b <span class="op">=</span> np.asarray(b, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb24-695"><a href="#cb24-695" aria-label="663"></a>    a <span class="op">=</span> a[<span class="op">~</span>np.isnan(a)]<span class="op">;</span> b <span class="op">=</span> b[<span class="op">~</span>np.isnan(b)]</span>
+<span id="cb24-696"><a href="#cb24-696" aria-label="664"></a>    n1, n2 <span class="op">=</span> <span class="bu">len</span>(a), <span class="bu">len</span>(b)</span>
+<span id="cb24-697"><a href="#cb24-697" aria-label="665"></a>    s1, s2 <span class="op">=</span> np.var(a, ddof<span class="op">=</span><span class="dv">1</span>), np.var(b, ddof<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb24-698"><a href="#cb24-698" aria-label="666"></a>    pooled <span class="op">=</span> np.sqrt(((n1 <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> s1 <span class="op">+</span> (n2 <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> s2) <span class="op">/</span> (n1 <span class="op">+</span> n2 <span class="op">-</span> <span class="dv">2</span>))</span>
+<span id="cb24-699"><a href="#cb24-699" aria-label="667"></a>    <span class="cf">return</span> (np.mean(a) <span class="op">-</span> np.mean(b)) <span class="op">/</span> pooled <span class="cf">if</span> pooled <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb24-700"><a href="#cb24-700" aria-label="668"></a></span>
+<span id="cb24-701"><a href="#cb24-701" aria-label="669"></a>cont_vars <span class="op">=</span> [<span class="st">&quot;arpu_6&quot;</span>, <span class="st">&quot;arpu_7&quot;</span>, <span class="st">&quot;avg_arpu_6_7&quot;</span>, <span class="st">&quot;total_og_mou_6&quot;</span>, <span class="st">&quot;total_ic_mou_6&quot;</span>,</span>
+<span id="cb24-702"><a href="#cb24-702" aria-label="670"></a>             <span class="st">&quot;total_rech_num_6&quot;</span>, <span class="st">&quot;total_rech_amt_6&quot;</span>, <span class="st">&quot;aon&quot;</span>, <span class="st">&quot;avg_rech_amt_6_7&quot;</span>]</span>
+<span id="cb24-703"><a href="#cb24-703" aria-label="671"></a>rows <span class="op">=</span> []</span>
+<span id="cb24-704"><a href="#cb24-704" aria-label="672"></a><span class="cf">for</span> v <span class="kw">in</span> cont_vars:</span>
+<span id="cb24-705"><a href="#cb24-705" aria-label="673"></a>    x <span class="op">=</span> ret_m[v].dropna()<span class="op">;</span> y <span class="op">=</span> chu_m[v].dropna()</span>
+<span id="cb24-706"><a href="#cb24-706" aria-label="674"></a>    t, p <span class="op">=</span> stats.ttest_ind(x, y, equal_var<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb24-707"><a href="#cb24-707" aria-label="675"></a>    d <span class="op">=</span> cohens_d(x.values, y.values)</span>
+<span id="cb24-708"><a href="#cb24-708" aria-label="676"></a>    mag <span class="op">=</span> <span class="st">&quot;negligible&quot;</span> <span class="cf">if</span> <span class="bu">abs</span>(d) <span class="op">&lt;</span> <span class="fl">0.2</span> <span class="cf">else</span> (<span class="st">&quot;small&quot;</span> <span class="cf">if</span> <span class="bu">abs</span>(d) <span class="op">&lt;</span> <span class="fl">0.5</span> <span class="cf">else</span> (<span class="st">&quot;medium&quot;</span> <span class="cf">if</span> <span class="bu">abs</span>(d) <span class="op">&lt;</span> <span class="fl">0.8</span> <span class="cf">else</span> <span class="st">&quot;large&quot;</span>))</span>
+<span id="cb24-709"><a href="#cb24-709" aria-label="677"></a>    rows.append({<span class="st">&quot;Feature&quot;</span>: v, <span class="st">&quot;Retained&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>x<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Churned&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>y<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-710"><a href="#cb24-710" aria-label="678"></a>                 <span class="st">&quot;p-value&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>p<span class="sc">:.2e}</span><span class="ss">&quot;</span>, <span class="st">&quot;Cohen d&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>d<span class="sc">:.3f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Effect&quot;</span>: mag})</span>
+<span id="cb24-711"><a href="#cb24-711" aria-label="679"></a>display(Markdown(pd.DataFrame(rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-712"><a href="#cb24-712" aria-label="680"></a><span class="in">```</span></span>
+<span id="cb24-713"><a href="#cb24-713" aria-label="681"></a></span>
+<span id="cb24-716"><a href="#cb24-716" aria-label="682"></a><span class="in">```{python}</span></span>
+<span id="cb24-717"><a href="#cb24-717" aria-label="683"></a><span class="co">#| label: fig-m-diag-categorical</span></span>
+<span id="cb24-718"><a href="#cb24-718" aria-label="684"></a><span class="co">#| echo: true</span></span>
+<span id="cb24-719"><a href="#cb24-719" aria-label="685"></a><span class="co">#| fig-cap: &quot;Churn rate by tenure, data adoption and recharge frequency (master)&quot;</span></span>
+<span id="cb24-720"><a href="#cb24-720" aria-label="686"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb24-721"><a href="#cb24-721" aria-label="687"></a><span class="co">#| fig-height: 4.2</span></span>
+<span id="cb24-722"><a href="#cb24-722" aria-label="688"></a><span class="co">#| out-width: &quot;95%&quot;</span></span>
+<span id="cb24-723"><a href="#cb24-723" aria-label="689"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb24-724"><a href="#cb24-724" aria-label="690"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.2</span>))</span>
+<span id="cb24-725"><a href="#cb24-725" aria-label="691"></a><span class="cf">for</span> ax, col, ttl <span class="kw">in</span> <span class="bu">zip</span>(axes,</span>
+<span id="cb24-726"><a href="#cb24-726" aria-label="692"></a>    [<span class="st">&quot;tenure_group&quot;</span>, <span class="st">&quot;data_user_label&quot;</span>, <span class="st">&quot;rech_freq_bucket_6&quot;</span>],</span>
+<span id="cb24-727"><a href="#cb24-727" aria-label="693"></a>    [<span class="st">&quot;Tenure group&quot;</span>, <span class="st">&quot;Data adoption&quot;</span>, <span class="st">&quot;Recharge frequency (M6)&quot;</span>]):</span>
+<span id="cb24-728"><a href="#cb24-728" aria-label="694"></a>    g <span class="op">=</span> df_clean.groupby(col, observed<span class="op">=</span><span class="va">True</span>)[<span class="st">&quot;churn_probability&quot;</span>].mean().mul(<span class="dv">100</span>)</span>
+<span id="cb24-729"><a href="#cb24-729" aria-label="695"></a>    g.plot(kind<span class="op">=</span><span class="st">&quot;bar&quot;</span>, ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">&quot;#e41a1c&quot;</span>, alpha<span class="op">=</span><span class="fl">0.85</span>, edgecolor<span class="op">=</span><span class="st">&quot;white&quot;</span>)</span>
+<span id="cb24-730"><a href="#cb24-730" aria-label="696"></a>    ax.set_title(ttl, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb24-731"><a href="#cb24-731" aria-label="697"></a>    ax.set_ylabel(<span class="st">&quot;Churn rate (%)&quot;</span>)</span>
+<span id="cb24-732"><a href="#cb24-732" aria-label="698"></a>    ax.set_xlabel(<span class="st">&quot;&quot;</span>)</span>
+<span id="cb24-733"><a href="#cb24-733" aria-label="699"></a>    ax.tick_params(axis<span class="op">=</span><span class="st">&quot;x&quot;</span>, rotation<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb24-734"><a href="#cb24-734" aria-label="700"></a>    <span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(g.values):</span>
+<span id="cb24-735"><a href="#cb24-735" aria-label="701"></a>        ax.text(i, v <span class="op">+</span> <span class="fl">0.25</span>, <span class="ss">f&quot;</span><span class="sc">{</span>v<span class="sc">:.1f}</span><span class="ss">%&quot;</span>, ha<span class="op">=</span><span class="st">&quot;center&quot;</span>, fontsize<span class="op">=</span><span class="fl">8.5</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)</span>
+<span id="cb24-736"><a href="#cb24-736" aria-label="702"></a>plt.tight_layout()</span>
+<span id="cb24-737"><a href="#cb24-737" aria-label="703"></a>plt.show()</span>
+<span id="cb24-738"><a href="#cb24-738" aria-label="704"></a><span class="in">```</span></span>
+<span id="cb24-739"><a href="#cb24-739" aria-label="705"></a></span>
+<span id="cb24-742"><a href="#cb24-742" aria-label="706"></a><span class="in">```{python}</span></span>
+<span id="cb24-743"><a href="#cb24-743" aria-label="707"></a><span class="co">#| label: m-diag-decay</span></span>
+<span id="cb24-744"><a href="#cb24-744" aria-label="708"></a><span class="co">#| echo: true</span></span>
+<span id="cb24-745"><a href="#cb24-745" aria-label="709"></a>dec <span class="op">=</span> df_clean.groupby(<span class="st">&quot;churn_label&quot;</span>)[[<span class="st">&quot;arpu_7&quot;</span>, <span class="st">&quot;arpu_8&quot;</span>, <span class="st">&quot;total_og_mou_7&quot;</span>,</span>
+<span id="cb24-746"><a href="#cb24-746" aria-label="710"></a>    <span class="st">&quot;total_og_mou_8&quot;</span>, <span class="st">&quot;total_rech_amt_7&quot;</span>, <span class="st">&quot;total_rech_amt_8&quot;</span>]].mean().<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb24-747"><a href="#cb24-747" aria-label="711"></a>rows <span class="op">=</span> []</span>
+<span id="cb24-748"><a href="#cb24-748" aria-label="712"></a><span class="cf">for</span> cohort <span class="kw">in</span> [<span class="st">&quot;Retained&quot;</span>, <span class="st">&quot;Churned&quot;</span>]:</span>
+<span id="cb24-749"><a href="#cb24-749" aria-label="713"></a>    rows.append({<span class="st">&quot;Cohort&quot;</span>: cohort,</span>
+<span id="cb24-750"><a href="#cb24-750" aria-label="714"></a>        <span class="st">&quot;ARPU M7→M8 %&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(dec.loc[cohort,<span class="st">&#39;arpu_8&#39;</span>]<span class="op">-</span>dec.loc[cohort,<span class="st">&#39;arpu_7&#39;</span>])<span class="op">/</span>dec<span class="sc">.</span>loc[cohort,<span class="st">&#39;arpu_7&#39;</span>]<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>,</span>
+<span id="cb24-751"><a href="#cb24-751" aria-label="715"></a>        <span class="st">&quot;OG MOU M7→M8 %&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(dec.loc[cohort,<span class="st">&#39;total_og_mou_8&#39;</span>]<span class="op">-</span>dec.loc[cohort,<span class="st">&#39;total_og_mou_7&#39;</span>])<span class="op">/</span>dec<span class="sc">.</span>loc[cohort,<span class="st">&#39;total_og_mou_7&#39;</span>]<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>,</span>
+<span id="cb24-752"><a href="#cb24-752" aria-label="716"></a>        <span class="st">&quot;Rech Amt M7→M8 %&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(dec.loc[cohort,<span class="st">&#39;total_rech_amt_8&#39;</span>]<span class="op">-</span>dec.loc[cohort,<span class="st">&#39;total_rech_amt_7&#39;</span>])<span class="op">/</span>dec<span class="sc">.</span>loc[cohort,<span class="st">&#39;total_rech_amt_7&#39;</span>]<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%&quot;</span>})</span>
+<span id="cb24-753"><a href="#cb24-753" aria-label="717"></a>display(Markdown(pd.DataFrame(rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-754"><a href="#cb24-754" aria-label="718"></a><span class="in">```</span></span>
+<span id="cb24-755"><a href="#cb24-755" aria-label="719"></a></span>
+<span id="cb24-756"><a href="#cb24-756" aria-label="720"></a>**Diagnostic takeaway:** Tenure is the dominant protector (age-on-network d ≈ −0.50; churn 15.9% for &lt;1 yr vs 4.7% for 4+ yrs) and incoming-call activity the strongest behavioural signal (July incoming MOU d ≈ −0.44); recharge frequency shows **no consistent relationship with churn** (Low 10.5%, Medium 8.5%, High 11.7%) — churners can have high ARPU, so raw spend is not protective by itself; data adoption cuts ~2pp of churn; each churn event destroys about **3.8× more revenue among HVCs** (₹7,145 vs ₹1,881 mean annualised value per churner). The M8 collapse (55–70% drops) is an **early-warning signal** of M9 silence — since churn is *defined* as zero September activity, part of that decay reflects the same disengagement process rather than an independently tested cause.</span>
+<span id="cb24-757"><a href="#cb24-757" aria-label="721"></a></span>
+<span id="cb24-758"><a href="#cb24-758" aria-label="722"></a>---</span>
+<span id="cb24-759"><a href="#cb24-759" aria-label="723"></a></span>
+<span id="cb24-760"><a href="#cb24-760" aria-label="724"></a><span class="fu"># Predictive Analytics: Who Will Churn?</span></span>
+<span id="cb24-761"><a href="#cb24-761" aria-label="725"></a></span>
+<span id="cb24-762"><a href="#cb24-762" aria-label="726"></a><span class="at">&gt; **&quot;Which subscribers will churn next month using only pre-Action-Phase information, and how much revenue does each risk decile represent?&quot;**</span></span>
+<span id="cb24-763"><a href="#cb24-763" aria-label="727"></a></span>
+<span id="cb24-764"><a href="#cb24-764" aria-label="728"></a>Leakage guard: Good-Phase M6/M7 features only; all <span class="in">`*_8`</span> columns excluded.</span>
+<span id="cb24-765"><a href="#cb24-765" aria-label="729"></a></span>
+<span id="cb24-768"><a href="#cb24-768" aria-label="730"></a><span class="in">```{python}</span></span>
+<span id="cb24-769"><a href="#cb24-769" aria-label="731"></a><span class="co">#| label: m-pred-train</span></span>
+<span id="cb24-770"><a href="#cb24-770" aria-label="732"></a><span class="co">#| echo: true</span></span>
+<span id="cb24-771"><a href="#cb24-771" aria-label="733"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split, StratifiedKFold, cross_val_score</span>
+<span id="cb24-772"><a href="#cb24-772" aria-label="734"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb24-773"><a href="#cb24-773" aria-label="735"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
+<span id="cb24-774"><a href="#cb24-774" aria-label="736"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer</span>
+<span id="cb24-775"><a href="#cb24-775" aria-label="737"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler, OneHotEncoder</span>
+<span id="cb24-776"><a href="#cb24-776" aria-label="738"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb24-777"><a href="#cb24-777" aria-label="739"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb24-778"><a href="#cb24-778" aria-label="740"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> (accuracy_score, precision_score, recall_score, f1_score,</span>
+<span id="cb24-779"><a href="#cb24-779" aria-label="741"></a>    roc_auc_score, average_precision_score, confusion_matrix, roc_curve, precision_recall_curve)</span>
+<span id="cb24-780"><a href="#cb24-780" aria-label="742"></a></span>
+<span id="cb24-781"><a href="#cb24-781" aria-label="743"></a>num_features <span class="op">=</span> [<span class="st">&quot;arpu_6&quot;</span>, <span class="st">&quot;arpu_7&quot;</span>, <span class="st">&quot;avg_arpu_6_7&quot;</span>, <span class="st">&quot;arpu_diff_7_6&quot;</span>,</span>
+<span id="cb24-782"><a href="#cb24-782" aria-label="744"></a>    <span class="st">&quot;total_og_mou_6&quot;</span>, <span class="st">&quot;total_og_mou_7&quot;</span>, <span class="st">&quot;total_ic_mou_6&quot;</span>, <span class="st">&quot;total_ic_mou_7&quot;</span>,</span>
+<span id="cb24-783"><a href="#cb24-783" aria-label="745"></a>    <span class="st">&quot;total_rech_num_6&quot;</span>, <span class="st">&quot;total_rech_num_7&quot;</span>, <span class="st">&quot;total_rech_amt_6&quot;</span>, <span class="st">&quot;total_rech_amt_7&quot;</span>,</span>
+<span id="cb24-784"><a href="#cb24-784" aria-label="746"></a>    <span class="st">&quot;max_rech_amt_6&quot;</span>, <span class="st">&quot;max_rech_amt_7&quot;</span>, <span class="st">&quot;vol_2g_mb_6&quot;</span>, <span class="st">&quot;vol_3g_mb_6&quot;</span>,</span>
+<span id="cb24-785"><a href="#cb24-785" aria-label="747"></a>    <span class="st">&quot;aon&quot;</span>, <span class="st">&quot;tenure_months&quot;</span>, <span class="st">&quot;avg_rech_amt_6_7&quot;</span>, <span class="st">&quot;is_high_value&quot;</span>, <span class="st">&quot;has_data_plan&quot;</span>]</span>
+<span id="cb24-786"><a href="#cb24-786" aria-label="748"></a>cat_features <span class="op">=</span> [<span class="st">&quot;tenure_group&quot;</span>, <span class="st">&quot;rech_freq_bucket_6&quot;</span>, <span class="st">&quot;data_user_label&quot;</span>]</span>
+<span id="cb24-787"><a href="#cb24-787" aria-label="749"></a>X <span class="op">=</span> df_clean[num_features <span class="op">+</span> cat_features].copy()</span>
+<span id="cb24-788"><a href="#cb24-788" aria-label="750"></a>y <span class="op">=</span> df_clean[<span class="st">&quot;churn_probability&quot;</span>].astype(<span class="bu">int</span>)</span>
+<span id="cb24-789"><a href="#cb24-789" aria-label="751"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb24-790"><a href="#cb24-790" aria-label="752"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.20</span>, stratify<span class="op">=</span>y, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb24-791"><a href="#cb24-791" aria-label="753"></a></span>
+<span id="cb24-792"><a href="#cb24-792" aria-label="754"></a>num_pipe <span class="op">=</span> Pipeline([(<span class="st">&quot;imp&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;median&quot;</span>)), (<span class="st">&quot;sc&quot;</span>, StandardScaler())])</span>
+<span id="cb24-793"><a href="#cb24-793" aria-label="755"></a>cat_pipe <span class="op">=</span> Pipeline([(<span class="st">&quot;imp&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;most_frequent&quot;</span>)),</span>
+<span id="cb24-794"><a href="#cb24-794" aria-label="756"></a>    (<span class="st">&quot;oh&quot;</span>, OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">&quot;ignore&quot;</span>))])</span>
+<span id="cb24-795"><a href="#cb24-795" aria-label="757"></a>pre <span class="op">=</span> ColumnTransformer([(<span class="st">&quot;num&quot;</span>, num_pipe, num_features), (<span class="st">&quot;cat&quot;</span>, cat_pipe, cat_features)])</span>
+<span id="cb24-796"><a href="#cb24-796" aria-label="758"></a>logreg <span class="op">=</span> Pipeline([(<span class="st">&quot;pre&quot;</span>, pre), (<span class="st">&quot;clf&quot;</span>, LogisticRegression(max_iter<span class="op">=</span><span class="dv">1000</span>, class_weight<span class="op">=</span><span class="st">&quot;balanced&quot;</span>))])</span>
+<span id="cb24-797"><a href="#cb24-797" aria-label="759"></a>rf <span class="op">=</span> Pipeline([(<span class="st">&quot;pre&quot;</span>, pre), (<span class="st">&quot;clf&quot;</span>, RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">200</span>, min_samples_leaf<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb24-798"><a href="#cb24-798" aria-label="760"></a>    class_weight<span class="op">=</span><span class="st">&quot;balanced_subsample&quot;</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, random_state<span class="op">=</span><span class="dv">42</span>))])</span>
+<span id="cb24-799"><a href="#cb24-799" aria-label="761"></a>cv <span class="op">=</span> StratifiedKFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb24-800"><a href="#cb24-800" aria-label="762"></a><span class="cf">for</span> name, model <span class="kw">in</span> [(<span class="st">&quot;LogReg&quot;</span>, logreg), (<span class="st">&quot;RF&quot;</span>, rf)]:</span>
+<span id="cb24-801"><a href="#cb24-801" aria-label="763"></a>    s <span class="op">=</span> cross_val_score(model, X_train, y_train, cv<span class="op">=</span>cv, scoring<span class="op">=</span><span class="st">&quot;roc_auc&quot;</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb24-802"><a href="#cb24-802" aria-label="764"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: ROC-AUC </span><span class="sc">{</span>s<span class="sc">.</span>mean()<span class="sc">:.4f}</span><span class="ss"> +/- </span><span class="sc">{</span>s<span class="sc">.</span>std()<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb24-803"><a href="#cb24-803" aria-label="765"></a>logreg.fit(X_train, y_train)<span class="op">;</span> rf.fit(X_train, y_train)</span>
+<span id="cb24-804"><a href="#cb24-804" aria-label="766"></a>p_log <span class="op">=</span> logreg.predict_proba(X_test)[:, <span class="dv">1</span>]<span class="op">;</span> p_rf <span class="op">=</span> rf.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
+<span id="cb24-805"><a href="#cb24-805" aria-label="767"></a>y_log <span class="op">=</span> (p_log <span class="op">&gt;=</span> <span class="fl">0.5</span>).astype(<span class="bu">int</span>)<span class="op">;</span> y_rf <span class="op">=</span> (p_rf <span class="op">&gt;=</span> <span class="fl">0.5</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb24-806"><a href="#cb24-806" aria-label="768"></a></span>
+<span id="cb24-807"><a href="#cb24-807" aria-label="769"></a><span class="kw">def</span> mrow(name, yt, yp, ps):</span>
+<span id="cb24-808"><a href="#cb24-808" aria-label="770"></a>    <span class="cf">return</span> {<span class="st">&quot;Model&quot;</span>: name, <span class="st">&quot;Acc&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>accuracy_score(yt, yp)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-809"><a href="#cb24-809" aria-label="771"></a>        <span class="st">&quot;Prec&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>precision_score(yt, yp, zero_division<span class="op">=</span><span class="dv">0</span>)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-810"><a href="#cb24-810" aria-label="772"></a>        <span class="st">&quot;Rec&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>recall_score(yt, yp, zero_division<span class="op">=</span><span class="dv">0</span>)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-811"><a href="#cb24-811" aria-label="773"></a>        <span class="st">&quot;F1&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>f1_score(yt, yp, zero_division<span class="op">=</span><span class="dv">0</span>)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-812"><a href="#cb24-812" aria-label="774"></a>        <span class="st">&quot;ROC-AUC&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>roc_auc_score(yt, ps)<span class="sc">:.4f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-813"><a href="#cb24-813" aria-label="775"></a>        <span class="st">&quot;PR-AUC&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>average_precision_score(yt, ps)<span class="sc">:.4f}</span><span class="ss">&quot;</span>}</span>
+<span id="cb24-814"><a href="#cb24-814" aria-label="776"></a>display(Markdown(pd.DataFrame([</span>
+<span id="cb24-815"><a href="#cb24-815" aria-label="777"></a>    mrow(<span class="st">&quot;LogReg thr 0.5&quot;</span>, y_test, y_log, p_log),</span>
+<span id="cb24-816"><a href="#cb24-816" aria-label="778"></a>    mrow(<span class="st">&quot;RF thr 0.5&quot;</span>, y_test, y_rf, p_rf)]).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-817"><a href="#cb24-817" aria-label="779"></a><span class="in">```</span></span>
+<span id="cb24-818"><a href="#cb24-818" aria-label="780"></a></span>
+<span id="cb24-819"><a href="#cb24-819" aria-label="781"></a><span class="at">&gt; **Reading the metrics note:** raw accuracy is misleading under this class imbalance — the trivial &quot;predict nobody churns&quot; rule scores **~89.8% accuracy** on this test set while catching zero churners, so read Recall / F1 / PR-AUC for business use. The identical appearing LogReg F1 (0.2751) and PR-AUC (0.2751) values are a verified numerical coincidence, not a reporting bug.</span></span>
+<span id="cb24-820"><a href="#cb24-820" aria-label="782"></a></span>
+<span id="cb24-823"><a href="#cb24-823" aria-label="783"></a><span class="in">```{python}</span></span>
+<span id="cb24-824"><a href="#cb24-824" aria-label="784"></a><span class="co">#| label: fig-m-pred-curves</span></span>
+<span id="cb24-825"><a href="#cb24-825" aria-label="785"></a><span class="co">#| echo: true</span></span>
+<span id="cb24-826"><a href="#cb24-826" aria-label="786"></a><span class="co">#| fig-cap: &quot;ROC and Precision-Recall curves on held-out test set (master)&quot;</span></span>
+<span id="cb24-827"><a href="#cb24-827" aria-label="787"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb24-828"><a href="#cb24-828" aria-label="788"></a><span class="co">#| fig-height: 4.0</span></span>
+<span id="cb24-829"><a href="#cb24-829" aria-label="789"></a><span class="co">#| out-width: &quot;95%&quot;</span></span>
+<span id="cb24-830"><a href="#cb24-830" aria-label="790"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb24-831"><a href="#cb24-831" aria-label="791"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.0</span>))</span>
+<span id="cb24-832"><a href="#cb24-832" aria-label="792"></a><span class="cf">for</span> ps, nm, cl <span class="kw">in</span> [(p_log, <span class="st">&quot;LogReg&quot;</span>, <span class="st">&quot;#2b8cbe&quot;</span>), (p_rf, <span class="st">&quot;RF&quot;</span>, <span class="st">&quot;#e41a1c&quot;</span>)]:</span>
+<span id="cb24-833"><a href="#cb24-833" aria-label="793"></a>    fpr, tpr, _ <span class="op">=</span> roc_curve(y_test, ps)</span>
+<span id="cb24-834"><a href="#cb24-834" aria-label="794"></a>    axes[<span class="dv">0</span>].plot(fpr, tpr, label<span class="op">=</span><span class="ss">f&quot;</span><span class="sc">{</span>nm<span class="sc">}</span><span class="ss"> (AUC=</span><span class="sc">{</span>roc_auc_score(y_test, ps)<span class="sc">:.3f}</span><span class="ss">)&quot;</span>, color<span class="op">=</span>cl, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb24-835"><a href="#cb24-835" aria-label="795"></a>    prec, rec, _ <span class="op">=</span> precision_recall_curve(y_test, ps)</span>
+<span id="cb24-836"><a href="#cb24-836" aria-label="796"></a>    axes[<span class="dv">1</span>].plot(rec, prec, label<span class="op">=</span><span class="ss">f&quot;</span><span class="sc">{</span>nm<span class="sc">}</span><span class="ss"> (AP=</span><span class="sc">{</span>average_precision_score(y_test, ps)<span class="sc">:.3f}</span><span class="ss">)&quot;</span>, color<span class="op">=</span>cl, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb24-837"><a href="#cb24-837" aria-label="797"></a>axes[<span class="dv">0</span>].plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">&quot;k--&quot;</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb24-838"><a href="#cb24-838" aria-label="798"></a>axes[<span class="dv">0</span>].set_title(<span class="st">&quot;ROC curve&quot;</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_xlabel(<span class="st">&quot;FPR&quot;</span>)<span class="op">;</span> axes[<span class="dv">0</span>].set_ylabel(<span class="st">&quot;TPR&quot;</span>)</span>
+<span id="cb24-839"><a href="#cb24-839" aria-label="799"></a>axes[<span class="dv">0</span>].legend(frameon<span class="op">=</span><span class="va">True</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb24-840"><a href="#cb24-840" aria-label="800"></a>axes[<span class="dv">1</span>].set_title(<span class="st">&quot;Precision-Recall curve&quot;</span>, fontweight<span class="op">=</span><span class="st">&quot;bold&quot;</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_xlabel(<span class="st">&quot;Recall&quot;</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_ylabel(<span class="st">&quot;Precision&quot;</span>)</span>
+<span id="cb24-841"><a href="#cb24-841" aria-label="801"></a>axes[<span class="dv">1</span>].legend(frameon<span class="op">=</span><span class="va">True</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb24-842"><a href="#cb24-842" aria-label="802"></a>plt.tight_layout()</span>
+<span id="cb24-843"><a href="#cb24-843" aria-label="803"></a>plt.show()</span>
+<span id="cb24-844"><a href="#cb24-844" aria-label="804"></a><span class="in">```</span></span>
+<span id="cb24-845"><a href="#cb24-845" aria-label="805"></a></span>
+<span id="cb24-848"><a href="#cb24-848" aria-label="806"></a><span class="in">```{python}</span></span>
+<span id="cb24-849"><a href="#cb24-849" aria-label="807"></a><span class="co">#| label: m-pred-lift</span></span>
+<span id="cb24-850"><a href="#cb24-850" aria-label="808"></a><span class="co">#| echo: true</span></span>
+<span id="cb24-851"><a href="#cb24-851" aria-label="809"></a>test_rev <span class="op">=</span> df_clean.loc[X_test.index, <span class="st">&quot;avg_arpu_6_7&quot;</span>].values <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb24-852"><a href="#cb24-852" aria-label="810"></a>lift <span class="op">=</span> pd.DataFrame({<span class="st">&quot;p&quot;</span>: p_rf, <span class="st">&quot;y&quot;</span>: y_test.values, <span class="st">&quot;rev&quot;</span>: test_rev}).sort_values(<span class="st">&quot;p&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-853"><a href="#cb24-853" aria-label="811"></a>lift[<span class="st">&quot;decile&quot;</span>] <span class="op">=</span> pd.qcut(lift.index, <span class="dv">10</span>, labels<span class="op">=</span>[<span class="ss">f&quot;D</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&quot;</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)])</span>
+<span id="cb24-854"><a href="#cb24-854" aria-label="812"></a>g <span class="op">=</span> lift.groupby(<span class="st">&quot;decile&quot;</span>, observed<span class="op">=</span><span class="va">True</span>).agg(n<span class="op">=</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;size&quot;</span>), churners<span class="op">=</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;sum&quot;</span>),</span>
+<span id="cb24-855"><a href="#cb24-855" aria-label="813"></a>    churn_rate<span class="op">=</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;mean&quot;</span>), revenue<span class="op">=</span>(<span class="st">&quot;rev&quot;</span>, <span class="st">&quot;sum&quot;</span>))</span>
+<span id="cb24-856"><a href="#cb24-856" aria-label="814"></a>g[<span class="st">&quot;cum_churners_pct&quot;</span>] <span class="op">=</span> (g[<span class="st">&quot;churners&quot;</span>].cumsum() <span class="op">/</span> g[<span class="st">&quot;churners&quot;</span>].<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb24-857"><a href="#cb24-857" aria-label="815"></a>out <span class="op">=</span> g.reset_index()</span>
+<span id="cb24-858"><a href="#cb24-858" aria-label="816"></a>out[<span class="st">&quot;churn_rate&quot;</span>] <span class="op">=</span> (out[<span class="st">&quot;churn_rate&quot;</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>).astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">&quot;%&quot;</span></span>
+<span id="cb24-859"><a href="#cb24-859" aria-label="817"></a>out[<span class="st">&quot;revenue_lakh&quot;</span>] <span class="op">=</span> (out[<span class="st">&quot;revenue&quot;</span>] <span class="op">/</span> <span class="fl">1e5</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb24-860"><a href="#cb24-860" aria-label="818"></a>display(Markdown(out[[<span class="st">&quot;decile&quot;</span>, <span class="st">&quot;n&quot;</span>, <span class="st">&quot;churners&quot;</span>, <span class="st">&quot;churn_rate&quot;</span>, <span class="st">&quot;revenue_lakh&quot;</span>, <span class="st">&quot;cum_churners_pct&quot;</span>]].to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-861"><a href="#cb24-861" aria-label="819"></a>feat_names <span class="op">=</span> logreg.named_steps[<span class="st">&quot;pre&quot;</span>].get_feature_names_out()</span>
+<span id="cb24-862"><a href="#cb24-862" aria-label="820"></a>rf_imp <span class="op">=</span> pd.DataFrame({<span class="st">&quot;feature&quot;</span>: feat_names,</span>
+<span id="cb24-863"><a href="#cb24-863" aria-label="821"></a>    <span class="st">&quot;rf_importance&quot;</span>: rf.named_steps[<span class="st">&quot;clf&quot;</span>].feature_importances_}).sort_values(<span class="st">&quot;rf_importance&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb24-864"><a href="#cb24-864" aria-label="822"></a>display(Markdown(<span class="st">&quot;**Top 8 RF drivers:**&quot;</span>))</span>
+<span id="cb24-865"><a href="#cb24-865" aria-label="823"></a>display(Markdown(rf_imp.head(<span class="dv">8</span>).<span class="bu">round</span>(<span class="dv">4</span>).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-866"><a href="#cb24-866" aria-label="824"></a><span class="in">```</span></span>
+<span id="cb24-867"><a href="#cb24-867" aria-label="825"></a></span>
+<span id="cb24-868"><a href="#cb24-868" aria-label="826"></a>**Predictive takeaway:** RF dominates LogReg on ROC/PR-AUC with leak-free Good-Phase features; operating threshold 0.3-0.4 balances recall vs offer waste; top 20-30% of scores capture the majority of churners and at-risk revenue.</span>
+<span id="cb24-869"><a href="#cb24-869" aria-label="827"></a></span>
+<span id="cb24-870"><a href="#cb24-870" aria-label="828"></a>---</span>
+<span id="cb24-871"><a href="#cb24-871" aria-label="829"></a></span>
+<span id="cb24-872"><a href="#cb24-872" aria-label="830"></a><span class="fu"># Prescriptive Analytics: What Should We Do?</span></span>
+<span id="cb24-873"><a href="#cb24-873" aria-label="831"></a></span>
+<span id="cb24-874"><a href="#cb24-874" aria-label="832"></a><span class="at">&gt; **&quot;Which subscribers should receive which retention action under a fixed budget to maximise net retained revenue?&quot;**</span></span>
+<span id="cb24-875"><a href="#cb24-875" aria-label="833"></a></span>
+<span id="cb24-876"><a href="#cb24-876" aria-label="834"></a>Economics: <span class="in">`Expected net = p x V x success_rate − offer − contact(Rs 10)`</span>, with annual value <span class="in">`V = avg_arpu_6_7 x 12`</span>.</span>
+<span id="cb24-877"><a href="#cb24-877" aria-label="835"></a></span>
+<span id="cb24-880"><a href="#cb24-880" aria-label="836"></a><span class="in">```{python}</span></span>
+<span id="cb24-881"><a href="#cb24-881" aria-label="837"></a><span class="co">#| label: m-presc-roi</span></span>
+<span id="cb24-882"><a href="#cb24-882" aria-label="838"></a><span class="co">#| echo: true</span></span>
+<span id="cb24-883"><a href="#cb24-883" aria-label="839"></a>v_te <span class="op">=</span> df_clean.loc[X_test.index, <span class="st">&quot;avg_arpu_6_7&quot;</span>].clip(lower<span class="op">=</span><span class="dv">0</span>).values <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb24-884"><a href="#cb24-884" aria-label="840"></a>scale <span class="op">=</span> <span class="bu">len</span>(df_clean) <span class="op">/</span> <span class="bu">len</span>(X_test)</span>
+<span id="cb24-885"><a href="#cb24-885" aria-label="841"></a>res <span class="op">=</span> []</span>
+<span id="cb24-886"><a href="#cb24-886" aria-label="842"></a><span class="cf">for</span> thr <span class="kw">in</span> [<span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span>]:</span>
+<span id="cb24-887"><a href="#cb24-887" aria-label="843"></a>    flag <span class="op">=</span> p_rf <span class="op">&gt;=</span> thr</span>
+<span id="cb24-888"><a href="#cb24-888" aria-label="844"></a>    n <span class="op">=</span> <span class="bu">int</span>(flag.<span class="bu">sum</span>())</span>
+<span id="cb24-889"><a href="#cb24-889" aria-label="845"></a>    tp <span class="op">=</span> <span class="bu">int</span>(((p_rf <span class="op">&gt;=</span> thr) <span class="op">&amp;</span> (y_test.values <span class="op">==</span> <span class="dv">1</span>)).<span class="bu">sum</span>())</span>
+<span id="cb24-890"><a href="#cb24-890" aria-label="846"></a>    <span class="cf">for</span> offer, s <span class="kw">in</span> [(<span class="dv">150</span>, <span class="fl">0.20</span>), (<span class="dv">300</span>, <span class="fl">0.20</span>), (<span class="dv">150</span>, <span class="fl">0.30</span>)]:</span>
+<span id="cb24-891"><a href="#cb24-891" aria-label="847"></a>        saved_rev <span class="op">=</span> (v_te[flag <span class="op">&amp;</span> (y_test.values <span class="op">==</span> <span class="dv">1</span>)].<span class="bu">sum</span>()) <span class="op">*</span> s</span>
+<span id="cb24-892"><a href="#cb24-892" aria-label="848"></a>        cost <span class="op">=</span> n <span class="op">*</span> (offer <span class="op">+</span> <span class="dv">10</span>)</span>
+<span id="cb24-893"><a href="#cb24-893" aria-label="849"></a>        net <span class="op">=</span> saved_rev <span class="op">-</span> cost</span>
+<span id="cb24-894"><a href="#cb24-894" aria-label="850"></a>        res.append({<span class="st">&quot;Thr&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>thr<span class="sc">:.1f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Offer&quot;</span>: <span class="ss">f&quot;Rs </span><span class="sc">{</span>offer<span class="sc">}</span><span class="ss">&quot;</span>, <span class="st">&quot;Succ&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>(s<span class="op">*</span><span class="dv">100</span>)<span class="sc">}</span><span class="ss">%&quot;</span>,</span>
+<span id="cb24-895"><a href="#cb24-895" aria-label="851"></a>            <span class="st">&quot;Contacted&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>n<span class="sc">:,}</span><span class="ss">&quot;</span>, <span class="st">&quot;Hit&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>tp<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-896"><a href="#cb24-896" aria-label="852"></a>            <span class="st">&quot;Net scaled 70k Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>net<span class="op">*</span>scale<span class="sc">:,.0f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-897"><a href="#cb24-897" aria-label="853"></a>            <span class="st">&quot;ROI&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved_rev<span class="op">/</span>cost<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span><span class="dv">100</span><span class="sc">:.0f}</span><span class="ss">%&quot;</span> <span class="cf">if</span> cost <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">&quot;—&quot;</span>})</span>
+<span id="cb24-898"><a href="#cb24-898" aria-label="854"></a>display(Markdown(pd.DataFrame(res).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-899"><a href="#cb24-899" aria-label="855"></a></span>
+<span id="cb24-900"><a href="#cb24-900" aria-label="856"></a>OFFER, S <span class="op">=</span> <span class="dv">150</span>, <span class="fl">0.20</span></span>
+<span id="cb24-901"><a href="#cb24-901" aria-label="857"></a>rank <span class="op">=</span> pd.DataFrame({<span class="st">&quot;p&quot;</span>: p_rf, <span class="st">&quot;y&quot;</span>: y_test.values, <span class="st">&quot;V&quot;</span>: v_te})</span>
+<span id="cb24-902"><a href="#cb24-902" aria-label="858"></a>rank[<span class="st">&quot;exp_save&quot;</span>] <span class="op">=</span> rank[<span class="st">&quot;p&quot;</span>] <span class="op">*</span> rank[<span class="st">&quot;V&quot;</span>] <span class="op">*</span> S <span class="op">-</span> (OFFER <span class="op">+</span> <span class="dv">10</span>)</span>
+<span id="cb24-903"><a href="#cb24-903" aria-label="859"></a>rank <span class="op">=</span> rank.sort_values(<span class="st">&quot;exp_save&quot;</span>, ascending<span class="op">=</span><span class="va">False</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-904"><a href="#cb24-904" aria-label="860"></a>rows <span class="op">=</span> []</span>
+<span id="cb24-905"><a href="#cb24-905" aria-label="861"></a><span class="cf">for</span> k <span class="kw">in</span> [<span class="dv">500</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">3000</span>]:</span>
+<span id="cb24-906"><a href="#cb24-906" aria-label="862"></a>    top <span class="op">=</span> rank.head(k)</span>
+<span id="cb24-907"><a href="#cb24-907" aria-label="863"></a>    saved_rev <span class="op">=</span> top[top[<span class="st">&quot;y&quot;</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">&quot;V&quot;</span>].<span class="bu">sum</span>() <span class="op">*</span> S</span>
+<span id="cb24-908"><a href="#cb24-908" aria-label="864"></a>    cost <span class="op">=</span> k <span class="op">*</span> (OFFER <span class="op">+</span> <span class="dv">10</span>)</span>
+<span id="cb24-909"><a href="#cb24-909" aria-label="865"></a>    rows.append({<span class="st">&quot;Top-K test&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>k<span class="sc">:,}</span><span class="ss">&quot;</span>, <span class="st">&quot;Top-K scaled&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>(k<span class="op">*</span>scale)<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-910"><a href="#cb24-910" aria-label="866"></a>        <span class="st">&quot;Churners in K&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>((top[<span class="st">&#39;y&#39;</span>]<span class="op">==</span><span class="dv">1</span>).<span class="bu">sum</span>())<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-911"><a href="#cb24-911" aria-label="867"></a>        <span class="st">&quot;Net test Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>saved_rev<span class="op">-</span>cost<span class="sc">:,.0f}</span><span class="ss">&quot;</span>, <span class="st">&quot;Net scaled Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved_rev<span class="op">-</span>cost)<span class="op">*</span>scale<span class="sc">:,.0f}</span><span class="ss">&quot;</span>})</span>
+<span id="cb24-912"><a href="#cb24-912" aria-label="868"></a>display(Markdown(pd.DataFrame(rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-913"><a href="#cb24-913" aria-label="869"></a></span>
+<span id="cb24-914"><a href="#cb24-914" aria-label="870"></a><span class="co"># P0 tailoring check: does the Rs 300 tier turn profitable when restricted to HVC only?</span></span>
+<span id="cb24-915"><a href="#cb24-915" aria-label="871"></a>hvc_te <span class="op">=</span> (X_test[<span class="st">&quot;is_high_value&quot;</span>] <span class="op">==</span> <span class="dv">1</span>).values</span>
+<span id="cb24-916"><a href="#cb24-916" aria-label="872"></a>seg_rows <span class="op">=</span> []</span>
+<span id="cb24-917"><a href="#cb24-917" aria-label="873"></a><span class="cf">for</span> seg_name, seg_mask <span class="kw">in</span> [(<span class="st">&quot;Base (all)&quot;</span>, np.ones(<span class="bu">len</span>(X_test), dtype<span class="op">=</span><span class="bu">bool</span>)), (<span class="st">&quot;HVC only&quot;</span>, hvc_te)]:</span>
+<span id="cb24-918"><a href="#cb24-918" aria-label="874"></a>    flag <span class="op">=</span> (p_rf <span class="op">&gt;=</span> <span class="fl">0.4</span>) <span class="op">&amp;</span> seg_mask</span>
+<span id="cb24-919"><a href="#cb24-919" aria-label="875"></a>    saved <span class="op">=</span> v_te[flag <span class="op">&amp;</span> (y_test.values <span class="op">==</span> <span class="dv">1</span>)].<span class="bu">sum</span>() <span class="op">*</span> <span class="fl">0.20</span></span>
+<span id="cb24-920"><a href="#cb24-920" aria-label="876"></a>    cost <span class="op">=</span> <span class="bu">int</span>(flag.<span class="bu">sum</span>()) <span class="op">*</span> (<span class="dv">300</span> <span class="op">+</span> <span class="dv">10</span>)</span>
+<span id="cb24-921"><a href="#cb24-921" aria-label="877"></a>    seg_rows.append({<span class="st">&quot;Segment (thr 0.4)&quot;</span>: seg_name, <span class="st">&quot;Offer&quot;</span>: <span class="st">&quot;Rs 300&quot;</span>, <span class="st">&quot;Succ&quot;</span>: <span class="st">&quot;20%&quot;</span>,</span>
+<span id="cb24-922"><a href="#cb24-922" aria-label="878"></a>        <span class="st">&quot;Contacted&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span><span class="bu">int</span>(flag.<span class="bu">sum</span>())<span class="sc">:,}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-923"><a href="#cb24-923" aria-label="879"></a>        <span class="st">&quot;Net scaled 70k Rs&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved <span class="op">-</span> cost) <span class="op">*</span> scale<span class="sc">:,.0f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb24-924"><a href="#cb24-924" aria-label="880"></a>        <span class="st">&quot;ROI&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>(saved<span class="op">/</span>cost<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span><span class="dv">100</span><span class="sc">:.0f}</span><span class="ss">%&quot;</span> <span class="cf">if</span> cost <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">&quot;—&quot;</span>})</span>
+<span id="cb24-925"><a href="#cb24-925" aria-label="881"></a>display(Markdown(<span class="st">&quot;**Rs 300 offer by segment (P0 tailoring check):**&quot;</span>))</span>
+<span id="cb24-926"><a href="#cb24-926" aria-label="882"></a>display(Markdown(pd.DataFrame(seg_rows).to_markdown(index<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb24-927"><a href="#cb24-927" aria-label="883"></a><span class="in">```</span></span>
+<span id="cb24-928"><a href="#cb24-928" aria-label="884"></a></span>
+<span id="cb24-929"><a href="#cb24-929" aria-label="885"></a>**Prescriptive takeaway:** Per-customer break-even rule `p &gt; (offer + 10) / (0.20 x V)` — for the average churned customer (V ≈ Rs 3,164 annualised) that is ≈ **0.25**, lower for higher-value customers. Rank candidates by expected saving under budget rather than a fixed threshold. The Rs 300 tier is **not** profitable across the base (negative ROI in the table above) but turns profitable when restricted to HVC subscribers (higher V); pair early RF scores (M7) with M8-collapse triggers; prioritise HVC and sub-1-year voice-only cohorts; pilot with a 10% control before scaling.</span>
+<span id="cb24-930"><a href="#cb24-930" aria-label="886"></a></span>
+<span id="cb24-931"><a href="#cb24-931" aria-label="887"></a><span class="at">&gt; **Assumptions &amp; caveats (prescriptive section):** success rates (20–30%), offer costs (Rs 150–300) and contact cost (Rs 10) are **illustrative assumptions, not estimated from data** — the tables above are a sensitivity analysis, and a randomised pilot is required to estimate real uplift. Figures treat ARPU as revenue, not profit (margins would be lower) and assume a 12-month horizon. RF probabilities from </span><span class="in">`class_weight=&quot;balanced_subsample&quot;`</span><span class="at"> are not calibrated — treat </span><span class="in">`p`</span><span class="at"> as a relative risk score for ranking (or calibrate before using it as a true churn probability). Thresholds were read off test-set results for illustration; in production the threshold should be fixed once on a validation split and the policy then evaluated on test.</span></span>
+<span id="cb24-932"><a href="#cb24-932" aria-label="888"></a></span>
+<span id="cb24-933"><a href="#cb24-933" aria-label="889"></a><span class="pp">|</span> Priority <span class="pp">|</span> Segment <span class="pp">|</span> Action <span class="pp">|</span> Timing <span class="pp">|</span></span>
+<span id="cb24-934"><a href="#cb24-934" aria-label="890"></a><span class="pp">|:---|:---|:---|:---|</span></span>
+<span id="cb24-935"><a href="#cb24-935" aria-label="891"></a><span class="pp">|</span> P0 <span class="pp">|</span> HVC + M8 drop &gt;30% <span class="pp">|</span> Personal outreach + bonus data/validity <span class="pp">|</span> Days after M8 signal, up to Rs 300 <span class="pp">|</span></span>
+<span id="cb24-936"><a href="#cb24-936" aria-label="892"></a><span class="pp">|</span> P1 <span class="pp">|</span> Tenure &lt;1 yr, voice-only, RF top decile <span class="pp">|</span> Onboarding bundle + data trial <span class="pp">|</span> M7, cap Rs 150 <span class="pp">|</span></span>
+<span id="cb24-937"><a href="#cb24-937" aria-label="893"></a><span class="pp">|</span> P2 <span class="pp">|</span> Mid-value RF deciles 2-3 <span class="pp">|</span> SMS/IVR recharge nudge <span class="pp">|</span> M7-M8 boundary, cap Rs 150 <span class="pp">|</span></span>
+<span id="cb24-938"><a href="#cb24-938" aria-label="894"></a><span class="pp">|</span> P3 <span class="pp">|</span> Long-tenure low risk <span class="pp">|</span> Monitor only <span class="pp">|</span> Rs 0 <span class="pp">|</span></span>
+<span id="cb24-939"><a href="#cb24-939" aria-label="895"></a></span>
+<span id="cb24-940"><a href="#cb24-940" aria-label="896"></a>---</span>
+<span id="cb24-941"><a href="#cb24-941" aria-label="897"></a></span>
+<span id="cb24-942"><a href="#cb24-942" aria-label="898"></a><span class="fu"># Conclusion &amp; Next Steps</span></span>
+<span id="cb24-943"><a href="#cb24-943" aria-label="899"></a></span>
+<span id="cb24-944"><a href="#cb24-944" aria-label="900"></a>This end-to-end investigation now fulfills **descriptive, diagnostic, predictive, and prescriptive** analytics:</span>
+<span id="cb24-945"><a href="#cb24-945" aria-label="901"></a></span>
+<span id="cb24-946"><a href="#cb24-946" aria-label="902"></a><span class="ss">- </span>**Descriptive:** 10.19% churn baseline, HVC 8.28% at Rs 558.59 ARPU (avg. months 6 &amp; 7), 62.95% pre-churn ARPU collapse, tenure loyalty (15.85% vs 4.71%), data stickiness (8.72% vs 10.88%), TRAI benchmarking with the September 2016 Jio structural break.</span>
+<span id="cb24-947"><a href="#cb24-947" aria-label="903"></a><span class="ss">- </span>**Diagnostic:** tenure (d ≈ 0.50) and incoming-call minutes (d ≈ 0.44) are the only features with non-negligible effect sizes; recharge frequency shows no consistent relationship with churn; the remaining features are individually weak but jointly predictive; the M8 collapse is an early-warning signal of M9 silence, not a tested cause.</span>
+<span id="cb24-948"><a href="#cb24-948" aria-label="904"></a><span class="ss">- </span>**Predictive:** leak-free RF (Good-Phase only) beats LogReg; threshold 0.3-0.4; top deciles concentrate revenue at risk.</span>
+<span id="cb24-949"><a href="#cb24-949" aria-label="905"></a><span class="ss">- </span>**Prescriptive:** threshold-priced, budget-ranked retention playbook with positive expected net at Rs 150 / 20% success; the Rs 300 tier is profitable for HVC cohorts only; pilot with control, retrain quarterly, audit fairness.</span>
+<span id="cb24-950"><a href="#cb24-950" aria-label="906"></a></span>
+<span id="cb24-951"><a href="#cb24-951" aria-label="907"></a>Modular notebooks <span class="in">`01_data_prep`</span>, <span class="in">`02_descriptive`</span>, <span class="in">`03_diagnostic`</span>, <span class="in">`04_predictive`</span>, <span class="in">`05_prescriptive`</span> reproduce each stage independently; this master <span class="in">`Analysis.qmd`</span> reproduces the single combined report.</span>
+<span id="cb24-952"><a href="#cb24-952" aria-label="908"></a></span>
+<span id="cb24-953"><a href="#cb24-953" aria-label="909"></a><span class="fu"># Limitations &amp; Caveats</span></span>
+<span id="cb24-954"><a href="#cb24-954" aria-label="910"></a></span>
+<span id="cb24-955"><a href="#cb24-955" aria-label="911"></a><span class="ss">- </span>**Population &amp; window:** one operator, a 69,999-account sample, and a single June–September 2014 window; results concern this sample, not the full operator base or other markets/years.</span>
+<span id="cb24-956"><a href="#cb24-956" aria-label="912"></a><span class="ss">- </span>**Churn definition:** churn is a usage-based proxy (zero activity in September), not a verified contract cancellation; some apparent churn may reflect secondary-SIM dormancy or migration.</span>
+<span id="cb24-957"><a href="#cb24-957" aria-label="913"></a><span class="ss">- </span>**Validation design:** records were split randomly with stratification; there is no out-of-time (later-months) validation, so reported metrics may be optimistic.</span>
+<span id="cb24-958"><a href="#cb24-958" aria-label="914"></a><span class="ss">- </span>**Associations only:** diagnostic findings are correlational; no causal claims are made and unobserved confounders (e.g., competitor switching) are possible.</span>
+<span id="cb24-959"><a href="#cb24-959" aria-label="915"></a><span class="ss">- </span>**Model probabilities:** RF probabilities under <span class="in">`class_weight=&quot;balanced_subsample&quot;`</span> are inflated relative to true rates; they are used for ranking, or explicitly hedged, in the prescriptive section.</span>
+<span id="cb24-960"><a href="#cb24-960" aria-label="916"></a><span class="ss">- </span>**Prescriptive economics:** success rates, offer costs and contact cost are illustrative assumptions; net-value figures are scenario/sensitivity outputs, and ARPU is treated as top-line revenue rather than margin.</span>
+<span id="cb24-961"><a href="#cb24-961" aria-label="917"></a><span class="ss">- </span>**Temporal context:** the 2014 sample predates Reliance Jio; the 2025 TRAI figures included in the report are market context, not modelled data.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
