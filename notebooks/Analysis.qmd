@@ -1,8 +1,8 @@
 ---
 title: "Telecom Subscriber Churn & ARPU Analytics"
-subtitle: "Descriptive, Diagnostic, Predictive & Prescriptive Analytics for an Indian Telecom Operator"
+subtitle: "Descriptive, Diagnostic, Predictive and Prescriptive Analytics for an Indian Telecom Operator"
 author: "Souptik De"
-date: "October 13, 2026"
+date: "21 November 2026"
 format:
   html:
     theme: cosmo
@@ -11,7 +11,6 @@ format:
     toc-location: left
     number-sections: true
     code-fold: show
-    code-tools: true
     code-line-numbers: true
     smooth-scroll: true
     fig-align: center
@@ -33,885 +32,801 @@ execute:
   message: false
 ---
 
-# Analytics Investigation Brief: Framing & Data Access
+# Business Question, Data and Method
 
-## 1. Analytics Type Selected
+## The four questions
 
-**Descriptive Analytics**: Understanding "what is happening" within the subscriber base before attempting to diagnose causes, predict future attrition, or prescribe retention interventions.
+This report answers four questions, in order. **Descriptive:** what did churn and ARPU look like in this subscriber base, and what was happening in the Indian market at the same time? **Diagnostic:** which behaviours distinguish churners, holding other things constant? **Predictive:** can we rank subscribers by churn risk before they leave, using only information available at the time? **Prescriptive:** given that ranking, who should receive a retention offer and what is that decision worth?
 
-## 2. Framed Business Question
+The customer data comes from one anonymised Indian telecom circle over the June–September 2014 window. The market data comes from 49 quarterly TRAI Performance Indicator reports between 2014 and 2026. They are different objects: the first is a labelled sample of individual lines, the second is the regulator's national census. The analysis keeps them separate and uses the macro series as context and as a separate time-series investigation, not as extra rows in the customer model.
 
-> **"What is the churn rate and average revenue per user (ARPU) across different customer segments (e.g., by customer value tier, usage level, recharge behavior, and tenure), and how does ARPU differ between customers who churn and those who don't, for an Indian telecom operator?"**
+## Data provenance
 
-## 3. Datasets Required
-
-| Dataset | Level | Period Covered | Key Features Utilized |
+| Data | Level | Coverage | Source |
 |:---|:---|:---|:---|
-| **Telecom Churn Case Study (Kaggle)** | Micro (Customer-level) | June – September 2014 | Monthly ARPU (`arpu_6/7/8`), Minutes of Usage (`total_og_mou`, `total_ic_mou`), Recharge Amounts & Counts, 2G/3G Data, Network Age (`aon`), and Churn Label |
-| **TRAI Performance Indicator Reports (2014 & Modern)** | Macro (Market-level) | Q2 2014 (QE Sep-14) & Q4 2025 (QE Mar-25) | Nationwide Prepaid ARPU, Postpaid ARPU, Blended ARPU, Minutes of Usage per Subscriber (MOU), Total Wireless Subscriber Base |
+| Customer churn sample | Micro, 69,999 lines | Jun–Sep 2014 | Kaggle competition `telecom-churn-case-study-hackathon-gc1` (labelled training split of 99,999 rows) |
+| TRAI Performance Indicators | Macro, quarterly | QE Mar-2014 → QE Mar-2026 | 49 official PDFs from `trai.gov.in/release-publication/reports/performance-indicators-reports` |
+| TRAI revenue composition | Macro, two anchors | QE Sep-2014 and QE Mar-2025 | Table 2.3 of the respective PIR reports |
 
-## 4. Access Plan & Provenance Logging
+`circle_id` equals 109 for every customer row. This is **one service area, not a nationwide sample**, and 69,999 is the competition's labelled training split rather than a random draw from an operator's base. All customer-level figures below describe this sample only.
 
-All data acquisition is completely reproducible via automated scripts and official repositories:
+The acquisition and preparation code lives in `scripts/fetch_trai.py`, `scripts/build_trai_series.py` and `scripts/prepare_churn.py`, listed verbatim in the reproducibility appendix. The report itself only reads processed files; it never rewrites data while rendering.
 
-1. **Customer-Level Dataset**: Acquired via Kaggle CLI from competition `telecom-churn-case-study-hackathon-gc1` into `data/raw/telecom-churn/train.csv`.
-2. **TRAI Regulatory Reports**: Downloaded directly from the official portal of the Telecom Regulatory Authority of India (TRAI):
-   - **2014 Benchmark Report**: `TRAI_​PIR_​QE_​Sep_​2014.pdf` (Quarter ending September 2014).
-   - **Modern Market Report**: `TRAI_​PIR_​QE_​Mar_​2025.pdf` (Quarter ending March 2025).
+## Method map
 
-### Provenance Summary Table
-
-| File Name | Source Platform / URL | Acquisition Date | Period / Quarter Represented | Size / Format |
-|:---|:---|:---|:---|:---|
-| `train.csv` | [Kaggle Competition](https://www.kaggle.com/competitions/telecom-churn-case-study-hackathon-gc1/data) | August 26, 2026 | June – September 2014 | 69,999 rows × 172 cols (50.5 MB CSV) |
-| `TRAI_​PIR_​QE_​Sep_​2014.pdf` | [TRAI Official Reports](https://www.trai.gov.in/sites/default/files/2024-09/Indicator-Reports29012015.pdf) | August 26, 2026 | QE September 2014 (Q2 FY 2014-15) | 178 pages (3.48 MB PDF) |
-| `TRAI_​PIR_​QE_​Mar_​2025.pdf` | [TRAI Official Reports](https://www.trai.gov.in/sites/default/files/2025-06/QPIR_19062025.pdf) | August 26, 2026 | QE March 2025 (Q4 FY 2024-25) | 214 pages (5.47 MB PDF) |
-| `trai_​arpu_​timeseries.csv` | Extracted from official TRAI PDFs | August 26, 2026 | 2014 vs. 2025 Comparative Anchors | Structured CSV (Processed) |
-
----
-
-# Data Acquisition & Regulatory Extraction Pipeline
+Every method used below is taught in the Business Analytics notes or case studies: distribution and Pareto analysis, K-means and RFM segmentation (Notes 06, Case 03); confidence intervals, Welch tests, effect sizes and pilot power (Notes 07, Case 04); multiple regression, VIF and dummy variables (Notes 08); logistic regression and odds ratios (Notes 09, Case 01); naive baselines, Holt's trend, MASE and structural breaks (Notes 10); cross-validation, PR curves, calibration, lift and cost-based thresholds (Notes 11). Random forest appears once as a challenger model — the course churn case study is built on logistic regression — and is evaluated with the same toolkit. No Wilson intervals, Gini coefficients, resampling tests, permutation importance, partial dependence or optimisation solvers are used.
 
 ```{python}
-#| label: setup-libraries
-#| echo: true
-import pandas as pd
+#| label: setup
+import os
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ[_v] = "1"
+from pathlib import Path
+import warnings
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from pathlib import Path
-from IPython.display import Markdown, display
 from scipy import stats
-import warnings
 
-warnings.filterwarnings("ignore")
-
-# Visualization Standards
+warnings.filterwarnings("ignore", category=FutureWarning)
 sns.set_theme(style="whitegrid", palette="muted", font_scale=1.0)
-plt.rcParams.update({
-    "figure.dpi": 130,
-    "axes.titlesize": 12,
-    "axes.labelsize": 10.5,
-    "xtick.labelsize": 9.5,
-    "ytick.labelsize": 9.5,
-})
+plt.rcParams.update({"figure.dpi": 130, "axes.titlesize": 11, "axes.labelsize": 10,
+                     "xtick.labelsize": 9, "ytick.labelsize": 9})
+BLUE, RED, GREY = "#2b8cbe", "#c51b1d", "#7f8c8d"
 
-STATUS_PALETTE = {0: "#2b8cbe", 1: "#e41a1c"} # Retained (Blue), Churned (Red)
+def root(rel):
+    p = Path(rel)
+    return p if p.exists() else Path("..") / rel
 
-# Path resolution helper
-def get_data_path(rel_path):
-    p1 = Path(rel_path)
-    if p1.exists():
-        return p1
-    p2 = Path("..") / rel_path
-    if p2.exists():
-        return p2
-    return p1
+def wald(p, n):
+    se = np.sqrt(p * (1 - p) / n)
+    return p - 1.96 * se, p + 1.96 * se
+
+def rate_row(label, mask, frame):
+    s = frame.loc[mask, "churn_probability"]
+    lo, hi = wald(s.mean(), len(s))
+    return {"Segment": label, "Lines": f"{len(s):,}", "Churn": f"{s.mean():.1%}",
+            "95% CI": f"{lo:.1%}–{hi:.1%}"}
+
+df = pd.read_csv(root("data/processed/churn_clean.csv"))
+y = df["churn_probability"].astype(int)
+N = len(df)
+base = y.mean()
+df["offnet_share"] = np.where(
+    (df.onnet_mou_6.fillna(0) + df.offnet_mou_6.fillna(0)) > 0,
+    df.offnet_mou_6.fillna(0) / (df.onnet_mou_6.fillna(0) + df.offnet_mou_6.fillna(0)), np.nan)
+df["data_gb"] = (df.vol_2g_mb_6.fillna(0) + df.vol_3g_mb_6.fillna(0)) / 1024
+df["rdec"] = pd.qcut(df.avg_rech_amt_6_7, 10, labels=False, duplicates="drop")
+# High value is the top 30% of average M6-M7 recharge amount (voice + data
+# packs), a cut at the 70th percentile -- not an external competition label.
+assert (df.is_high_value == (df.avg_rech_amt_6_7 >= df.avg_rech_amt_6_7.quantile(.7))).all()
 ```
 
-## Macro Regulatory Data Extraction (TRAI)
+The competition defines the churn label behaviourally: a subscriber is marked churned when September (M9) shows zero incoming calls, zero outgoing calls and zero data use. The file contains no M9 columns, so the label is taken as given and cannot be re-derived here. June and July (M6/M7) are the "good phase"; August (M8) is the action phase. No M8 column is used as a predictor anywhere in this report; M8 appears only in the descriptive exit analysis.
 
-Values are manually extracted from the official TRAI Performance Indicator Report tables and cross-verified against the source PDFs (page references kept in `scripts/extract_trai_data.py`), then stored in `trai_arpu_timeseries.csv`:
+# Descriptive Analytics
 
-```{python}
-#| label: extract-trai-data
-#| echo: true
-def build_trai_benchmark():
-    records = [
-        {
-            "Report Quarter": "Q2 (QE Sep-14)",
-            "Report Year": 2014,
-            "Prepaid ARPU (₹)": "₹100.82",
-            "Postpaid ARPU (₹)": "₹456.24",
-            "Blended ARPU (₹)": "₹115.72",
-            "MOU per Sub (Mins)": 376,
-            "Wireless Subs (Million)": "930.20 M",
-            "Source Document": "TRAI_PIR_QE_Sep_2014.pdf"
-        },
-        {
-            "Report Quarter": "Q4 (QE Mar-25)",
-            "Report Year": 2025,
-            "Prepaid ARPU (₹)": "₹182.53",
-            "Postpaid ARPU (₹)": "₹187.48",
-            "Blended ARPU (₹)": "₹182.95",
-            "MOU per Sub (Mins)": 1026,
-            "Wireless Subs (Million)": "1,163.76 M",
-            "Source Document": "TRAI_PIR_QE_Mar_2025.pdf"
-        }
-    ]
-    df_trai_formatted = pd.DataFrame(records)
-    
-    # Save raw numerical processed series
-    raw_records = [
-        {"report_quarter": "Q2 (QE Sep-14)", "report_year": 2014, "arpu_prepaid": 100.82, "arpu_postpaid": 456.24, "arpu_blended": 115.72, "mou_per_sub": 376, "wireless_subscribers_millions": 930.20, "source_report_filename": "TRAI_PIR_QE_Sep_2014.pdf"},
-        {"report_quarter": "Q4 (QE Mar-25)", "report_year": 2025, "arpu_prepaid": 182.53, "arpu_postpaid": 187.48, "arpu_blended": 182.95, "mou_per_sub": 1026, "wireless_subscribers_millions": 1163.76, "source_report_filename": "TRAI_PIR_QE_Mar_2025.pdf"}
-    ]
-    df_raw_trai = pd.DataFrame(raw_records)
-    out_path = get_data_path("data/processed/trai_arpu_timeseries.csv")
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    df_raw_trai.to_csv(out_path, index=False)
-    
-    return df_trai_formatted
+## The market around the sample: 2014 to 2026
 
-df_trai_display = build_trai_benchmark()
-display(Markdown(df_trai_display.to_markdown(index=False)))
-```
-
----
-
-# Data Preparation & Feature Engineering
-
-## Loading Customer-Level Raw Dataset
+The customer sample ends in September 2014 — roughly at the peak of the old voice-and-2G pricing model. The regulator's own series shows what that model became. Reliance Jio launched in September 2016; the vertical line in the next figure marks that quarter.
 
 ```{python}
-#| label: load-customer-data
-#| echo: true
-train_path = get_data_path("data/raw/telecom-churn/train.csv")
-df_raw = pd.read_csv(train_path)
-```
-
-The raw customer dataset contains **`69,999` rows** and **`172` columns**, representing subscriber activity across June, July, and August 2014 with churn labels derived in September 2014.
-
-## Schema & Missing Value Diagnostics
-
-```{python}
-#| label: missing-value-diagnostics
-#| echo: true
-missing_counts = df_raw.isnull().sum()
-missing_pct = (missing_counts / len(df_raw)) * 100
-missing_table = pd.DataFrame({
-    "Feature Name": missing_counts.index,
-    "Missing Count": [f"{c:,}" for c in missing_counts.values],
-    "Missing Percentage": [f"{p:.2f}%" for p in missing_pct.values]
-}).sort_values("Missing Count", ascending=False).head(10).reset_index(drop=True)
-
-display(Markdown(missing_table.to_markdown(index=False)))
-```
-
-> **Missingness Note:** Columns associated with 2G/3G mobile data recharge packs (e.g., `total_rech_data_6`, `max_rech_data_6`, `av_rech_amt_data_6`) have ~74.90% missing values. This reflects that roughly three quarters of subscribers **in this sample** did not purchase specialized monthly mobile data add-ons and used voice/SMS services exclusively.
-
-## Behavioral Churn Definition
-
-In Indian telecom business modeling, churn is **behavioral**:
-- **Good Phase (Months 6 & 7 — June & July 2014):** Subscriber behaves normally.
-- **Action Phase (Month 8 — August 2014):** Subscriber shows early signals of decay (usage and recharge drops).
-- **Churn Phase (Month 9 — September 2014):** A customer who makes **zero incoming calls, zero outgoing calls, and consumes zero mobile data** in Month 9 is defined as churned (`churn_probability = 1`).
-
-## High-Value Customer (HVC) Filtering
-
-To focus analytical and retention efforts where business revenue is concentrated, Indian telecom operators isolate **High-Value Customers (HVC)**.
-- **Definition:** Customers whose average total recharge amount in the Good Phase (Months 6 & 7) is $\ge$ **70th percentile**.
-
-```{python}
-#| label: high-value-filtering-logic
-#| echo: true
-# Compute combined recharge amount (calls + data recharge packs) for months 6 & 7
-rech_amt_6 = df_raw['total_rech_amt_6'] + df_raw['total_rech_data_6'].fillna(0) * df_raw['av_rech_amt_data_6'].fillna(0)
-rech_amt_7 = df_raw['total_rech_amt_7'] + df_raw['total_rech_data_7'].fillna(0) * df_raw['av_rech_amt_data_7'].fillna(0)
-avg_rech_6_7 = (rech_amt_6 + rech_amt_7) / 2.0
-
-p70_threshold = np.percentile(avg_rech_6_7, 70)
-is_high_value = (avg_rech_6_7 >= p70_threshold).astype(int)
-
-n_hvc = int(is_high_value.sum())
-pct_hvc = (n_hvc / len(df_raw)) * 100
-hvc_churn_rate = df_raw[is_high_value == 1]['churn_probability'].mean() * 100
-reg_churn_rate = df_raw[is_high_value == 0]['churn_probability'].mean() * 100
-
-hvc_summary_table = pd.DataFrame([
-    {
-        "Subscriber Tier": "High-Value Segment (Top 30%)",
-        "Threshold Criteria": f"Avg Recharge ≥ ₹{p70_threshold:.2f}",
-        "Subscribers": f"{n_hvc:,}",
-        "% Share of Base": f"{pct_hvc:.2f}%",
-        "Churn Rate": f"{hvc_churn_rate:.2f}%"
-    },
-    {
-        "Subscriber Tier": "Regular Base (Bottom 70%)",
-        "Threshold Criteria": f"Avg Recharge < ₹{p70_threshold:.2f}",
-        "Subscribers": f"{len(df_raw)-n_hvc:,}",
-        "% Share of Base": f"{100-pct_hvc:.2f}%",
-        "Churn Rate": f"{reg_churn_rate:.2f}%"
-    }
-])
-
-display(Markdown(hvc_summary_table.to_markdown(index=False)))
-```
-
-## Feature Engineering & Cleaned Dataset Export
-
-```{python}
-#| label: feature-engineering-pipeline
-#| echo: true
-df_clean = df_raw.copy()
-
-# Add high-value indicator and average recharge
-df_clean['avg_rech_amt_6_7'] = avg_rech_6_7
-df_clean['is_high_value'] = is_high_value
-
-# Month-over-month ARPU change features
-df_clean['arpu_diff_7_6'] = df_clean['arpu_7'] - df_clean['arpu_6']
-df_clean['arpu_diff_8_7'] = df_clean['arpu_8'] - df_clean['arpu_7']
-df_clean['avg_arpu_6_7'] = (df_clean['arpu_6'] + df_clean['arpu_7']) / 2.0
-
-# Usage and recharge activity differentials
-df_clean['total_og_mou_diff_8_7'] = df_clean['total_og_mou_8'] - df_clean['total_og_mou_7']
-df_clean['total_ic_mou_diff_8_7'] = df_clean['total_ic_mou_8'] - df_clean['total_ic_mou_7']
-df_clean['total_rech_num_diff_8_7'] = df_clean['total_rech_num_8'] - df_clean['total_rech_num_7']
-df_clean['total_rech_amt_diff_8_7'] = df_clean['total_rech_amt_8'] - df_clean['total_rech_amt_7']
-
-# Tenure segmentation from aon (age on network in days -> months)
-df_clean['tenure_months'] = (df_clean['aon'] / 30.44).astype(int)
-df_clean['tenure_group'] = pd.cut(
-    df_clean['tenure_months'],
-    bins=[-1, 12, 24, 48, 9999],
-    labels=['0-1 yr', '1-2 yrs', '2-4 yrs', '4+ yrs']
-)
-
-# Recharge frequency buckets
-df_clean['rech_freq_bucket_6'] = pd.qcut(df_clean['total_rech_num_6'], q=3, labels=['Low', 'Medium', 'High'])
-
-# Mobile data plan adoption
-df_clean['has_data_plan'] = ((df_clean['total_rech_data_6'].fillna(0) > 0) | (df_clean['total_rech_data_7'].fillna(0) > 0)).astype(int)
-df_clean['data_user_label'] = df_clean['has_data_plan'].map({1: 'Data User (2G/3G)', 0: 'Voice/SMS Only'})
-
-# Human-readable churn label
-df_clean['churn_label'] = df_clean['churn_probability'].map({0: 'Retained', 1: 'Churned'})
-
-# Save cleaned dataset
-clean_out_path = get_data_path("data/processed/churn_clean.csv")
-df_clean.to_csv(clean_out_path, index=False)
-```
-
----
-
-# Descriptive Analytics: Answering the Framed Question
-
-## Question 1: Overall Churn Rate Analysis
-
-What percentage of customers churned, both in raw counts and percentages?
-
-```{python}
-#| label: q1-overall-churn
-#| echo: true
-total_subs = len(df_clean)
-churned_subs = int(df_clean['churn_probability'].sum())
-retained_subs = total_subs - churned_subs
-churn_rate = (churned_subs / total_subs) * 100
-retained_rate = (retained_subs / total_subs) * 100
-
-churn_summary_table = pd.DataFrame([
-    {
-        "Subscriber Status": "Retained (Active Base)",
-        "Count": f"{retained_subs:,}",
-        "Percentage": f"{retained_rate:.2f}%",
-        "Role in Network": "Continues generating stable revenue"
-    },
-    {
-        "Subscriber Status": "Churned (Zero Activity in M9)",
-        "Count": f"{churned_subs:,}",
-        "Percentage": f"{churn_rate:.2f}%",
-        "Role in Network": "Attrition cohort requiring retention targeting"
-    },
-    {
-        "Subscriber Status": "Total Base",
-        "Count": f"{total_subs:,}",
-        "Percentage": "100.00%",
-        "Role in Network": "Complete analyzed sample"
-    }
-])
-
-display(Markdown(churn_summary_table.to_markdown(index=False)))
-```
-
-```{python}
-#| label: fig-churn-donut
-#| echo: true
-#| fig-cap: "Overall Subscriber Churn vs. Retention Distribution"
-#| fig-width: 5.5
-#| fig-height: 3.8
-#| out-width: "60%"
-#| fig-align: center
-fig, ax = plt.subplots(figsize=(5.5, 3.8))
-wedges, texts, autotexts = ax.pie(
-    [retained_subs, churned_subs],
-    labels=[f"Retained ({retained_subs:,})", f"Churned ({churned_subs:,})"],
-    autopct="%1.2f%%",
-    startangle=140,
-    colors=[STATUS_PALETTE[0], STATUS_PALETTE[1]],
-    explode=(0, 0.08),
-    wedgeprops={"width": 0.45, "edgecolor": "white", "linewidth": 1.5}
-)
-plt.setp(autotexts, size=10.5, weight="bold", color="white")
-plt.setp(texts, size=9.5)
-ax.set_title("Overall Churn vs. Retention Distribution", fontsize=12, fontweight="bold", pad=12)
-plt.tight_layout()
-plt.show()
-```
-
-## Question 2: ARPU Distribution (Overall & Churners vs. Retained)
-
-What are the summary statistics (mean, median, standard deviation, and quartiles) of ARPU overall, and separately for churners vs. non-churners?
-
-```{python}
-#| label: q2-arpu-distribution-stats
-#| echo: true
-def format_stats_row(series, label):
-    return {
-        "Cohort / Period": label,
-        "Mean (₹)": f"₹{series.mean():.2f}",
-        "Median (₹)": f"₹{series.median():.2f}",
-        "Std Dev (₹)": f"₹{series.std():.2f}",
-        "25th % (₹)": f"₹{series.quantile(0.25):.2f}",
-        "75th % (₹)": f"₹{series.quantile(0.75):.2f}",
-        "IQR (₹)": f"₹{series.quantile(0.75) - series.quantile(0.25):.2f}"
-    }
-
-retained_sub = df_clean[df_clean["churn_probability"] == 0]
-churned_sub = df_clean[df_clean["churn_probability"] == 1]
-
-arpu_stats_table = pd.DataFrame([
-    format_stats_row(df_clean["arpu_6"], "Overall Base (Month 6 - June)"),
-    format_stats_row(retained_sub["arpu_6"], "Retained Subscribers (Month 6 - June)"),
-    format_stats_row(churned_sub["arpu_6"], "Churned Subscribers (Month 6 - June)"),
-    format_stats_row(df_clean["arpu_8"], "Overall Base (Month 8 - August)"),
-    format_stats_row(retained_sub["arpu_8"], "Retained Subscribers (Month 8 - August)"),
-    format_stats_row(churned_sub["arpu_8"], "Churned Subscribers (Month 8 - August)")
-])
-
-display(Markdown(arpu_stats_table.to_markdown(index=False)))
-```
-
-```{python}
-#| label: fig-arpu-comparison
-#| echo: true
-#| fig-cap: "Month 6 (June) ARPU Comparison: Boxplot and Density Distribution"
-#| fig-width: 8.5
+#| label: macro-load
+#| fig-cap: "Quarterly national blended ARPU and minutes of usage, 2014–2026"
+#| fig-width: 8
 #| fig-height: 3.8
 #| out-width: "90%"
-#| fig-align: center
-fig, axes = plt.subplots(1, 2, figsize=(8.5, 3.8))
+mac = pd.read_csv(root("data/processed/trai_quarterly.csv"))
+mac = mac.dropna(subset=["arpu_blended"]).sort_values("quarter_end").reset_index(drop=True)
+mac["date"] = pd.to_datetime(mac["quarter_end"] + "-01")
+mac["t"] = np.arange(len(mac))
 
-p99_val = df_clean["arpu_6"].quantile(0.99)
-filtered_data = df_clean[(df_clean["arpu_6"] >= 0) & (df_clean["arpu_6"] <= p99_val)]
-
-# Boxplot
-sns.boxplot(
-    data=filtered_data,
-    x="churn_label",
-    y="arpu_6",
-    palette={"Retained": STATUS_PALETTE[0], "Churned": STATUS_PALETTE[1]},
-    ax=axes[0],
-    width=0.4,
-    boxprops=dict(alpha=0.85)
-)
-axes[0].set_title("Month 6 ARPU by Churn Status (Capped 99th %)", fontweight="bold", fontsize=11)
-axes[0].set_xlabel("Subscriber Status", fontsize=10)
-axes[0].set_ylabel("Monthly ARPU (₹)", fontsize=10)
-
-# Density (KDE) Plot
-for label, col in [("Retained", STATUS_PALETTE[0]), ("Churned", STATUS_PALETTE[1])]:
-    subset = filtered_data[filtered_data["churn_label"] == label]["arpu_6"]
-    sns.kdeplot(
-        subset,
-        label=label,
-        color=col,
-        fill=True,
-        alpha=0.3,
-        linewidth=1.8,
-        ax=axes[1]
-    )
-axes[1].set_title("ARPU Density Distribution (Month 6)", fontweight="bold", fontsize=11)
-axes[1].set_xlabel("Monthly ARPU (₹)", fontsize=10)
-axes[1].set_ylabel("Density", fontsize=10)
-axes[1].legend(frameon=True, title="Status", fontsize=9)
-
+fig, ax = plt.subplots(figsize=(8, 3.8))
+ax.plot(mac.date, mac.arpu_blended, color=BLUE, lw=2, marker="o", ms=3, label="Blended ARPU (₹/month)")
+ax.axvline(pd.Timestamp("2016-09-01"), color=RED, ls="--", lw=1.5)
+ax.text(pd.Timestamp("2016-11-01"), ax.get_ylim()[1]*0.97, "Jio launch\nSep 2016", color=RED, fontsize=9)
+ax.set_ylabel("₹ per subscriber per month", color=BLUE)
+ax2 = ax.twinx()
+ax2.plot(mac.date, mac.mou, color=GREY, lw=1.2, alpha=0.7, label="MOU (min)")
+ax2.set_ylabel("Minutes of usage", color=GREY)
+ax2.grid(False)
+ax.set_title("National ARPU fell through 2017 and recovered slowly; voice minutes kept rising")
+fig.autofmt_xdate()
 plt.tight_layout()
 plt.show()
 ```
 
-## Question 3: ARPU Trend Leading Up to Churn
-
-For churners, how does ARPU change across available months (June $\to$ July $\to$ August) compared to non-churners?
+Two anchors carry the revenue-mix story. The figures come from Table 2.3 in each report, which decomposes each rupee of ARPU into rental, calls, SMS, data and other revenue.
 
 ```{python}
-#| label: q3-arpu-trend-analysis
+#| label: macro-composition
 #| echo: true
-trend_summary = df_clean.groupby("churn_label")[["arpu_6", "arpu_7", "arpu_8"]].mean().round(2)
-trend_table = pd.DataFrame([
-    {
-        "Cohort": "Retained Subscribers",
-        "June (M6)": f"₹{trend_summary.loc['Retained', 'arpu_6']:.2f}",
-        "July (M7)": f"₹{trend_summary.loc['Retained', 'arpu_7']:.2f}",
-        "August (M8)": f"₹{trend_summary.loc['Retained', 'arpu_8']:.2f}",
-        "Absolute Change (M8 vs M6)": f"+₹{trend_summary.loc['Retained', 'arpu_8'] - trend_summary.loc['Retained', 'arpu_6']:.2f}",
-        "% Change (M8 vs M6)": f"+{((trend_summary.loc['Retained', 'arpu_8'] - trend_summary.loc['Retained', 'arpu_6']) / trend_summary.loc['Retained', 'arpu_6'] * 100):.2f}%"
-    },
-    {
-        "Cohort": "Churned Subscribers",
-        "June (M6)": f"₹{trend_summary.loc['Churned', 'arpu_6']:.2f}",
-        "July (M7)": f"₹{trend_summary.loc['Churned', 'arpu_7']:.2f}",
-        "August (M8)": f"₹{trend_summary.loc['Churned', 'arpu_8']:.2f}",
-        "Absolute Change (M8 vs M6)": f"-₹{trend_summary.loc['Churned', 'arpu_6'] - trend_summary.loc['Churned', 'arpu_8']:.2f}",
-        "% Change (M8 vs M6)": f"{((trend_summary.loc['Churned', 'arpu_8'] - trend_summary.loc['Churned', 'arpu_6']) / trend_summary.loc['Churned', 'arpu_6'] * 100):.2f}%"
-    }
-])
-
-display(Markdown(trend_table.to_markdown(index=False)))
+# Values transcribed from Table 2.3, TRAI PIR QE Sep-2014 (PDF p.62) and QE Mar-2025 (PDF p.83).
+composition = pd.DataFrame([
+    ["Blended ARPU (₹/month)",        115.72, 182.95],
+    ["Voice: revenue from calls (₹)",  69.35,  15.04],
+    ["Voice: share of ARPU",           54.6,    7.91],
+    ["Rental revenue (₹)",             19.50,   0.96],
+    ["Rental: share of ARPU",          15.3,    0.51],
+    ["Data revenue (₹)",               20.48, 164.31],
+    ["Data: share of ARPU",            16.1,   86.41],
+    ["Data per wireless subscriber (GB/month)", 0.077, 17.03],
+    ["Data realisation (₹/GB)",       266.1,    9.11],
+    ["Wireless subscribers (million)", 930.20, 1163.76],
+], columns=["Metric", "QE Sep-2014", "QE Mar-2025"])
+display(composition.round({"QE Sep-2014": 3, "QE Mar-2025": 2}))
 ```
 
+The 2014 volume is TRAI's 76.97 MB per subscriber per month. The 2025 volume is total wireless data usage (59,447 PB in the quarter) divided by three months and by all 1,163.76 million wireless subscribers. TRAI's headline 22.19 GB is per *data* subscriber, a smaller denominator, so it is not comparable with the 2014 figure. The 2014 realisation is implied from Table 2.3 (₹20.48 of data revenue ÷ 0.07697 GB); the 2025 figure is TRAI's published realisation. The two are close but not identical in definition.
+
+Data use per wireless subscriber rose from about 77 MB to 17.0 GB a month — roughly 221× — yet the revenue earned from a gigabyte fell from about ₹266 (implied) to TRAI's published ₹9.11. Data's share of ARPU went from 16.1% to 86.4% while voice's share fell from 54.6% to 7.9%. Total ARPU rose only 58% over eleven years. That is the structural break in one sentence: **the same rupee of ARPU was rebuilt around data at a fraction of the price**. Minutes of usage nearly tripled because calls became bundled and unmetered.
+
+The 2014 retention problem in this report is therefore a voice-era problem. A 2014 operator worried about a subscriber making fewer calls; a 2025 operator worries about monetising a subscriber who uses far more data at a far lower realisation. The churn mechanics are still worth studying — they tell us how a prepaid base behaves — but the economics must not be read as a 2026 price list.
+
+## The subscriber base and its KPIs
+
 ```{python}
-#| label: fig-arpu-trend-progression
-#| echo: true
-#| fig-cap: "Pre-Churn ARPU Trajectory: Churners vs. Retained Subscribers"
-#| fig-width: 7.5
-#| fig-height: 4.0
+#| label: base-kpis
+kpi = pd.DataFrame([
+    ["Subscriber lines", f"{N:,}"],
+    ["Churners (M9 silence)", f"{int(y.sum()):,}"],
+    ["Churn rate", f"{base:.2%}"],
+    ["95% CI for churn rate", "{:.2%}–{:.2%}".format(*wald(base, N))],
+    ["Mean good-phase ARPU", f"₹{df.avg_arpu_6_7.mean():.2f}"],
+    ["Median good-phase ARPU", f"₹{df.avg_arpu_6_7.median():.2f}"],
+    ["Mean monthly ARPU, M6", f"₹{df.arpu_6.mean():.2f}"],
+    ["Share with any 2G/3G data in M6", f"{(df.data_gb > 0).mean():.1%}"],
+    ["Service areas represented", f"{df.circle_id.nunique()} (circle {int(df.circle_id.iloc[0])})"],
+], columns=["KPI", "Value"])
+display(kpi)
+```
+
+67.9% of lines bought no data pack in M6 or M7, and 76.6% recorded no 2G/3G data volume in M6; 6,041 lines bought a pack in the window but recorded no M6 volume. The pack fields are blank when nothing was bought, so we treat blanks as zero rather than imputing them away.
+
+## Churn and its uncertainty
+
+```{python}
+#| label: desc-rates
+rows = [rate_row("Whole sample", np.ones(N, dtype=bool), df),
+        rate_row("High value (top 30% by recharge)", df.is_high_value == 1, df),
+        rate_row("Regular base", df.is_high_value == 0, df),
+        rate_row("Tenure < 12 months", df.aon / 30.44 < 12, df),
+        rate_row("Any data use in M6", df.data_gb > 0, df),
+        rate_row("No data use in M6", df.data_gb == 0, df)]
+display(pd.DataFrame(rows))
+```
+
+High value here means the top 30% of lines by average monthly recharge amount across M6–M7 (voice plus data packs), a cut at ₹`{python} f"{df.avg_rech_amt_6_7.quantile(.7):.0f}"`. This group churns at `{python} f"{df.loc[df.is_high_value==1,'churn_probability'].mean():.1%}"` against `{python} f"{df.loc[df.is_high_value==0,'churn_probability'].mean():.1%}"` for the rest, and the intervals do not overlap. That is a real difference. Recharge amount is monotonic in churn: `{python} f"{df.loc[df.rdec==0,'churn_probability'].mean():.1%}"` in the bottom decile versus `{python} f"{df.loc[df.rdec==9,'churn_probability'].mean():.1%}"` in the top. ARPU is not monotonic — the next section shows its U-shape. The two measures are correlated but not interchangeable, so "target high spenders" works if spend means recharge amount and fails if it means ARPU.
+
+## ARPU: a skewed distribution and a concentrated revenue base
+
+```{python}
+#| label: fig-arpu-skew
+#| fig-cap: "Good-phase ARPU is strongly right-skewed: the mean sits far above the median"
+#| fig-width: 7.6
+#| fig-height: 3.6
+#| out-width: "90%"
+fig, ax = plt.subplots(figsize=(7.6, 3.6))
+s = df.loc[df.avg_arpu_6_7 <= df.avg_arpu_6_7.quantile(.99), "avg_arpu_6_7"]
+ax.hist(s, bins=70, color=BLUE, alpha=.85, edgecolor="white")
+ax.axvline(df.avg_arpu_6_7.mean(), color=RED, lw=2, label=f"Mean ₹{df.avg_arpu_6_7.mean():.0f}")
+ax.axvline(df.avg_arpu_6_7.median(), color="#f39c12", lw=2, label=f"Median ₹{df.avg_arpu_6_7.median():.0f}")
+ax.set_xlabel("Average M6–M7 ARPU (₹, top 1% hidden)")
+ax.set_ylabel("Subscribers")
+ax.set_title("Mean versus median, 99% of the base")
+ax.legend(frameon=False)
+plt.tight_layout()
+plt.show()
+```
+
+The mean (₹`{python} f"{df.avg_arpu_6_7.mean():.0f}"`) is ₹`{python} f"{df.avg_arpu_6_7.mean()-df.avg_arpu_6_7.median():.0f}"` above the median (₹`{python} f"{df.avg_arpu_6_7.median():.0f}"`); the largest single account bills over ₹30,000 a month. Any offer priced off the mean is priced for a customer who does not exist.
+
+```{python}
+#| label: fig-pareto
+#| fig-cap: "Cumulative share of good-phase revenue, subscribers ranked by ARPU"
+#| fig-width: 7
+#| fig-height: 3.6
 #| out-width: "85%"
-#| fig-align: center
-fig, ax = plt.subplots(figsize=(7.5, 4.0))
-
-months = ["June (M6)\nGood Phase", "July (M7)\nGood Phase", "August (M8)\nAction Phase"]
-ret_pts = [trend_summary.loc["Retained", "arpu_6"], trend_summary.loc["Retained", "arpu_7"], trend_summary.loc["Retained", "arpu_8"]]
-chu_pts = [trend_summary.loc["Churned", "arpu_6"], trend_summary.loc["Churned", "arpu_7"], trend_summary.loc["Churned", "arpu_8"]]
-
-ax.plot(months, ret_pts, marker="o", linewidth=2.2, markersize=7, color=STATUS_PALETTE[0], label="Retained Subscribers")
-ax.plot(months, chu_pts, marker="s", linewidth=2.2, markersize=7, color=STATUS_PALETTE[1], label="Churned Subscribers")
-
-# Non-colliding data callouts
-for i, (r_val, c_val) in enumerate(zip(ret_pts, chu_pts)):
-    ax.annotate(f"₹{r_val:.1f}", (i, r_val), textcoords="offset points", xytext=(0, 8), ha="center", weight="bold", fontsize=9.5, color=STATUS_PALETTE[0])
-    ax.annotate(f"₹{c_val:.1f}", (i, c_val), textcoords="offset points", xytext=(0, -16), ha="center", weight="bold", fontsize=9.5, color=STATUS_PALETTE[1])
-
-ax.set_title("Monthly ARPU Trajectory Leading Up to Churn", fontsize=12, fontweight="bold", pad=12)
-ax.set_ylabel("Mean Monthly ARPU (₹)", fontsize=10.5)
-ax.set_ylim(60, 350)
-ax.legend(frameon=True, loc="upper right", fontsize=9.5)
+rev = np.sort(df.avg_arpu_6_7.values)[::-1]
+cum = np.cumsum(rev) / rev.sum()
+frac = np.arange(1, len(rev) + 1) / len(rev)
+fig, ax = plt.subplots(figsize=(7, 3.6))
+ax.plot(frac, cum, color=BLUE, lw=2)
+ax.plot([0, 1], [0, 1], color=GREY, ls="--", lw=1, label="Equal share")
+for p in [.1, .2, .3]:
+    ax.plot([p, p], [0, cum[int(N*p)-1]], color=GREY, lw=.8, ls=":")
+    ax.plot([0, p], [cum[int(N*p)-1]]*2, color=GREY, lw=.8, ls=":")
+    ax.text(p+.015, cum[int(N*p)-1]-.05, f"top {p:.0%} = {cum[int(N*p)-1]:.0%}", fontsize=9)
+ax.set_xlim(0, 1); ax.set_ylim(0, 1.02)
+ax.set_xlabel("Share of subscribers (richest first)")
+ax.set_ylabel("Cumulative share of revenue")
+ax.set_title(f"Revenue concentration: top 20% of lines carry {cum[int(N*.2)-1]:.0%} of revenue")
+ax.legend(frameon=False, loc="lower right")
 plt.tight_layout()
 plt.show()
 ```
 
-> **Key Behavioral Finding:** In the "Good Phase" (Month 6), churners actually generated **₹308.29 mean ARPU**, higher than retained subscribers (₹280.28) — though the difference is practically negligible (Cohen's d ≈ +0.08). However, during the "Action Phase" (Month 8), churner ARPU plummeted by **-62.95% to ₹114.23**, providing a strong leading diagnostic signal prior to complete cessation of activity in Month 9. Note that decay is already visible in July (M7): churner ARPU ₹219.08 vs ₹284.89 for retained subscribers — which is why Month-7 usage features dominate the model's feature importances despite July being labelled part of the "Good" phase.
+The familiar 80/20 slogan is wrong for this base. The top 20% carry `{python} f"{cum[int(N*.2)-1]:.1%}"` of revenue, the top 30% carry `{python} f"{cum[int(N*.3)-1]:.1%}"`, and the bottom half carry `{python} f"{1-cum[int(N*.5)-1]:.1%}"`. Revenue is concentrated, but not 80/20 concentrated. Pareto's "vital few" is the right idea; the exact fraction has to be measured.
 
-## Question 4: Segment-Level Breakdown
+## Who churns: four curves that are not straight
 
-Using categorical dimensions (Customer Value Tier, Tenure Band, Recharge Frequency, and Data Adoption), report churn rate and mean ARPU per segment in a single comprehensive summary table:
-
-```{python}
-#| label: q4-segment-breakdown-table
-#| echo: true
-segment_list = []
-dimensions = [
-    ("Customer Value Tier", "is_high_value"),
-    ("Tenure Group", "tenure_group"),
-    ("Recharge Frequency", "rech_freq_bucket_6"),
-    ("Data Service Adoption", "data_user_label")
-]
-
-for dim_name, col in dimensions:
-    grp = df_clean.groupby(col, observed=True).agg(
-        Subscribers=("id", "count"),
-        Churners=("churn_probability", "sum"),
-        Churn_Rate=("churn_probability", lambda x: x.mean() * 100),
-        Mean_ARPU_Good=("avg_arpu_6_7", "mean"),
-        Mean_ARPU_Action=("arpu_8", "mean")
-    ).reset_index()
-    
-    if col == "is_high_value":
-        grp[col] = grp[col].map({1: "High-Value (Top 30%)", 0: "Regular Base (Bottom 70%)"})
-        
-    grp.rename(columns={col: "Segment"}, inplace=True)
-    grp.insert(0, "Dimension", dim_name)
-    segment_list.append(grp)
-
-seg_df = pd.concat(segment_list, ignore_index=True)
-formatted_seg_table = pd.DataFrame({
-    "Dimension": seg_df["Dimension"],
-    "Segment": seg_df["Segment"],
-    "Subscribers": [f"{s:,}" for s in seg_df["Subscribers"]],
-    "% Share": [f"{(s / total_subs * 100):.2f}%" for s in seg_df["Subscribers"]],
-    "Churners": [f"{int(c):,}" for c in seg_df["Churners"]],
-    "Churn Rate": [f"{cr:.2f}%" for cr in seg_df["Churn_Rate"]],
-    "Good Phase ARPU": [f"₹{g:.2f}" for g in seg_df["Mean_ARPU_Good"]],
-    "Action Phase ARPU": [f"₹{a:.2f}" for a in seg_df["Mean_ARPU_Action"]]
-})
-
-display(Markdown(formatted_seg_table.to_markdown(index=False)))
-```
-
-## Question 5: Macro Benchmark Comparison (TRAI Market Context)
-
-Using `trai_​arpu_​timeseries.csv`, compare the 2014 national regulatory figure against our dataset, and contrast with modern market performance:
+The descriptive chapter's main finding is that **no simple "more is better" story fits this base**. Four independent cuts all bend.
 
 ```{python}
-#| label: q5-macro-benchmarking
-#| echo: true
-trai_raw_path = get_data_path("data/processed/trai_arpu_timeseries.csv")
-df_trai_raw = pd.read_csv(trai_raw_path)
-trai_2014 = df_trai_raw[df_trai_raw["report_year"] == 2014].iloc[0]
-trai_2025 = df_trai_raw[df_trai_raw["report_year"] == 2025].iloc[0]
-
-hvc_m6_arpu = df_clean[df_clean['is_high_value'] == 1]['arpu_6'].mean()
-base_m6_arpu = df_clean['arpu_6'].mean()
-dataset_mou = (df_clean['total_og_mou_6'] + df_clean['total_ic_mou_6']).mean()
-
-bench_table = pd.DataFrame([
-    {
-        "Metric / Parameter": "Prepaid Monthly ARPU",
-        "2014 TRAI Regulatory Benchmark": f"₹{trai_2014['arpu_prepaid']:.2f}",
-        "2014 Customer Dataset (Our Data)": f"₹{base_m6_arpu:.2f} (Base) / ₹{hvc_m6_arpu:.2f} (HVC)",
-        "2025 TRAI Regulatory Benchmark": f"₹{trai_2025['arpu_prepaid']:.2f}"
-    },
-    {
-        "Metric / Parameter": "Blended Monthly ARPU",
-        "2014 TRAI Regulatory Benchmark": f"₹{trai_2014['arpu_blended']:.2f}",
-        "2014 Customer Dataset (Our Data)": f"₹{base_m6_arpu:.2f}",
-        "2025 TRAI Regulatory Benchmark": f"₹{trai_2025['arpu_blended']:.2f}"
-    },
-    {
-        "Metric / Parameter": "Postpaid Monthly ARPU",
-        "2014 TRAI Regulatory Benchmark": f"₹{trai_2014['arpu_postpaid']:.2f}",
-        "2014 Customer Dataset (Our Data)": "N/A (Prepaid Focus)",
-        "2025 TRAI Regulatory Benchmark": f"₹{trai_2025['arpu_postpaid']:.2f}"
-    },
-    {
-        "Metric / Parameter": "Monthly Minutes of Usage (MOU)",
-        "2014 TRAI Regulatory Benchmark": f"{trai_2014['mou_per_sub']} mins",
-        "2014 Customer Dataset (Our Data)": f"{dataset_mou:.1f} mins",
-        "2025 TRAI Regulatory Benchmark": f"{trai_2025['mou_per_sub']} mins"
-    },
-    {
-        "Metric / Parameter": "Total Wireless Subscribers",
-        "2014 TRAI Regulatory Benchmark": f"{trai_2014['wireless_subscribers_millions']:.1f} Million",
-        "2014 Customer Dataset (Our Data)": "69,999 Sample",
-        "2025 TRAI Regulatory Benchmark": f"{trai_2025['wireless_subscribers_millions']:.1f} Million"
-    }
-])
-
-display(Markdown(bench_table.to_markdown(index=False)))
-```
-
-> **Comparison caveat:** the customer dataset is assumed prepaid-dominant, so "Prepaid Monthly ARPU" and "Monthly MOU" are compared against the dataset base-as-is; the "Blended" row uses the same dataset base only for scale context. The dataset sample covers active accounts, so comparisons to national blended figures (which include inactive subscribers) will read high.
-
-### Analytical Note on the Reliance Jio Structural Break
-
-> **CRITICAL MARKET BREAKDOWN (September 2016):**
->
-> Direct comparisons between 2014 and 2025 ARPU figures must account for the structural transformation triggered by **Reliance Jio's market entry in September 2016**:
->
-> 1. **Pricing Paradigm Shift:** In 2014, mobile operators operated on separate metered billing for voice calls (roughly 50 paise per minute) and expensive 2G/3G data packs (roughly ₹250 per GB), as commonly reported for the period. Modern 2025 plans bundle unlimited nationwide voice calls with 1.5–2.0 GB/day of 4G/5G data for fixed monthly commitments (approximately ₹200–₹350).
-> 2. **Voice MOU Inflation:** Because calls became completely unmetered over VoLTE/5G networks, national minutes of usage per subscriber expanded by **+173%**, rising from **376 minutes/month in 2014** to **1,026 minutes/month in 2025**.
-> 3. **Market Consolidation:** Around 10 active operators competed in 2014 — the largest including Airtel, Vodafone, Idea, BSNL, Reliance Communications, Aircel, Tata Docomo and Telenor — whereas the industry has consolidated into a private duopoly/oligopoly (Jio, Airtel, Vi) alongside public operator BSNL.
-
----
-
-# Revenue-at-Risk Assessment
-
-```{python}
-#| label: revenue-at-risk-table
-#| echo: true
-monthly_rev_loss = churned_sub["avg_arpu_6_7"].sum()
-annual_rev_loss = monthly_rev_loss * 12
-
-# Computed HVC concentration (not asserted)
-hvc = df_clean[df_clean["is_high_value"] == 1]
-hvc_share_revenue = hvc["avg_arpu_6_7"].sum() / df_clean["avg_arpu_6_7"].sum()
-hvc_share_exposure = hvc.loc[hvc["churn_probability"] == 1, "avg_arpu_6_7"].sum() / monthly_rev_loss
-
-kpi_table = pd.DataFrame([
-    {"Financial Metric": "Total Churned Subscriber Count", "Value": f"{churned_subs:,} subscribers"},
-    {"Financial Metric": "Mean Good-Phase ARPU (Churned Cohort)", "Value": f"₹{churned_sub['avg_arpu_6_7'].mean():.2f} / month"},
-    {"Financial Metric": "Monthly Direct Revenue Lost to Churn", "Value": f"₹{monthly_rev_loss:,.2f}"},
-    {"Financial Metric": "Annualized Direct Revenue at Risk", "Value": f"₹{annual_rev_loss:,.2f} (~₹{annual_rev_loss/1e7:.2f} Crore)"},
-    {"Financial Metric": "HVC Share of Base Monthly Revenue", "Value": f"{hvc_share_revenue * 100:.1f}%"},
-    {"Financial Metric": "HVC Share of Churn-Exposed Monthly Revenue", "Value": f"{hvc_share_exposure * 100:.1f}%"}
-])
-
-display(Markdown(kpi_table.to_markdown(index=False)))
-```
-
-::: {.callout-important appearance="simple" title="Executive Financial Takeaway"}
-Subscriber attrition in this 70k sample base represents an annualized direct top-line revenue risk of **₹2.26 Crore**. High-value (top 30%) subscribers account for **59.7% of base monthly revenue**; concentrating retention interventions on them before the Month 8 revenue collapse addresses about **55% of the churn-exposed revenue** in this sample (see the two computed shares above).
-:::
-
----
-
-# Summary of Findings
-
-1. **Baseline Churn Rate:** The overall customer churn rate is **10.19%** (7,132 churners out of 69,999 subscribers), establishing a substantial attrition baseline.
-2. **High-Value Concentration:** The top 30% high-value customer segment (average recharge $\ge$ ₹477.50 in months 6 & 7) experiences an **8.28% churn rate** with **₹558.59 mean ARPU (average of months 6 & 7)**, generating about **59.7% of base monthly revenue** (computed in the Revenue-at-Risk assessment).
-3. **Pre-Churn ARPU Decay:** Subscribers who churn exhibit a dramatic **62.95% drop in ARPU** from June (₹308.29) to August (₹114.23), while retained subscribers exhibit steady growth (+6.16%, from ₹280.28 to ₹297.54).
-4. **Tenure Loyalty Effect:** Early-tenure subscribers (<1 year) have a churn rate of **15.85%**, which steadily decreases to **4.71%** among subscribers with 4+ years of tenure (a >3x retention differential).
-5. **Data Service Stickiness:** Subscribers who actively use 2G/3G mobile data packs have lower churn (**8.72%**) and higher revenue (**₹368.52 ARPU**) compared to voice/SMS-only subscribers (**10.88% churn**, **₹239.16 ARPU**).
-6. **Macro Benchmarking & Jio Break:** The 2014 dataset ARPU (₹283.13) reflects active, primary SIM accounts and sits realistically above the TRAI 2014 national blended figure (₹115.72) — likely because the TRAI blended figure includes inactive secondary SIMs. Modern TRAI ARPU (₹182.95 in 2025) reflects market recovery following the transformative September 2016 Reliance Jio structural break.
-
----
-
-# Diagnostic Analytics: Why Do Subscribers Churn?
-
-> **"Which Good-Phase behaviours (usage, recharge, tenure, data adoption, value tier) significantly distinguish future churners, and how large are those effects?"**
-
-All explanatory comparisons use Good-Phase M6/M7 only. M8 is used solely for decay attribution.
-
-```{python}
-#| label: m-diag-continuous
-#| echo: true
-ret_m = df_clean[df_clean["churn_probability"] == 0]
-chu_m = df_clean[df_clean["churn_probability"] == 1]
-
-def cohens_d(a, b):
-    a = np.asarray(a, dtype=float); b = np.asarray(b, dtype=float)
-    a = a[~np.isnan(a)]; b = b[~np.isnan(b)]
-    n1, n2 = len(a), len(b)
-    s1, s2 = np.var(a, ddof=1), np.var(b, ddof=1)
-    pooled = np.sqrt(((n1 - 1) * s1 + (n2 - 1) * s2) / (n1 + n2 - 2))
-    return (np.mean(a) - np.mean(b)) / pooled if pooled > 0 else 0.0
-
-cont_vars = ["arpu_6", "arpu_7", "avg_arpu_6_7", "total_og_mou_6", "total_ic_mou_6",
-             "total_rech_num_6", "total_rech_amt_6", "aon", "avg_rech_amt_6_7"]
-rows = []
-for v in cont_vars:
-    x = ret_m[v].dropna(); y = chu_m[v].dropna()
-    t, p = stats.ttest_ind(x, y, equal_var=False)
-    d = cohens_d(x.values, y.values)
-    mag = "negligible" if abs(d) < 0.2 else ("small" if abs(d) < 0.5 else ("medium" if abs(d) < 0.8 else "large"))
-    rows.append({"Feature": v, "Retained": f"{x.mean():.2f}", "Churned": f"{y.mean():.2f}",
-                 "p-value": f"{p:.2e}", "Cohen d": f"{d:.3f}", "Effect": mag})
-display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
-```
-
-```{python}
-#| label: fig-m-diag-categorical
-#| echo: true
-#| fig-cap: "Churn rate by tenure, data adoption and recharge frequency (master)"
+#| label: fig-ucurves
+#| fig-cap: "Churn by starting ARPU, recharge frequency, off-net share and tenure — all four are non-monotonic or curved"
 #| fig-width: 9
-#| fig-height: 4.2
+#| fig-height: 7.2
 #| out-width: "95%"
-#| fig-align: center
-fig, axes = plt.subplots(1, 3, figsize=(9, 4.2))
-for ax, col, ttl in zip(axes,
-    ["tenure_group", "data_user_label", "rech_freq_bucket_6"],
-    ["Tenure group", "Data adoption", "Recharge frequency (M6)"]):
-    g = df_clean.groupby(col, observed=True)["churn_probability"].mean().mul(100)
-    g.plot(kind="bar", ax=ax, color="#e41a1c", alpha=0.85, edgecolor="white")
-    ax.set_title(ttl, fontweight="bold", fontsize=10)
-    ax.set_ylabel("Churn rate (%)")
-    ax.set_xlabel("")
-    ax.tick_params(axis="x", rotation=20)
-    for i, v in enumerate(g.values):
-        ax.text(i, v + 0.25, f"{v:.1f}%", ha="center", fontsize=8.5, fontweight="bold")
+df["arpu_dec"] = pd.qcut(df.arpu_6, 10, labels=False, duplicates="drop")
+df["rech_bin"] = pd.cut(df.total_rech_num_6, [-1,2,3,5,8,12,15,100],
+                        labels=["0–2","3","4–5","6–8","9–12","13–15","16+"])
+df["off_q"] = pd.qcut(df.offnet_share, 5, labels=["Q1","Q2","Q3","Q4","Q5"], duplicates="drop")
+df["ten_bin"] = pd.cut(df.aon/30.44, [0,6,12,18,24,36,48,60,84,120,10000],
+                       labels=["0–6m","6–12m","1–1.5y","1.5–2y","2–3y","3–4y","4–5y","5–7y","7–10y","10y+"], right=False)
+arpu_by_ten = df.groupby("ten_bin", observed=True).avg_arpu_6_7.mean()
+
+def plot_rate(ax, col, title, rotate=0):
+    g = df.groupby(col, observed=True).churn_probability.agg(["mean","size"])
+    xs = np.arange(len(g))
+    lo, hi = zip(*[wald(v, n) for v, n in zip(g["mean"], g["size"])])
+    ax.bar(xs, g["mean"], color=BLUE, alpha=.85, width=.68)
+    ax.errorbar(xs, g["mean"], yerr=[g["mean"]-lo, hi-g["mean"]], fmt="none", ecolor="#34495e", capsize=2, lw=1)
+    ax.set_xticks(xs); ax.set_xticklabels([str(x) for x in g.index], rotation=rotate)
+    ax.set_ylim(0, max(hi)*1.18)
+    ax.set_ylabel("Churn rate")
+    ax.set_title(title, fontsize=10)
+    for xi, v in zip(xs, g["mean"]):
+        ax.text(xi, v+.004, f"{v:.0%}", ha="center", fontsize=8)
+
+fig, axes = plt.subplots(2, 2, figsize=(9, 7.2))
+plot_rate(axes[0,0], "arpu_dec", "By M6 ARPU decile")
+plot_rate(axes[0,1], "rech_bin", "By number of recharges in M6")
+plot_rate(axes[1,0], "off_q", "By off-net share of outgoing minutes")
+plot_rate(axes[1,1], "ten_bin", "By tenure (age on network)", rotate=35)
+fig.suptitle("Three U-shapes (ARPU, recharge count, off-net) and a smooth tenure hazard", fontsize=11)
 plt.tight_layout()
 plt.show()
 ```
 
+- **ARPU.** The bottom decile churns at `{python} f"{df.loc[df.arpu_dec==0,'churn_probability'].mean():.1%}"` and the top decile at `{python} f"{df.loc[df.arpu_dec==9,'churn_probability'].mean():.1%}"`, while the middle deciles sit around 7–10%. "High spend protects" is only true if you stop at the 70th percentile and never look at the tail.
+- **Recharge frequency.** Both extremes churn: 0–2 recharges `{python} f"{df.loc[df.rech_bin=='0–2','churn_probability'].mean():.1%}"`, 4–5 recharges `{python} f"{df.loc[df.rech_bin=='4–5','churn_probability'].mean():.1%}"`, 16+ recharges `{python} f"{df.loc[df.rech_bin=='16+','churn_probability'].mean():.1%}"`. The average maximum recharge amount is ₹`{python} f"{df.loc[df.rech_bin=='16+','max_rech_amt_6'].mean():.0f}"` in the 16+ group versus ₹`{python} f"{df.loc[df.rech_bin=='4–5','max_rech_amt_6'].mean():.0f}"` in the 4–5 group: many small top-ups look like hand-to-mouth balance management, not engagement. This is why the older notebook's claim that "low frequency churns more than high" was wrong.
+- **Off-net calling.** Subscribers whose outgoing minutes are mostly to other networks sit at the low and high ends of the churn curve; the middle quintile is the stickiest. Those with almost no outgoing minutes are disengaged; those with almost entirely off-net minutes have little reason to stay with this operator.
+- **Tenure.** The hazard falls smoothly from `{python} f"{df.loc[df.ten_bin=='0–6m','churn_probability'].mean():.1%}"` in the first six months to `{python} f"{df.loc[df.ten_bin=='7–10y','churn_probability'].mean():.1%}"` at seven to ten years. ARPU is roughly flat across the first nine bins (₹`{python} f"{arpu_by_ten.iloc[:-1].min():.0f}"`–₹`{python} f"{arpu_by_ten.iloc[:-1].max():.0f}"`) and rises only in the 10-year-plus bin (₹`{python} f"{arpu_by_ten.iloc[-1]:.0f}"`); the churn decline is an age effect, not a simple value effect.
+
 ```{python}
-#| label: m-diag-decay
-#| echo: true
-dec = df_clean.groupby("churn_label")[["arpu_7", "arpu_8", "total_og_mou_7",
-    "total_og_mou_8", "total_rech_amt_7", "total_rech_amt_8"]].mean().round(2)
-rows = []
-for cohort in ["Retained", "Churned"]:
-    rows.append({"Cohort": cohort,
-        "ARPU M7→M8 %": f"{(dec.loc[cohort,'arpu_8']-dec.loc[cohort,'arpu_7'])/dec.loc[cohort,'arpu_7']*100:.1f}%",
-        "OG MOU M7→M8 %": f"{(dec.loc[cohort,'total_og_mou_8']-dec.loc[cohort,'total_og_mou_7'])/dec.loc[cohort,'total_og_mou_7']*100:.1f}%",
-        "Rech Amt M7→M8 %": f"{(dec.loc[cohort,'total_rech_amt_8']-dec.loc[cohort,'total_rech_amt_7'])/dec.loc[cohort,'total_rech_amt_7']*100:.1f}%"})
-display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
+#| label: fig-data-use
+#| fig-cap: "Any data use lowers churn, but heavier use does not monotonically lower it further"
+#| fig-width: 6.8
+#| fig-height: 3.5
+#| out-width: "80%"
+df["data_bin"] = pd.cut(df.data_gb, [-.001, 0, .1, .5, 2, 1e6], labels=["none","<0.1GB","0.1–0.5GB","0.5–2GB",">2GB"])
+g = df.groupby("data_bin", observed=True).agg(churn=("churn_probability","mean"), arpu=("avg_arpu_6_7","mean"), n=("id","size"))
+fig, ax = plt.subplots(figsize=(6.8, 3.5))
+ax.bar(g.index.astype(str), g.churn, color=BLUE, alpha=.85)
+ax.set_ylabel("Churn rate"); ax.set_title("Churn falls once data use is meaningful, then flattens")
+for i,(v,n) in enumerate(zip(g.churn,g.n)):
+    ax.text(i, v+.004, f"{v:.1%}\n(n={n:,})", ha="center", fontsize=8)
+plt.tight_layout(); plt.show()
 ```
 
-**Diagnostic takeaway:** Tenure is the dominant protector (age-on-network d ≈ −0.50; churn 15.9% for <1 yr vs 4.7% for 4+ yrs) and incoming-call activity the strongest behavioural signal (July incoming MOU d ≈ −0.44); recharge frequency shows **no consistent relationship with churn** (Low 10.5%, Medium 8.5%, High 11.7%) — churners can have high ARPU, so raw spend is not protective by itself; data adoption cuts ~2pp of churn; each churn event destroys about **3.8× more revenue among HVCs** (₹7,145 vs ₹1,881 mean annualised value per churner). The M8 collapse (55–70% drops) is an **early-warning signal** of M9 silence — since churn is *defined* as zero September activity, part of that decay reflects the same disengagement process rather than an independently tested cause.
+Churn is flat from no data (`{python} f"{g.loc['none','churn']:.1%}"`) to under 0.1 GB (`{python} f"{g.loc['<0.1GB','churn']:.1%}"`), falls to `{python} f"{g.loc['0.1–0.5GB','churn']:.1%}"` at 0.1–0.5 GB and `{python} f"{g.loc['0.5–2GB','churn']:.1%}"` at 0.5–2 GB, then ticks back up to `{python} f"{g.loc['>2GB','churn']:.1%}"` above 2 GB. The retention benefit comes from meaningful data use, not from a token pack; the >2 GB group has much higher ARPU but no extra retention benefit. In a market where data became the product, this 2014 sample still behaves like a voice base with an optional add-on.
 
----
+## Behavioural segments
 
-# Predictive Analytics: Who Will Churn?
-
-> **"Which subscribers will churn next month using only pre-Action-Phase information, and how much revenue does each risk decile represent?"**
-
-Leakage guard: Good-Phase M6/M7 features only; all `*_8` columns excluded.
+K-means on standardised tenure, ARPU, recharge count, outgoing and incoming minutes, data volume and off-net share gives the strongest split at k=2 (silhouette 0.40); k=4 is weaker (0.25) but separates four actionable groups. RFM quintiles on recency, frequency and monetary value are the transparent cross-check taught in the case studies.
 
 ```{python}
-#| label: m-pred-train
-#| echo: true
+#| label: seg-cluster
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+num = pd.DataFrame({"arpu_100": df.arpu_6/100,
+                    "arpu_drop_100": -df.arpu_diff_7_6/100,
+                    "tenure_year": df.aon/365.25,
+                    "recharges": df.total_rech_num_6,
+                    "og_100min": df.total_og_mou_6/100,
+                    "ic_100min": df.total_ic_mou_6/100,
+                    "offnet_10pp": df.offnet_share.fillna(df.offnet_share.median())*10,
+                    "data_gb": df.data_gb,
+                    "data_plan": df.has_data_plan})
+kcols = ["arpu_100","recharges","og_100min","ic_100min","data_gb","offnet_10pp","tenure_year"]
+Z = StandardScaler().fit_transform(num[kcols].fillna(num[kcols].median()))
+sil = {k: silhouette_score(Z, KMeans(n_clusters=k, n_init=10, random_state=42).fit_predict(Z))
+       for k in [2, 3, 4]}
+print("silhouette by k:", {k: round(v,3) for k,v in sil.items()})
+df["cluster"] = KMeans(n_clusters=4, n_init=10, random_state=42).fit_predict(Z)
+prof = df.groupby("cluster").agg(lines=("id","size"), churn=("churn_probability","mean"),
+                                 arpu=("avg_arpu_6_7","mean"), tenure_yr=("aon",lambda s:s.mean()/365.25),
+                                 recharges=("total_rech_num_6","mean"), data_gb=("data_gb","mean"),
+                                 offnet=("offnet_share","mean"), revenue=("avg_arpu_6_7","sum"))
+prof["revenue_share"] = prof.revenue/prof.revenue.sum()
+display(prof.round(3))
+```
+
+```{python}
+#| label: seg-rfm
+df["recency_days"] = (pd.to_datetime(df.last_date_of_month_6, format="%m/%d/%Y", errors="coerce")
+                      - pd.to_datetime(df.date_of_last_rech_6, format="%m/%d/%Y", errors="coerce")).dt.days.fillna(30)
+for col, name in [("total_rech_num_6","F"),("total_rech_amt_6","M")]:
+    df[name] = pd.qcut(df[col].rank(method="first"), 5, labels=[1,2,3,4,5]).astype(int)
+df["R"] = pd.qcut(df.recency_days.rank(method="first"), 5, labels=[5,4,3,2,1]).astype(int)
+rfm = pd.DataFrame([rate_row(f"Recency {i}", df.R==i, df) for i in range(1,6)] +
+                   [rate_row(f"Frequency {i}", df.F==i, df) for i in range(1,6)] +
+                   [rate_row(f"Monetary {i}", df.M==i, df) for i in range(1,6)])
+display(rfm)
+```
+
+K-means does not discover exotic types; it rediscovers tenure and value. With `n_init=10` the four clusters are: a long-tenure, low-churn group (16,193 lines, 7.2 years on network, 4.3% churn); a small high-ARPU, high-recharge group (7,486 lines, ₹798 a month, 19 recharges, 12.8% churn); and two younger groups (1.9 and 2.4 years, ₹192 and ₹249) that split almost entirely on off-net share (0.84 versus 0.28) and both churn at 11.5–12.7%. RFM partly agrees and partly disagrees: the least-recent quintile churns at 12.7% versus 9.4% for the most recent, as expected, but the *most* frequent and *highest*-spend quintiles churn at 12.0% and 11.5% — the middle quintiles are safer. That disagreement is the useful result: the expensive clustering adds no segment that a simple RFM score would miss, and the playbook can be written in plain recency/frequency/value language.
+
+## Descriptive findings
+
+1. Churn is `{python} f"{base:.1%}"` of this sample (`{python} f"{int(y.sum()):,}"` lines), with a 95% CI of `{python} f"{wald(base,N)[0]:.1%}–{wald(base,N)[1]:.1%}"`.
+2. The average customer is misleading: mean good-phase ARPU is `{python} f"₹{df.avg_arpu_6_7.mean():.0f}"`, median `{python} f"₹{df.avg_arpu_6_7.median():.0f}"`, and the top 20% of lines carry `{python} f"{cum[int(N*.2)-1]:.0%}"` of revenue — not 80%.
+3. Risk is U-shaped in ARPU and recharge frequency, but monotonic in recharge amount and tenure. "Target high spenders" works if spend means recharge amount; it fails if spend means ARPU.
+4. National data revenue per GB fell from roughly ₹266 (implied) to ₹9.11 (published) between 2014 and 2025 while data's share of ARPU rose from 16% to 86%. The market that produced this sample no longer exists in the same economic form.
+
+# Diagnostic Analytics
+
+## Hypotheses
+
+The descriptive curves suggest four claims worth testing, all using M6/M7 information only:
+
+1. Churners are **younger on the network** (tenure d < 0).
+2. Churners **receive fewer incoming minutes** — they are losing their calling circle.
+3. Churners show a **drop within the good phase**: M7 ARPU below M6 ARPU, even though their M6 level is not lower.
+4. **Data adoption and high value are protective**, but the descriptive U-shapes warn that value is not protective at the very top.
+
+For categorical comparisons with two levels we use the two-sample version of the Notes 07 proportion standard error; for continuous variables, Welch's t-test with a 95% CI on the mean difference and Cohen's d. Effect size matters more than the p-value at n = 70,000: a statistically significant 0.2-point difference is not a business finding.
+
+## Univariate evidence
+
+```{python}
+#| label: diag-tests
+def welch_row(col, label):
+    a = df.loc[y == 0, col].dropna(); b = df.loc[y == 1, col].dropna()
+    t, p = stats.ttest_ind(a, b, equal_var=False)
+    pooled = np.sqrt(((len(a)-1)*a.var(ddof=1) + (len(b)-1)*b.var(ddof=1))/(len(a)+len(b)-2))
+    d = (b.mean()-a.mean())/pooled if pooled > 0 else np.nan
+    se = np.sqrt(a.var(ddof=1)/len(a) + b.var(ddof=1)/len(b))
+    diff = b.mean()-a.mean()
+    return {"Variable": label, "Retained": f"{a.mean():.2f}", "Churned": f"{b.mean():.2f}",
+            "Difference": f"{diff:+.2f}", "95% CI": f"{diff-1.96*se:+.2f} to {diff+1.96*se:+.2f}",
+            "p": f"{p:.1e}", "Cohen d": f"{d:+.3f}"}
+
+tests = [welch_row(c, l) for c, l in [
+    ("aon", "Age on network (days)"),
+    ("arpu_6", "ARPU in M6 (₹)"),
+    ("arpu_7", "ARPU in M7 (₹)"),
+    ("total_ic_mou_6", "Incoming minutes M6"),
+    ("total_ic_mou_7", "Incoming minutes M7"),
+    ("total_og_mou_6", "Outgoing minutes M6"),
+    ("total_rech_num_6", "Recharges M6"),
+    ("data_gb", "Data volume M6 (GB)"),
+    ("offnet_share", "Off-net share of outgoing M6")]]
+display(pd.DataFrame(tests))
+```
+
+Two results deserve attention. First, **churners had higher M6 ARPU** than retained lines (₹`{python} f"{df.loc[y==1,'arpu_6'].mean():.0f}"` versus ₹`{python} f"{df.loc[y==0,'arpu_6'].mean():.0f}"`), though the effect is negligible (d ≈ +0.08). By M7 the sign has flipped and the effect is small but real (d ≈ −0.19). The signal is the **change**, not the level. Second, the largest standardised differences are tenure (d ≈ −0.45) and incoming minutes (d ≈ −0.24 to −0.40 depending on month); the rest are small. High M6 outgoing minutes also show a *positive* association with churn — heavy calling, by itself, is not loyalty.
+
+```{python}
+#| label: diag-proportions
+def prop_row(mask, label):
+    a, b = y[mask], y[~mask]
+    p1, p2 = a.mean(), b.mean()
+    se = np.sqrt(p1*(1-p1)/len(a) + p2*(1-p2)/len(b))
+    z = (p1-p2)/se
+    return {"Comparison": label, "Rate A": f"{p1:.1%}", "Rate B": f"{p2:.1%}",
+            "Difference": f"{(p1-p2)*100:+.2f} pp", "z": f"{z:+.2f}", "p": f"{2*stats.norm.sf(abs(z)):.1e}"}
+
+props = [prop_row(df.is_high_value==1, "High value vs rest"),
+         prop_row(df.has_data_plan==1, "Data plan vs none"),
+         prop_row(df.aon/30.44<12, "Tenure < 1 year vs older"),
+         prop_row(df.total_rech_num_6<=3, "≤3 recharges vs more"),
+         prop_row(df.total_rech_num_6>=13, "≥13 recharges vs fewer"),
+         prop_row(df.offnet_share>=0.9, "≥90% off-net calls vs fewer")]
+display(pd.DataFrame(props))
+```
+
+## Multivariable evidence: holding other things constant
+
+The univariate tests cannot separate age from value or calling pattern. A logistic GLM on the natural (odds-ratio) scale does. The model uses non-collinear M6/M7 features: VIFs are all below 2.4, so no coefficient is being distorted by redundancy. We drop `aon`/`tenure_months` duplicates and the averaged-ARPU columns for this model.
+
+```{python}
+#| label: diag-glm
+import statsmodels.api as sm
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+Xg = pd.DataFrame({
+    "ARPU per ₹100 (M6)": df.arpu_6/100,
+    "ARPU drop per ₹100 (M7−M6)": -df.arpu_diff_7_6/100,
+    "Tenure per year": df.aon/365.25,
+    "Recharges in M6": df.total_rech_num_6,
+    "Outgoing per 100 min": df.total_og_mou_6/100,
+    "Incoming per 100 min": df.total_ic_mou_6/100,
+    "Off-net per 10 pp": df.offnet_share.fillna(df.offnet_share.median())*10,
+    "Data per GB": df.data_gb,
+    "Has data plan": df.has_data_plan})
+Xg = sm.add_constant(Xg)
+glm = sm.Logit(y, Xg).fit(disp=0)
+ci = glm.conf_int()
+orb = pd.DataFrame({"Odds ratio": np.exp(glm.params), "Lower": np.exp(ci[0]),
+                    "Upper": np.exp(ci[1]), "p": glm.pvalues})
+display(orb.round(4))
+vif = pd.DataFrame({"Feature": Xg.columns[1:],
+                    "VIF": [variance_inflation_factor(Xg.drop(columns="const").fillna(0).values, i)
+                            for i in range(Xg.shape[1]-1)]})
+print("All VIF < 2.4 — no multicollinearity problem (rule of thumb: >5 concerns, >10 serious).")
+print(f"Pseudo R² = {glm.prsquared:.3f}")
+```
+
+```{python}
+#| label: diag-linearity
+# A logit is linear in the log-odds by construction. Test whether that restriction
+# fits before treating the odds ratios as constant marginal effects.
+Xq = Xg.copy()
+for f in ["ARPU per ₹100 (M6)", "ARPU drop per ₹100 (M7−M6)", "Tenure per year",
+          "Recharges in M6", "Outgoing per 100 min", "Incoming per 100 min"]:
+    Xq[f + " squared"] = Xg[f] ** 2
+glm_q = sm.Logit(y, Xq).fit(disp=0)
+lr_q = 2 * (glm_q.llf - glm.llf)
+df_q = Xq.shape[1] - Xg.shape[1]
+p_q = stats.chi2.sf(lr_q, df_q)
+
+# Flexible alternative: decile/band dummies for the three visibly curved drivers.
+ten_band = pd.cut(df.aon / 365.25, [0, 1, 2, 3, 4, 5, 7, 10, 60],
+                  labels=["<1", "1–2", "2–3", "3–4", "4–5", "5–7", "7–10", "10+"])
+Xf = pd.get_dummies(pd.DataFrame({"ARPU decile": pd.Categorical(df.arpu_dec),
+                                  "Tenure band": pd.Categorical(ten_band),
+                                  "Recharge bin": pd.Categorical(df.rech_bin)}),
+                    drop_first=True, dtype=float)
+Xf["ARPU drop per ₹100"] = -df.arpu_diff_7_6 / 100
+Xf["Outgoing per 100 min"] = df.total_og_mou_6 / 100
+Xf["Incoming per 100 min"] = df.total_ic_mou_6 / 100
+Xf["Off-net per 10 pp"] = df.offnet_share.fillna(df.offnet_share.median()) * 10
+Xf["Data per GB"] = df.data_gb
+Xf["Has data plan"] = df.has_data_plan
+Xf = sm.add_constant(Xf)
+glm_f = sm.Logit(y, Xf).fit(disp=0)
+lr_f = 2 * (glm_f.llf - glm.llf)
+df_f = Xf.shape[1] - Xg.shape[1]
+p_f = stats.chi2.sf(lr_f, df_f)
+print(f"Quadratic terms: LR = {lr_q:.1f}, df = {df_q}, p = {p_q:.1e}")
+print(f"Binned model:    LR = {lr_f:.1f}, df = {df_f}, p = {p_f:.1e}")
+
+lin_p = glm.predict(Xg)
+flex_p = glm_f.predict(Xf)
+fit_by_tenure = (pd.DataFrame({"Band": ten_band, "Observed": y, "Linear": lin_p, "Flexible": flex_p})
+                 .groupby("Band", observed=True).mean().round(3))
+fit_by_arpu = (pd.DataFrame({"Decile": df.arpu_dec + 1, "Observed": y, "Linear": lin_p, "Flexible": flex_p})
+               .groupby("Decile").mean().round(3))
+print("\nChurn by tenure band (observed vs fitted):")
+display(fit_by_tenure)
+print("Churn by M6 ARPU decile (observed vs fitted):")
+display(fit_by_arpu)
+
+ci_f = glm_f.conf_int()
+flex_or = pd.DataFrame({"Odds ratio": np.exp(glm_f.params),
+                        "Lower": np.exp(ci_f[0]), "Upper": np.exp(ci_f[1]),
+                        "p": glm_f.pvalues}).loc[
+    ["ARPU drop per ₹100", "Outgoing per 100 min", "Incoming per 100 min",
+     "Off-net per 10 pp", "Data per GB", "Has data plan"]]
+display(flex_or.round(3))
+```
+
+The linear table is useful as a summary, but it is not the model we should believe. Both tests reject linearity: squared terms add `{python} f"{lr_q:.0f}"` to the log-likelihood on `{python} f"{df_q}"` degrees of freedom (p ≈ `{python} f"{p_q:.0e}"`), and the binned model adds `{python} f"{lr_f:.0f}"` on `{python} f"{df_f}"` degrees of freedom (p ≈ `{python} f"{p_f:.0e}"`). The fitted-value tables show the damage. The linear model under-predicts churn among the newest lines (`{python} f"{fit_by_tenure.loc['<1','Linear']:.1%}"` versus `{python} f"{fit_by_tenure.loc['<1','Observed']:.1%}"` observed) and over-predicts it among ten-year-plus lines (`{python} f"{fit_by_tenure.loc['10+','Linear']:.1%}"` versus `{python} f"{fit_by_tenure.loc['10+','Observed']:.1%}"`), and it misses the ARPU U-shape: it predicts a flat `{python} f"{fit_by_arpu['Linear'].min():.0%}–{fit_by_arpu['Linear'].max():.0%}"` across deciles while observed churn runs from `{python} f"{fit_by_arpu['Observed'].iloc[0]:.1%}"` in the bottom decile to `{python} f"{fit_by_arpu['Observed'].iloc[1]:.1%}"` in the second and back up to `{python} f"{fit_by_arpu['Observed'].iloc[-1]:.1%}"` in the top. The linear odds ratios are therefore **average directions, not constant marginal effects**.
+
+The flexible model keeps the substantive conclusions. A ₹100 M7 ARPU drop multiplies the odds by `{python} f"{np.exp(glm_f.params['ARPU drop per ₹100']):.2f}"` (95% CI `{python} f"{np.exp(ci_f.loc['ARPU drop per ₹100',0]):.2f}"`–`{python} f"{np.exp(ci_f.loc['ARPU drop per ₹100',1]):.2f}"`); 100 extra incoming minutes multiply them by `{python} f"{np.exp(glm_f.params['Incoming per 100 min']):.2f}"`; each additional GB of M6 data multiplies them by `{python} f"{np.exp(glm_f.params['Data per GB']):.2f}"`; and having a data plan multiplies them by `{python} f"{np.exp(glm_f.params['Has data plan']):.2f}"`. Off-net share remains protective (OR `{python} f"{np.exp(glm_f.params['Off-net per 10 pp']):.3f}"` per 10 points). Outgoing minutes are not significant once the other terms are in (p = `{python} f"{glm_f.pvalues['Outgoing per 100 min']:.2f}"`), and recharge count is only marginal in the linear fit (p = `{python} f"{glm.pvalues['Recharges in M6']:.3f}"`). Tenure still matters, but its effect is concentrated in the first three years: churn falls from `{python} f"{fit_by_tenure.loc['<1','Observed']:.1%}"` in the first year to `{python} f"{fit_by_tenure.loc['2–3','Observed']:.1%}"` at two to three years and then flattens near `{python} f"{fit_by_tenure.loc['7–10','Observed']:.1%}"`.
+
+## Two ways of leaving
+
+The mean ARPU collapse hides two different processes. `{python} f"{(df.loc[y==1,'arpu_8']==0).mean():.1%}"` of churners have **zero** August ARPU; the rest fade but keep spending.
+
+```{python}
+#| label: diag-two-exits
+#| fig-cap: "August ARPU among churners: an abrupt-stop spike at zero and a slower fade"
+#| fig-width: 7.2
+#| fig-height: 3.4
+#| out-width: "85%"
+ch = df[y == 1]
+fig, ax = plt.subplots(figsize=(7.2, 3.4))
+ax.hist(ch.loc[ch.arpu_8 <= ch.arpu_8.quantile(.98), "arpu_8"], bins=60, color=RED, alpha=.85, edgecolor="white")
+ax.set_xlabel("August ARPU (₹, top 2% hidden)"); ax.set_ylabel("Churners")
+ax.set_title(f"{(ch.arpu_8==0).mean():.0%} of churners stop completely; the rest fade")
+plt.tight_layout(); plt.show()
+summary = pd.DataFrame([
+    ["Abrupt (M8 ARPU = 0)", f"{(ch.arpu_8==0).sum():,}", f"{ch.loc[ch.arpu_8==0,'arpu_7'].median():.1f}", f"{ch.loc[ch.arpu_8==0,'arpu_7'].mean():.1f}"],
+    ["Fade (M8 ARPU > 0)", f"{(ch.arpu_8>0).sum():,}", f"{ch.loc[ch.arpu_8>0,'arpu_7'].median():.1f}", f"{ch.loc[ch.arpu_8>0,'arpu_7'].mean():.1f}"],
+], columns=["Exit style", "Churners", "Median M7 ARPU (₹)", "Mean M7 ARPU (₹)"])
+display(summary)
+```
+
+Among all churners the median ARPU falls from ₹`{python} f"{ch.arpu_6.median():.0f}"` in June to ₹`{python} f"{ch.arpu_7.median():.0f}"` in July and ₹`{python} f"{ch.arpu_8.median():.0f}"` in August — a `{python} f"{(1-ch.arpu_8.median()/ch.arpu_6.median())*100:.0f}%"` collapse — while the mean falls `{python} f"{(1-ch.arpu_8.mean()/ch.arpu_6.mean())*100:.0f}%"`. The old report quoted only the mean. The mixture explains the gap: one group halts in a single step, the other declines gradually. Only `{python} f"{(df.loc[y==0,'arpu_8']==0).mean():.1%}"` of retained subscribers have zero August ARPU, so the spike is specific to churners. This is a descriptive observation, not a causal claim: because churn is *defined* by September silence, some of the August decay is the same disengagement process seen one month earlier.
+
+## What the Jio break did to the market series
+
+The macro series is a genuine quarterly time series, so it can be tested rather than merely narrated. First, does it have a seasonal pattern? We regress ARPU on a linear trend and three quarter dummies and test the dummies jointly. Second, is there a level shift at Sep-2016? We fit ARPU on time plus a post-launch dummy and a post-launch slope. Third, do the standard forecasting methods beat a naive baseline? We compare naive, Holt's linear trend and Holt–Winters using MASE on the final ten quarters (2023-12 to 2026-03), which are held out from fitting.
+
+```{python}
+#| label: diag-macro-tests
+from statsmodels.tsa.holtwinters import Holt, ExponentialSmoothing
+from statsmodels.stats.stattools import durbin_watson
+Q = pd.get_dummies(mac.date.dt.quarter, prefix="Q", drop_first=True).astype(float)
+Xs = sm.add_constant(pd.concat([mac[["t"]], Q], axis=1))
+season_fit = sm.OLS(mac.arpu_blended, Xs).fit()
+season_p = float(season_fit.f_test("Q_2=0, Q_3=0, Q_4=0").pvalue)
+
+mac["post"] = (mac.date >= "2016-09-01").astype(float)
+i_break = int(mac.index[mac.date >= "2016-09-01"][0])
+mac["post_t"] = mac.post * (mac.t - i_break)
+Xb = sm.add_constant(mac[["t", "post", "post_t"]])
+break_fit = sm.OLS(mac.arpu_blended, Xb).fit()
+dw = durbin_watson(break_fit.resid)
+pre_mean = mac.loc[mac.post == 0, "arpu_blended"].mean()
+post_mean = mac.loc[mac.post == 1, "arpu_blended"].mean()
+
+def mase(actual, pred, train):
+    scale = np.mean(np.abs(np.asarray(train)[4:] - np.asarray(train)[:-4]))
+    return np.mean(np.abs(np.asarray(actual) - np.asarray(pred))) / scale
+
+post = mac[mac.date >= "2017-03-01"].reset_index(drop=True)
+cut = int(len(post)*.75)
+tr, te = post.iloc[:cut], post.iloc[cut:]
+ytr, yte = tr.arpu_blended.values.astype(float), te.arpu_blended.values.astype(float)
+naive = np.repeat(ytr[-1], len(yte))
+holt = Holt(ytr, initialization_method="estimated").fit().forecast(len(yte))
+hw = ExponentialSmoothing(ytr, trend="add", seasonal="add", seasonal_periods=4, initialization_method="estimated").fit().forecast(len(yte))
+forecast = pd.DataFrame({"Method": ["Naive (last value)", "Holt linear", "Holt–Winters"],
+                         "MASE": [mase(yte, naive, ytr), mase(yte, holt, ytr), mase(yte, hw, ytr)],
+                         "Mean forecast": [naive.mean(), holt.mean(), hw.mean()]})
+print(f"Quarter-dummy F-test p = {season_p:.3f}")
+level_shift = break_fit.params["post"]
+slope_shift = break_fit.params["post_t"]
+mase_naive, mase_holt, mase_hw = forecast["MASE"].tolist()
+print(f"Post-2016 level = {break_fit.params['post']:+.1f} rupees, slope change = {break_fit.params['post_t']:+.2f} rupees/quarter")
+print(f"Raw mean ARPU: pre-break {pre_mean:.1f}, post-break {post_mean:.1f}")
+print(f"Durbin–Watson on break model = {dw:.2f} (residual autocorrelation is why these SEs are optimistic)")
+display(forecast.round(3))
+```
+
+The seasonality test answers a question the old report never asked: the quarter dummies are jointly insignificant (p = `{python} f"{season_p:.3f}"`), so **there is no stable quarterly seasonal pattern** to model. On the held-out ten quarters, both trend models beat the naive last-value rule by a wide margin (MASE `{python} f"{mase_holt:.2f}"` for Holt's linear trend and `{python} f"{mase_hw:.2f}"` for Holt–Winters, against `{python} f"{mase_naive:.2f}"` for the naive rule). The two are effectively tied; the seasonal component does not earn its extra parameter, which is what the seasonality test predicts. At the break date the fitted model puts a level shift of `{python} f"{level_shift:+.0f}"` rupees and a slope change of `{python} f"{slope_shift:+.2f}"` rupees per quarter; the AIC falls from `{python} f"{season_fit.aic:.0f}"` to `{python} f"{break_fit.aic:.0f}"`. But the raw series tells the same story without a model: ARPU fell from ₹126 in Jun-2016 to ₹72 in Mar-2018 and then recovered to ₹196 by Mar-2026, so the pre- and post-break means are almost identical (₹`{python} f"{pre_mean:.1f}"` versus ₹`{python} f"{post_mean:.1f}"`). The honest reading is a sharp decline followed by a slow recovery, not a single permanent step. We deliberately do **not** attach p-values to the break coefficients: Durbin–Watson is `{python} f"{dw:.2f}"`, so residual autocorrelation makes the standard errors far too narrow, and a formal Chow/HAC test is outside what this course covers. The coefficients are descriptive.
+
+## Diagnostic findings
+
+1. Tenure is the strongest single protector, but the hazard is not linear: churn falls from `{python} f"{fit_by_tenure.loc['<1','Observed']:.1%}"` in year one to `{python} f"{fit_by_tenure.loc['2–3','Observed']:.1%}"` at two to three years and flattens near `{python} f"{fit_by_tenure.loc['7–10','Observed']:.1%}"` after seven. A linear-in-logs model understates the early hazard and overstates the late one.
+2. The actionable signal is **change**, not level: M6 ARPU is slightly *higher* among churners, but a ₹100 M7 drop multiplies the odds by `{python} f"{np.exp(glm_f.params['ARPU drop per ₹100']):.2f}"` in the flexible model.
+3. Incoming minutes and data adoption protect; outgoing minutes are not significant once the other terms are in, and recharge count is only marginal.
+4. Churn has two observable exit paths (abrupt stop, slow fade) and the market itself had a structural break at Sep-2016 that invalidates a single trend line.
+5. Both linearity tests reject the constant-effect logit (p ≈ `{python} f"{p_q:.0e}"` and `{python} f"{p_f:.0e}"`), so the flexible fit — not the single odds ratio — is the basis for the statements above.
+
+# Predictive Analytics
+
+## Design and leakage guard
+
+The target is M9 silence. Every predictor comes from M6 or M7 only — no `*_8` column enters the matrix — so the model could have been scored at the end of July, before any visible decay. We split 80/20 with stratification, use five-fold stratified CV on the training slice for model selection, and keep the test slice untouched until the final evaluation.
+
+Three baselines are reported: the majority/base-rate rule, a single "tenure under one year" rule, and logistic regression. A model earns its place only if it beats them.
+
+```{python}
+#| label: pred-setup
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score,
-    roc_auc_score, average_precision_score, confusion_matrix, roc_curve, precision_recall_curve)
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.metrics import (roc_auc_score, average_precision_score, log_loss,
+                             precision_score, recall_score, confusion_matrix,
+                             roc_curve, precision_recall_curve)
 
-num_features = ["arpu_6", "arpu_7", "avg_arpu_6_7", "arpu_diff_7_6",
-    "total_og_mou_6", "total_og_mou_7", "total_ic_mou_6", "total_ic_mou_7",
-    "total_rech_num_6", "total_rech_num_7", "total_rech_amt_6", "total_rech_amt_7",
-    "max_rech_amt_6", "max_rech_amt_7", "vol_2g_mb_6", "vol_3g_mb_6",
-    "aon", "tenure_months", "avg_rech_amt_6_7", "is_high_value", "has_data_plan"]
-cat_features = ["tenure_group", "rech_freq_bucket_6", "data_user_label"]
-X = df_clean[num_features + cat_features].copy()
-y = df_clean["churn_probability"].astype(int)
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.20, stratify=y, random_state=42)
-
-num_pipe = Pipeline([("imp", SimpleImputer(strategy="median")), ("sc", StandardScaler())])
-cat_pipe = Pipeline([("imp", SimpleImputer(strategy="most_frequent")),
-    ("oh", OneHotEncoder(handle_unknown="ignore"))])
-pre = ColumnTransformer([("num", num_pipe, num_features), ("cat", cat_pipe, cat_features)])
-logreg = Pipeline([("pre", pre), ("clf", LogisticRegression(max_iter=1000, class_weight="balanced"))])
-rf = Pipeline([("pre", pre), ("clf", RandomForestClassifier(n_estimators=200, min_samples_leaf=5,
-    class_weight="balanced_subsample", n_jobs=-1, random_state=42))])
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-for name, model in [("LogReg", logreg), ("RF", rf)]:
-    s = cross_val_score(model, X_train, y_train, cv=cv, scoring="roc_auc", n_jobs=-1)
-    print(f"{name}: ROC-AUC {s.mean():.4f} +/- {s.std():.4f}")
-logreg.fit(X_train, y_train); rf.fit(X_train, y_train)
-p_log = logreg.predict_proba(X_test)[:, 1]; p_rf = rf.predict_proba(X_test)[:, 1]
-y_log = (p_log >= 0.5).astype(int); y_rf = (p_rf >= 0.5).astype(int)
-
-def mrow(name, yt, yp, ps):
-    return {"Model": name, "Acc": f"{accuracy_score(yt, yp):.4f}",
-        "Prec": f"{precision_score(yt, yp, zero_division=0):.4f}",
-        "Rec": f"{recall_score(yt, yp, zero_division=0):.4f}",
-        "F1": f"{f1_score(yt, yp, zero_division=0):.4f}",
-        "ROC-AUC": f"{roc_auc_score(yt, ps):.4f}",
-        "PR-AUC": f"{average_precision_score(yt, ps):.4f}"}
-display(Markdown(pd.DataFrame([
-    mrow("LogReg thr 0.5", y_test, y_log, p_log),
-    mrow("RF thr 0.5", y_test, y_rf, p_rf)]).to_markdown(index=False)))
+# avg_arpu_6_7 = (arpu_6 + arpu_7)/2 and arpu_diff_7_6 = arpu_7 - arpu_6, so keeping
+# all four ARPU columns makes the design matrix exactly rank-deficient. Keep the
+# M6 level and the M6-to-M7 change; drop the two derived duplicates. is_high_value
+# is a top-30% cut on average M6-M7 recharge amount, i.e. a derived threshold on
+# quantities already represented, so it adds nothing to scoring.
+features = ["arpu_6","arpu_diff_7_6","total_og_mou_6","total_og_mou_7",
+            "total_ic_mou_6","total_ic_mou_7","total_rech_num_6","total_rech_num_7",
+            "total_rech_amt_6","total_rech_amt_7","max_rech_amt_6","max_rech_amt_7",
+            "data_gb","aon","has_data_plan","offnet_share"]
+assert not any(c.endswith("_8") for c in features), "Action-phase leakage"
+assert not any(c in features for c in ["arpu_7","avg_arpu_6_7","is_high_value"]), "Redundant feature"
+X = df[features].copy()
+Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=.2, stratify=y, random_state=42)
+pre = ColumnTransformer([("num", Pipeline([("imp",SimpleImputer(strategy="median")),
+                                            ("sc",StandardScaler())]), features)])
+lr = Pipeline([("pre",pre),("clf",LogisticRegression(max_iter=2000))])
+rf = Pipeline([("pre",pre),("clf",RandomForestClassifier(n_estimators=150,min_samples_leaf=10,
+                 class_weight="balanced_subsample",n_jobs=1,random_state=42))])
 ```
 
-> **Reading the metrics note:** raw accuracy is misleading under this class imbalance — the trivial "predict nobody churns" rule scores **~89.8% accuracy** on this test set while catching zero churners, so read Recall / F1 / PR-AUC for business use. The identical appearing LogReg F1 (0.2751) and PR-AUC (0.2751) values are a verified numerical coincidence, not a reporting bug.
+## Discrimination and calibration
 
 ```{python}
-#| label: fig-m-pred-curves
-#| echo: true
-#| fig-cap: "ROC and Precision-Recall curves on held-out test set (master)"
-#| fig-width: 9
-#| fig-height: 4.0
-#| out-width: "95%"
-#| fig-align: center
-fig, axes = plt.subplots(1, 2, figsize=(9, 4.0))
-for ps, nm, cl in [(p_log, "LogReg", "#2b8cbe"), (p_rf, "RF", "#e41a1c")]:
-    fpr, tpr, _ = roc_curve(y_test, ps)
-    axes[0].plot(fpr, tpr, label=f"{nm} (AUC={roc_auc_score(y_test, ps):.3f})", color=cl, linewidth=2)
-    prec, rec, _ = precision_recall_curve(y_test, ps)
-    axes[1].plot(rec, prec, label=f"{nm} (AP={average_precision_score(y_test, ps):.3f})", color=cl, linewidth=2)
-axes[0].plot([0, 1], [0, 1], "k--", linewidth=1)
-axes[0].set_title("ROC curve", fontweight="bold"); axes[0].set_xlabel("FPR"); axes[0].set_ylabel("TPR")
-axes[0].legend(frameon=True, fontsize=9)
-axes[1].set_title("Precision-Recall curve", fontweight="bold"); axes[1].set_xlabel("Recall"); axes[1].set_ylabel("Precision")
-axes[1].legend(frameon=True, fontsize=9)
-plt.tight_layout()
-plt.show()
+#| label: pred-metrics
+#| fig-cap: "ROC and precision–recall curves on the held-out test set"
+#| fig-width: 8.5
+#| fig-height: 3.6
+#| out-width: "90%"
+cv = StratifiedKFold(5, shuffle=True, random_state=42)
+models, raw_p, cal_p, metrics = {}, {}, {}, []
+for name, m in [("Logistic", lr), ("Random forest", rf)]:
+    folds = cross_val_score(m, Xtr, ytr, cv=cv, scoring="roc_auc", n_jobs=1)
+    m.fit(Xtr, ytr)
+    p = m.predict_proba(Xte)[:, 1]
+    cal = CalibratedClassifierCV(m, method="sigmoid", cv=3).fit(Xtr, ytr)
+    pc = cal.predict_proba(Xte)[:, 1]
+    models[name], raw_p[name], cal_p[name] = m, p, pc
+    metrics.append({"Model": name, "CV AUC": f"{folds.mean():.3f}±{folds.std():.3f}",
+                    "AUC": f"{roc_auc_score(yte,p):.3f}", "PR-AUC": f"{average_precision_score(yte,p):.3f}",
+                    "Log loss": f"{log_loss(yte,p):.3f}", "Mean p": f"{p.mean():.3f}",
+                    "Cal. log loss": f"{log_loss(yte,pc):.3f}", "Cal. mean p": f"{pc.mean():.3f}"})
+display(pd.DataFrame(metrics))
+
+fig, ax = plt.subplots(1, 2, figsize=(8.5, 3.6))
+for name, col in [("Logistic", BLUE), ("Random forest", RED)]:
+    fpr, tpr, _ = roc_curve(yte, cal_p[name])
+    ax[0].plot(fpr, tpr, color=col, lw=1.8, label=f"{name} ({roc_auc_score(yte,cal_p[name]):.3f})")
+    pr, rc, _ = precision_recall_curve(yte, cal_p[name])
+    ax[1].plot(rc, pr, color=col, lw=1.8, label=f"{name} ({average_precision_score(yte,cal_p[name]):.3f})")
+ax[0].plot([0,1],[0,1], color=GREY, ls="--", lw=1)
+ax[0].set(xlabel="False-positive rate", ylabel="True-positive rate", title="ROC")
+ax[1].set(xlabel="Recall", ylabel="Precision", title="Precision–recall")
+ax[1].axhline(yte.mean(), color=GREY, ls=":", lw=1)
+for a in ax: a.legend(frameon=False, fontsize=8)
+plt.tight_layout(); plt.show()
 ```
 
+The random forest is genuinely better at ranking: test AUC `{python} f"{roc_auc_score(yte,cal_p['Random forest']):.3f}"` versus `{python} f"{roc_auc_score(yte,cal_p['Logistic']):.3f}"`, PR-AUC `{python} f"{average_precision_score(yte,cal_p['Random forest']):.3f}"` versus `{python} f"{average_precision_score(yte,cal_p['Logistic']):.3f}"`. The baseline PR of a random ranker is the churn prevalence, `{python} f"{base:.3f}"`.
+
+Its raw probabilities were badly inflated — mean `{python} f"{raw_p['Random forest'].mean():.3f}"` against a true `{python} f"{base:.3f}"` because of `class_weight="balanced_subsample"`. That would have nearly doubled the expected savings in the old ROI tables. A sigmoid recalibration fitted on the training folds brings the mean to `{python} f"{cal_p['Random forest'].mean():.3f}"` and cuts log loss from `{python} f"{log_loss(yte,raw_p['Random forest']):.3f}"` to `{python} f"{log_loss(yte,cal_p['Random forest']):.3f}"` with no loss of ranking. Logistic regression was already close to calibrated. **All money calculations below use the calibrated forest.**
+
 ```{python}
-#| label: m-pred-lift
-#| echo: true
-test_rev = df_clean.loc[X_test.index, "avg_arpu_6_7"].values * 12
-lift = pd.DataFrame({"p": p_rf, "y": y_test.values, "rev": test_rev}).sort_values("p", ascending=False).reset_index(drop=True)
-lift["decile"] = pd.qcut(lift.index, 10, labels=[f"D{i}" for i in range(1, 11)])
-g = lift.groupby("decile", observed=True).agg(n=("y", "size"), churners=("y", "sum"),
-    churn_rate=("y", "mean"), revenue=("rev", "sum"))
-g["cum_churners_pct"] = (g["churners"].cumsum() / g["churners"].sum() * 100).round(1)
-out = g.reset_index()
-out["churn_rate"] = (out["churn_rate"] * 100).round(2).astype(str) + "%"
-out["revenue_lakh"] = (out["revenue"] / 1e5).round(2)
-display(Markdown(out[["decile", "n", "churners", "churn_rate", "revenue_lakh", "cum_churners_pct"]].to_markdown(index=False)))
-feat_names = logreg.named_steps["pre"].get_feature_names_out()
-rf_imp = pd.DataFrame({"feature": feat_names,
-    "rf_importance": rf.named_steps["clf"].feature_importances_}).sort_values("rf_importance", ascending=False)
-display(Markdown("**Top 8 RF drivers:**"))
-display(Markdown(rf_imp.head(8).round(4).to_markdown(index=False)))
+#| label: pred-reliability
+#| fig-cap: "Reliability of calibrated scores: predicted versus observed churn in ten bins"
+#| fig-width: 5.6
+#| fig-height: 3.8
+#| out-width: "75%"
+p_rf = cal_p["Random forest"]
+rel = pd.DataFrame({"p":p_rf, "y":yte.values})
+rel["bin"] = pd.qcut(rel.p, 10, duplicates="drop")
+rb = rel.groupby("bin", observed=True).agg(pred=("p","mean"), obs=("y","mean"), n=("y","size"))
+fig, ax = plt.subplots(figsize=(5.6,3.8))
+ax.plot([0,.6],[0,.6], color=GREY, ls="--", lw=1)
+ax.plot(rb.pred, rb.obs, "o-", color=RED, lw=1.6)
+ax.set(xlabel="Mean predicted risk", ylabel="Observed churn rate", title="Calibration after sigmoid fit", xlim=(0,.6), ylim=(0,.6))
+ax.text(.05,.55,"Perfect calibration",color=GREY,fontsize=8)
+plt.tight_layout(); plt.show()
+display(rb.round(3))
 ```
 
-**Predictive takeaway:** RF dominates LogReg on ROC/PR-AUC with leak-free Good-Phase features; operating threshold 0.3-0.4 balances recall vs offer waste; top 20-30% of scores capture the majority of churners and at-risk revenue.
+## Thresholds and the cost of errors
 
----
-
-# Prescriptive Analytics: What Should We Do?
-
-> **"Which subscribers should receive which retention action under a fixed budget to maximise net retained revenue?"**
-
-Economics: `Expected net = p x V x success_rate − offer − contact(Rs 10)`, with annual value `V = avg_arpu_6_7 x 12`.
+A fixed 0.5 cut-off is meaningless for a 10% event. The cost-based rule from Notes 11 sets the threshold where the expected saving from a true positive exceeds the cost of contacting a false positive: contact when `p × V × s > offer + contact`. We use an illustrative offer of ₹150, a ₹10 contact cost and a 20% save rate, with `V = 12 × good-phase ARPU`. The threshold is therefore customer-specific, not a single global number.
 
 ```{python}
-#| label: m-presc-roi
-#| echo: true
-v_te = df_clean.loc[X_test.index, "avg_arpu_6_7"].clip(lower=0).values * 12
-scale = len(df_clean) / len(X_test)
-res = []
-for thr in [0.2, 0.3, 0.4, 0.5]:
-    flag = p_rf >= thr
-    n = int(flag.sum())
-    tp = int(((p_rf >= thr) & (y_test.values == 1)).sum())
-    for offer, s in [(150, 0.20), (300, 0.20), (150, 0.30)]:
-        saved_rev = (v_te[flag & (y_test.values == 1)].sum()) * s
-        cost = n * (offer + 10)
-        net = saved_rev - cost
-        res.append({"Thr": f"{thr:.1f}", "Offer": f"Rs {offer}", "Succ": f"{int(s*100)}%",
-            "Contacted": f"{n:,}", "Hit": f"{tp:,}",
-            "Net scaled 70k Rs": f"{net*scale:,.0f}",
-            "ROI": f"{(saved_rev/cost-1)*100:.0f}%" if cost > 0 else "—"})
-display(Markdown(pd.DataFrame(res).to_markdown(index=False)))
-
-OFFER, S = 150, 0.20
-rank = pd.DataFrame({"p": p_rf, "y": y_test.values, "V": v_te})
-rank["exp_save"] = rank["p"] * rank["V"] * S - (OFFER + 10)
-rank = rank.sort_values("exp_save", ascending=False).reset_index(drop=True)
+#| label: pred-thresholds
+V = df.loc[Xte.index, "avg_arpu_6_7"].values * 12
+s, cost = .20, 160.
+with np.errstate(divide="ignore", invalid="ignore"):
+    be = np.divide(cost, V*s, out=np.full_like(V, np.nan), where=V > 0)
+br_all = np.nanmedian(be)
+br_ch = np.nanmedian(be[yte.values == 1])
 rows = []
-for k in [500, 1000, 2000, 3000]:
-    top = rank.head(k)
-    saved_rev = top[top["y"] == 1]["V"].sum() * S
-    cost = k * (OFFER + 10)
-    rows.append({"Top-K test": f"{k:,}", "Top-K scaled": f"{int(k*scale):,}",
-        "Churners in K": f"{int((top['y']==1).sum()):,}",
-        "Net test Rs": f"{saved_rev-cost:,.0f}", "Net scaled Rs": f"{(saved_rev-cost)*scale:,.0f}"})
-display(Markdown(pd.DataFrame(rows).to_markdown(index=False)))
-
-# P0 tailoring check: does the Rs 300 tier turn profitable when restricted to HVC only?
-hvc_te = (X_test["is_high_value"] == 1).values
-seg_rows = []
-for seg_name, seg_mask in [("Base (all)", np.ones(len(X_test), dtype=bool)), ("HVC only", hvc_te)]:
-    flag = (p_rf >= 0.4) & seg_mask
-    saved = v_te[flag & (y_test.values == 1)].sum() * 0.20
-    cost = int(flag.sum()) * (300 + 10)
-    seg_rows.append({"Segment (thr 0.4)": seg_name, "Offer": "Rs 300", "Succ": "20%",
-        "Contacted": f"{int(flag.sum()):,}",
-        "Net scaled 70k Rs": f"{(saved - cost) * scale:,.0f}",
-        "ROI": f"{(saved/cost-1)*100:.0f}%" if cost > 0 else "—"})
-display(Markdown("**Rs 300 offer by segment (P0 tailoring check):**"))
-display(Markdown(pd.DataFrame(seg_rows).to_markdown(index=False)))
+for t in [.10, .15, .20, .30]:
+    flag = p_rf >= t
+    cm = confusion_matrix(yte, flag.astype(int)).ravel()
+    net = (p_rf[flag]*s*V[flag] - cost).sum()
+    rows.append({"Threshold": f"{t:.2f}", "Contacted": f"{flag.sum():,}",
+                 "Precision": f"{precision_score(yte,flag):.3f}", "Recall": f"{recall_score(yte,flag):.3f}",
+                 "TP": f"{cm[1]:,}", "FP": f"{cm[3]:,}", "Net on test (₹)": f"{net:,.0f}"})
+display(pd.DataFrame(rows))
+rule = (df.loc[Xte.index,"aon"]/365.25 < 1).values
+print(f"Single-rule baseline (tenure < 1y): precision {precision_score(yte,rule):.3f}, recall {recall_score(yte,rule):.3f}")
+print(f"Break-even risk: median customer {br_all:.3f}; median churner {br_ch:.3f}")
 ```
 
-**Prescriptive takeaway:** Per-customer break-even rule `p > (offer + 10) / (0.20 x V)` — for the average churned customer (V ≈ Rs 3,164 annualised) that is ≈ **0.25**, lower for higher-value customers. Rank candidates by expected saving under budget rather than a fixed threshold. The Rs 300 tier is **not** profitable across the base (negative ROI in the table above) but turns profitable when restricted to HVC subscribers (higher V); pair early RF scores (M7) with M8-collapse triggers; prioritise HVC and sub-1-year voice-only cohorts; pilot with a 10% control before scaling.
+At a 0.20 cut-off the model contacts `{python} f"{(p_rf>=.2).sum():,}"` test customers, is `{python} f"{precision_score(yte,p_rf>=.2):.0%}"` precise, and produces a positive expected net of about ₹`{python} f"{(p_rf[p_rf>=.2]*s*V[p_rf>=.2]-cost).sum():,.0f}"` on the held-out slice. The one-rule baseline contacts a similar number but is only `{python} f"{precision_score(yte,rule):.0%}"` precise. Contacting everyone produces a large negative net. The specific ₹ numbers are scenarios, not forecasts — the save rate is an assumption.
 
-> **Assumptions & caveats (prescriptive section):** success rates (20–30%), offer costs (Rs 150–300) and contact cost (Rs 10) are **illustrative assumptions, not estimated from data** — the tables above are a sensitivity analysis, and a randomised pilot is required to estimate real uplift. Figures treat ARPU as revenue, not profit (margins would be lower) and assume a 12-month horizon. RF probabilities from `class_weight="balanced_subsample"` are not calibrated — treat `p` as a relative risk score for ranking (or calibrate before using it as a true churn probability). Thresholds were read off test-set results for illustration; in production the threshold should be fixed once on a validation split and the policy then evaluated on test.
+## Lift and gain
 
-| Priority | Segment | Action | Timing |
-|:---|:---|:---|:---|
-| P0 | HVC + M8 drop >30% | Personal outreach + bonus data/validity | Days after M8 signal, up to Rs 300 |
-| P1 | Tenure <1 yr, voice-only, RF top decile | Onboarding bundle + data trial | M7, cap Rs 150 |
-| P2 | Mid-value RF deciles 2-3 | SMS/IVR recharge nudge | M7-M8 boundary, cap Rs 150 |
-| P3 | Long-tenure low risk | Monitor only | Rs 0 |
+```{python}
+#| label: pred-lift
+#| fig-cap: "Cumulative share of churners caught by contacting the top-scored share of the base"
+#| fig-width: 6.6
+#| fig-height: 3.6
+#| out-width: "80%"
+ranked = pd.DataFrame({"p":p_rf,"y":yte.values}).sort_values("p",ascending=False).reset_index(drop=True)
+ranked["decile"] = np.arange(len(ranked))*10//len(ranked) + 1
+g = ranked.groupby("decile").agg(n=("y","size"), churners=("y","sum"), rate=("y","mean"))
+g["caught"] = g.churners.cumsum()/g.churners.sum()
+g["lift"] = g.rate/yte.mean()
+display(g.round(3))
+fig, ax = plt.subplots(figsize=(6.6,3.6))
+ax.plot(np.arange(1,11)/10, g.caught, "o-", color=RED, lw=2, label="Model")
+ax.plot([0,1],[0,1], color=GREY, ls="--", lw=1, label="Random contact")
+ax.set(xlabel="Share of base contacted", ylabel="Share of churners caught", title=f"Top 10% catches {g.caught.iloc[0]:.0%} of churners")
+ax.legend(frameon=False); plt.tight_layout(); plt.show()
+```
 
----
+The top score decile has `{python} f"{g.rate.iloc[0]:.1%}"` churn — `{python} f"{g['lift'].iloc[0]:.1f}"`× random — and captures `{python} f"{g.caught.iloc[0]:.0%}"` of all churners. The top three deciles capture `{python} f"{g.caught.iloc[2]:.0%}"`. This is the practical case for a model over blanket contact.
 
-# Conclusion & Next Steps
+# Prescriptive Analytics
 
-This end-to-end investigation now fulfills **descriptive, diagnostic, predictive, and prescriptive** analytics:
+## Retention economics
 
-- **Descriptive:** 10.19% churn baseline, HVC 8.28% at Rs 558.59 ARPU (avg. months 6 & 7), 62.95% pre-churn ARPU collapse, tenure loyalty (15.85% vs 4.71%), data stickiness (8.72% vs 10.88%), TRAI benchmarking with the September 2016 Jio structural break.
-- **Diagnostic:** tenure (d ≈ 0.50) and incoming-call minutes (d ≈ 0.44) are the only features with non-negligible effect sizes; recharge frequency shows no consistent relationship with churn; the remaining features are individually weak but jointly predictive; the M8 collapse is an early-warning signal of M9 silence, not a tested cause.
-- **Predictive:** leak-free RF (Good-Phase only) beats LogReg; threshold 0.3-0.4; top deciles concentrate revenue at risk.
-- **Prescriptive:** threshold-priced, budget-ranked retention playbook with positive expected net at Rs 150 / 20% success; the Rs 300 tier is profitable for HVC cohorts only; pilot with control, retrain quarterly, audit fairness.
+Expected net value per contacted line is `p × s × V − (offer + contact)`. With `s = 20%` and ₹160 total cost, a customer with the **median annual value of a churner** (₹`{python} f"{np.nanmedian(V[yte.values==1]):,.0f}"`) must have risk above `{python} f"{br_ch:.2f}"` to justify an offer. For the **median customer in the whole base** the break-even is `{python} f"{br_all:.2f}"`, and for a high-value line it is about `{python} f"{np.nanmedian(be[df.loc[Xte.index,'is_high_value'].values==1]):.2f}"`. The old report used the *mean* churner value (₹3,164) and quoted a single 0.25 break-even; that rule is too generous for the typical line.
 
-Modular notebooks `01_data_prep`, `02_descriptive`, `03_diagnostic`, `04_predictive`, `05_prescriptive` reproduce each stage independently; this master `Analysis.qmd` reproduces the single combined report.
+```{python}
+#| label: presc-budget
+# Rank by expected net value and cut where the budget runs out
+rank = pd.DataFrame({"p":p_rf, "y":yte.values, "V":V, "hvc":df.loc[Xte.index,"is_high_value"].values})
+rank["ev"] = rank.p*s*rank.V - cost
+rank = rank.sort_values("ev", ascending=False).reset_index(drop=True)
+rows = []
+for budget in [50000, 100000, 250000]:
+    k = int(budget//cost)
+    sel = rank.head(k)
+    realised = (sel.y*s*sel.V).sum() - k*cost
+    rows.append({"Budget (₹)": f"{budget:,}", "Customers": f"{k:,}",
+                 "Churners in list": f"{int(sel.y.sum()):,}", "Precision": f"{sel.y.mean():.1%}",
+                 "Net on test (₹)": f"{realised:,.0f}", "ROI": f"{realised/(k*cost):.0%}"})
+display(pd.DataFrame(rows))
+```
 
-# Limitations & Caveats
+Budget ranking and thresholding answer different questions. A threshold says *who qualifies*; a budget says *how many can be afforded*. Sorting by expected net value and stopping at the budget line does both, and avoids the arbitrary 0.3–0.4 thresholds read off a chart in the previous version. With a ₹1,00,000 budget the list covers `{python} f"{int(100000//cost):,}"` test lines; the table reports the net realised on the held-out set under the assumed save rate.
 
-- **Population & window:** one operator, a 69,999-account sample, and a single June–September 2014 window; results concern this sample, not the full operator base or other markets/years.
-- **Churn definition:** churn is a usage-based proxy (zero activity in September), not a verified contract cancellation; some apparent churn may reflect secondary-SIM dormancy or migration.
-- **Validation design:** records were split randomly with stratification; there is no out-of-time (later-months) validation, so reported metrics may be optimistic.
-- **Associations only:** diagnostic findings are correlational; no causal claims are made and unobserved confounders (e.g., competitor switching) are possible.
-- **Model probabilities:** RF probabilities under `class_weight="balanced_subsample"` are inflated relative to true rates; they are used for ranking, or explicitly hedged, in the prescriptive section.
-- **Prescriptive economics:** success rates, offer costs and contact cost are illustrative assumptions; net-value figures are scenario/sensitivity outputs, and ARPU is treated as top-line revenue rather than margin.
-- **Temporal context:** the 2014 sample predates Reliance Jio; the 2025 TRAI figures included in the report are market context, not modelled data.
+## Segment allocation and the margin caveat
+
+```{python}
+#| label: presc-segments
+seg_rows = []
+for name, mask in [("High value", rank.hvc==1), ("Regular", rank.hvc==0)]:
+    sel = rank[mask & (rank.p >= .10)].head(1000)
+    if len(sel) == 0: continue
+    net = (sel.y*s*sel.V).sum() - len(sel)*cost
+    seg_rows.append({"Segment": name, "Contacted": f"{len(sel):,}", "Precision": f"{sel.y.mean():.1%}",
+                     "Mean annual value": f"₹{sel.V.mean():,.0f}", "Net (₹)": f"{net:,.0f}"})
+display(pd.DataFrame(seg_rows))
+```
+
+High-value lines repay a larger offer because their `V` is larger, not because they are intrinsically more loyal — in fact the very top ARPU decile is high-risk. The same budget should buy a cheaper, broader contact for regular lines and a costlier, personal contact for high-value ones. **ARPU is revenue, not margin.** At a 60% gross margin the break-even risk rises by 1/0.6; every rupee figure here is a top-line scenario and must be re-run with the operator's real margin before a budget is signed.
+
+## Pilot design
+
+The save rate is an assumption, not an estimate. A randomised pilot is the course's answer. Using the Notes 07 power calculation for two proportions, detecting a rise from 18% to 22% in save rate at 80% power and 5% significance needs about 1,570 customers **per arm**; 20%→24% needs about 1,680. A 10% untreated control should be held out, guardrails (complaints, ARPU after offer, repeat churn at 90 days) recorded, and no peeking before the pre-set end date. The pilot estimates the one number — `s` — that every rupee above depends on.
+
+```{python}
+#| label: presc-playbook
+playbook = pd.DataFrame([
+    ["1", "Top score decile + high value", "Personal call, 2 GB data or ₹300 validity", "At end of M7", "Highest expected value; break-even ≈ 0.13"],
+    ["2", "Top score decile, regular value", "₹150 recharge or data bundle", "At end of M7", "Break-even ≈ 0.33 on the median line"],
+    ["3", "M7 ARPU drop > ₹100, not in top decile", "SMS/IVR nudge, low-cost data trial", "Within days of M7", "Targets the change signal, not the level"],
+    ["4", "New lines (< 12 months), voice-only", "Onboarding bundle + data trial", "M6–M7", "High hazard, low current value"],
+    ["5", "Everyone else", "Monitor, no spend", "—", "Expected value below cost"],
+], columns=["Priority", "Segment", "Action", "Timing", "Reason"])
+display(playbook)
+```
+
+# Conclusion, Limitations and Reproducibility
+
+The four stages produced one coherent result. **Descriptively**, churn is `{python} f"{base:.1%}"` in this sample, ARPU is heavily skewed, revenue is concentrated but not 80/20, and risk is U-shaped in both spend and recharge frequency. **Diagnostically**, tenure and the M6→M7 ARPU change dominate, while raw spend mostly proxies for who the customer is; the market underwent a measurable structural break in Sep-2016. **Predictively**, a calibrated random forest reaches AUC `{python} f"{roc_auc_score(yte,p_rf):.3f}"` and puts `{python} f"{g['lift'].iloc[0]:.1f}"`× lift in the top decile, but only after its inflated probabilities are fixed. **Prescriptively**, contact decisions must be priced per customer against calibrated risk and the *median* customer's value, and validated with a randomised pilot before any scaling.
+
+Three caveats matter most. This is one anonymised circle's 2014 competition training split, not a national operator base; churn is a usage proxy, not a confirmed cancellation; and the economics rest on an assumed save rate with ARPU standing in for margin. There is also no out-of-time validation for the customer model because the data covers only three months.
+
+## Reproducibility appendix
+
+Rendering `notebooks/Analysis.qmd` produces both `reports/Analysis.html` and `reports/Analysis.pdf`. The three scripts below build the processed inputs: one prepares the Kaggle customer file, two fetch and extract the TRAI series. They are run separately, before rendering, and are shown here for completeness. The Kaggle customer file is obtained with `kaggle competitions download -c telecom-churn-case-study-hackathon-gc1 -p data/raw/`, then `scripts/prepare_churn.py` writes `data/processed/churn_clean.csv`.
+
+### `scripts/prepare_churn.py`
+
+{{< include ../scripts/prepare_churn.qmd >}}
+
+### `scripts/fetch_trai.py`
+
+{{< include ../scripts/fetch_trai.qmd >}}
+
+### `scripts/build_trai_series.py`
+
+{{< include ../scripts/build_trai_series.qmd >}}

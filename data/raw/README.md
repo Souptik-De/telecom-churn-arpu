@@ -15,7 +15,7 @@ This directory stores the raw micro-level (customer data) and macro-level (TRAI 
 | **Exact Source URL** | https://www.kaggle.com/competitions/telecom-churn-case-study-hackathon-gc1/data |
 | **Acquisition Command** | `kaggle competitions download -c telecom-churn-case-study-hackathon-gc1 -p data/raw/` |
 | **Acquisition Date** | August 26, 2026 |
-| **Time Horizon Covered** | June 2014 – September 2014 (Months 6, 7, 8, 9) |
+| **Time Horizon Covered** | June–August 2014 (months 6, 7, 8) in the columns; the given churn label refers to September (M9) silence, but no M9 columns are present in the file |
 | **Geographic Scope** | Indian Telecom Operator Subscriber Base |
 | **Granularity** | Customer-level (daily & monthly aggregated KPIs) |
 | **Extracted Raw Files** | `train.csv` (69,999 rows × 172 columns, 50.5 MB)<br>`test.csv` (30,000 rows × 171 columns, 21.6 MB)<br>`data_dictionary.csv` (36 KPI definitions, 1.5 KB)<br>`sample.csv` (240 KB) |
@@ -24,7 +24,9 @@ This directory stores the raw micro-level (customer data) and macro-level (TRAI 
 
 ## 2. Macro-Level Datasets (TRAI Performance Indicators)
 
-Official quarterly reports published by the Telecom Regulatory Authority of India (TRAI):
+Official quarterly reports published by the Telecom Regulatory Authority of India (TRAI). The analysis uses the full quarterly series from QE Mar-2014 to QE Mar-2026. `scripts/fetch_trai.py` crawls the TRAI index, downloads the 49 quarterly PDFs, and writes `data/raw/trai/trai_download_manifest.csv` with the source URL, release date, byte size and SHA-256 of each file. `scripts/build_trai_series.py` extracts each value from the PDF text and records the page number it came from.
+
+The two reports below are the anchors used for the revenue-composition tables.
 
 ### A. 2014 Benchmark Report (Pre-Jio Era)
 | Attribute | Specification |
@@ -32,10 +34,10 @@ Official quarterly reports published by the Telecom Regulatory Authority of Indi
 | **Report Title** | The Indian Telecom Services Performance Indicators Report July – September, 2014 |
 | **Source Organisation** | Telecom Regulatory Authority of India (TRAI), Government of India |
 | **Exact Source URL** | https://www.trai.gov.in/sites/default/files/2024-09/Indicator-Reports29012015.pdf |
-| **Saved Local Filename** | `data/raw/trai/TRAI_PIR_QE_Sep_2014.pdf` (3.48 MB) |
+| **Saved Local Filename** | `data/raw/trai/TRAI_PIR_QE_Sep_2014.pdf` (3.65 MB) |
 | **Acquisition Date** | August 26, 2026 |
 | **Reference Period** | Quarter Ending September 2014 (Q2 FY 2014-15) |
-| **Market Relevance** | Coincides directly with the observation window of the customer-level dataset (June–September 2014), providing a like-for-like macroeconomic benchmark. |
+| **Market Relevance** | Coincides with the customer observation window (features from June–August 2014, churn defined on September silence), providing a like-for-like macroeconomic benchmark. |
 
 ### B. Recent Market Report (Modern 4G/5G Era)
 | Attribute | Specification |
@@ -43,7 +45,7 @@ Official quarterly reports published by the Telecom Regulatory Authority of Indi
 | **Report Title** | The Indian Telecom Services Performance Indicators January – March, 2025 |
 | **Source Organisation** | Telecom Regulatory Authority of India (TRAI), Government of India |
 | **Exact Source URL** | https://www.trai.gov.in/sites/default/files/2025-06/QPIR_19062025.pdf |
-| **Saved Local Filename** | `data/raw/trai/TRAI_PIR_QE_Mar_2025.pdf` (5.47 MB) |
+| **Saved Local Filename** | `data/raw/trai/TRAI_PIR_QE_Mar_2025.pdf` (5.74 MB) |
 | **Acquisition Date** | August 26, 2026 |
 | **Reference Period** | Quarter Ending March 2025 (Q4 FY 2024-25) |
 | **Market Relevance** | Modern telecommunications benchmark reflecting nationwide 4G/5G penetration, consolidated market structure, and higher data consumption. |

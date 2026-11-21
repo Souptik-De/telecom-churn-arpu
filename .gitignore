@@ -19,8 +19,8 @@ data/raw/trai/*
 
 # Processed data (track small TRAI series, ignore large generated 60MB CSV)
 data/processed/*
-!data/processed/trai_arpu_timeseries.csv
+!data/processed/trai_quarterly.csv
 !data/processed/.gitkeep
 
 /.quarto/
-**/*.quarto_ipynb
+**/*.quarto_ipynb*

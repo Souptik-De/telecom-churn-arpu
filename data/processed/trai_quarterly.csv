@@ -1,0 +1,50 @@
+source_file,arpu_blended,arpu_blended_page,arpu_prepaid,arpu_prepaid_page,arpu_postpaid,arpu_postpaid_page,mou,mou_page,wireless_subs_m,wireless_subs_m_page,data_value,data_value_page,rs_per_gb,rs_per_gb_page,data_gb,data_basis,quarter_end
+TRAI_PIR_QE_Mar_2014.pdf,113.0,5,99.0,9.0,453.0,9.0,389.0,5,904.51,4,61.66,5,,,0.06166,per wireless subscriber,2014-03
+TRAI_PIR_QE_Jun_2014.pdf,119.0,5,104.0,9.0,469.0,9.0,390.0,5,914.92,4,70.1,5,,,0.0701,per wireless subscriber,2014-06
+TRAI_PIR_QE_Sep_2014.pdf,116.0,5,101.0,9.0,459.0,9.0,376.0,5,930.2,4,76.97,5,,,0.07697,per wireless subscriber,2014-09
+TRAI_PIR_QE_Dec_2014.pdf,118.0,5,103.0,9.0,466.0,9.0,376.0,5,943.97,4,89.43,5,,,0.08943000000000001,per wireless subscriber,2014-12
+TRAI_PIR_QE_Mar_2015.pdf,120.0,5,105.0,8.0,467.0,8.0,383.0,5,969.89,4,99.46,5,,,0.09945999999999999,per wireless subscriber,2015-03
+TRAI_PIR_QE_Jun_2015.pdf,126.0,5,109.0,9.0,501.0,9.0,388.0,5,980.81,4,110.1,5,,,0.11009999999999999,per wireless subscriber,2015-06
+TRAI_PIR_QE_Sep_2015.pdf,122.0,5,105.0,9.0,490.0,9.0,374.0,5,996.66,4,120.11,5,,,0.12011,per wireless subscriber,2015-09
+TRAI_PIR_QE_Dec_2015.pdf,123.0,5,105.14,9.0,,,376.0,5,1010.89,4,136.63,5,,,0.13663,per wireless subscriber,2015-12
+TRAI_PIR_QE_Mar_2016.pdf,125.0,5,107.33,9.0,488.0,9.0,381.0,5,1033.63,4,147.12,5,,,0.14712,per wireless subscriber,2016-03
+TRAI_PIR_QE_Jun_2016.pdf,126.0,5,108.0,9.0,495.0,9.0,377.0,9,1035.12,4,153.82,5,,,0.15381999999999998,per wireless subscriber,2016-06
+TRAI_PIR_QE_Sep_2016.pdf,121.0,5,103.0,9.0,485.0,9.0,366.0,9,1049.74,4,239.82,5,,,0.23982,per wireless subscriber,2016-09
+TRAI_PIR_QE_Dec_2016.pdf,104.0,5,86.0,9.0,456.0,9.0,360.0,9,1127.37,4,878.63,5,,,0.87863,per wireless subscriber,2016-12
+TRAI_PIR_QE_Mar_2017.pdf,83.0,5,67.0,9.0,412.0,9.0,405.0,5,1170.18,4,1000.0,5,,,1.0,per wireless subscriber,2017-03
+TRAI_PIR_QE_Jun_2017.pdf,80.0,5,65.0,9.0,389.0,9.0,428.0,5,1186.84,4,1248.0,5,,,1.248,per wireless subscriber,2017-06
+TRAI_PIR_QE_Sep_2017.pdf,88.09,5,71.0,9.0,361.0,9.0,437.0,9,1183.04,4,1600.0,5,,,1.6,per wireless subscriber,2017-09
+TRAI_PIR_QE_Dec_2017.pdf,80.77,5,67.0,9.0,348.0,9.0,495.0,9,1167.44,4,1945.0,5,,,1.945,per wireless subscriber,2017-12
+TRAI_PIR_QE_Mar_2018.pdf,71.62,5,62.0,9.0,360.0,9.0,584.0,9,1183.41,4,2437.0,5,,,2.437,per wireless subscriber,2018-03
+TRAI_PIR_QE_Jun_2018.pdf,73.34,5,59.0,9.0,307.0,9.0,608.0,9,1146.49,4,3206.0,5,,,3.206,per wireless subscriber,2018-06
+TRAI_PIR_QE_Sep_2018.pdf,67.39,5,,,,,627.0,5,1169.29,4,8.32,5,10.91,5.0,8.32,per wireless data subscriber,2018-09
+TRAI_PIR_QE_Dec_2018.pdf,70.13,5,,,,,667.0,5,1176.0,4,8.74,5,10.52,5.0,8.74,per wireless data subscriber,2018-12
+TRAI_PIR_QE_Mar_2019.pdf,71.39,5,,,261.0,9.0,692.0,5,1161.81,4,9.06,5,7.95,5.0,9.06,per wireless data subscriber,2019-03
+TRAI_PIR_QE_Jun_2019.pdf,74.3,5,,,253.0,9.0,701.0,5,1165.46,4,9.77,5,7.7,5.0,9.77,per wireless data subscriber,2019-06
+TRAI_PIR_QE_Sep_2019.pdf,74.38,5,,,247.0,9.0,691.0,5,1173.75,4,10.37,5,6.98,5.0,10.37,per wireless data subscriber,2019-09
+TRAI_PIR_QE_Dec_2019.pdf,78.65,7,,,,,712.0,9,1151.44,8,10.4,9,,,10.4,per wireless data subscriber,2019-12
+TRAI_PIR_QE_Mar_2020.pdf,91.49,5,,,244.0,9.0,750.0,5,1157.75,4,11.0,5,,,11.0,per wireless data subscriber,2020-03
+TRAI_PIR_QE_Jun_2020.pdf,90.12,5,,,224.0,9.0,744.0,5,1140.71,4,12.15,5,,,12.15,per wireless data subscriber,2020-06
+TRAI_PIR_QE_Sep_2020.pdf,96.87,5,,,234.0,9.0,761.0,5,1148.58,4,11.96,5,,,11.96,per wireless data subscriber,2020-09
+TRAI_PIR_QE_Dec_2020.pdf,101.65,5,,,227.0,9.0,785.0,5,1153.77,4,12.13,5,,,12.13,per wireless data subscriber,2020-12
+TRAI_PIR_QE_Mar_2021.pdf,103.58,5,,,226.0,9.0,818.0,5,1180.96,4,12.33,5,,,12.33,per wireless data subscriber,2021-03
+TRAI_PIR_QE_Jun_2021.pdf,104.66,5,,,215.0,9.0,813.0,5,1180.83,4,14.1,5,,,14.1,per wireless data subscriber,2021-06
+TRAI_PIR_QE_Sep_2021.pdf,108.16,5,,,212.28,9.0,827.0,5,1166.02,4,14.73,5,,,14.73,per wireless data subscriber,2021-09
+TRAI_PIR_QE_Dec_2021.pdf,114.16,5,,,210.33,9.0,854.0,5,1154.62,4,14.97,5,,,14.97,per wireless data subscriber,2021-12
+TRAI_PIR_QE_Mar_2022.pdf,127.17,5,,,200.56,9.0,955.0,5,1142.09,4,15.8,5,,,15.8,per wireless data subscriber,2022-03
+TRAI_PIR_QE_Jun_2022.pdf,133.55,6,,,,,914.0,6,1147.39,5,16.4,6,,,16.4,per wireless data subscriber,2022-06
+TRAI_PIR_QE_Sep_2022.pdf,137.31,5,,,,,894.0,5,1145.45,4,17.18,5,9.94,5.0,17.18,per wireless data subscriber,2022-09
+TRAI_PIR_QE_Dec_2022.pdf,141.14,5,,,182.3,7.0,919.0,5,1142.93,4,17.11,5,10.1,5.0,17.11,per wireless data subscriber,2022-12
+TRAI_PIR_QE_Mar_2023.pdf,142.32,5,,,,,946.0,5,1143.93,4,17.36,5,9.94,5.0,17.36,per wireless data subscriber,2023-03
+TRAI_PIR_QE_Jun_2023.pdf,145.64,5,,,,,960.0,5,1143.58,4,18.39,5,9.44,5.0,18.39,per wireless data subscriber,2023-06
+TRAI_PIR_QE_Sep_2023.pdf,149.66,5,,,167.93,7.0,948.0,5,1150.15,4,19.08,5,9.22,5.0,19.08,per wireless data subscriber,2023-09
+TRAI_PIR_QE_Dec_2023.pdf,152.55,5,,,189.08,7.0,955.0,5,1158.49,4,19.47,5,9.13,5.0,19.47,per wireless data subscriber,2023-12
+TRAI_PIR_QE_Mar_2024.pdf,153.54,5,,,187.85,7.0,995.0,5,1165.49,4,20.27,5,8.74,5.0,20.27,per wireless data subscriber,2024-03
+TRAI_PIR_QE_Jun_2024.pdf,157.45,5,,,189.17,7.0,974.0,5,1170.53,4,21.3,5,,,21.3,per wireless data subscriber,2024-06
+TRAI_PIR_QE_Sep_2024.pdf,172.57,5,171.0,7.0,,,974.0,5,1153.72,4,21.1,5,9.08,5.0,21.1,per wireless data subscriber,2024-09
+TRAI_PIR_QE_Dec_2024.pdf,181.8,5,180.91,7.0,,,1009.0,5,1150.66,4,21.52,5,9.34,5.0,21.52,per wireless data subscriber,2024-12
+TRAI_PIR_QE_Mar_2025.pdf,182.95,5,,,,,1026.0,5,1163.76,4,22.19,5,9.11,5.0,22.19,per wireless data subscriber,2025-03
+TRAI_PIR_QE_Jun_2025.pdf,186.62,5,187.0,7.0,,,1006.0,5,1170.88,4,24.01,5,8.51,5.0,24.01,per wireless data subscriber,2025-06
+TRAI_PIR_QE_Sep_2025.pdf,190.99,6,,,,,1005.0,6,1182.32,4,25.24,6,,,25.24,per wireless data subscriber,2025-09
+TRAI_PIR_QE_Dec_2025.pdf,194.57,6,,,,,1012.0,6,1258.77,4,25.7,6,,,25.7,per wireless data subscriber,2025-12
+TRAI_PIR_QE_Mar_2026.pdf,196.04,6,,,,,1017.0,6,1282.33,4,26.7,6,,,26.7,per wireless data subscriber,2026-03

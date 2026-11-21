@@ -1,0 +1,66 @@
+    """
+    Build data/processed/churn_clean.csv from the raw Kaggle competition file.
+
+    The raw customer file is the labelled training split of the 2014 Kaggle
+    competition ``telecom-churn-case-study-hackathon-gc1``. This script adds the
+    derived columns used by notebooks/Analysis.qmd. It does not change any raw field
+    and it does not create synthetic rows.
+
+    Run:  python scripts/prepare_churn.py
+    """
+
+    from __future__ import annotations
+
+    from pathlib import Path
+
+    import pandas as pd
+
+    ROOT = Path(__file__).resolve().parents[1]
+    RAW = ROOT / "data" / "raw" / "telecom-churn" / "train.csv"
+    OUT = ROOT / "data" / "processed" / "churn_clean.csv"
+
+
+    def main() -> None:
+        raw = pd.read_csv(RAW)
+        df = raw.copy()
+
+        # 1. High value: top 30% of average monthly recharge amount in M6-M7,
+        #    counting both voice/SMS recharges and data-pack recharges.
+        rech_amt_6 = raw["total_rech_amt_6"] + raw["total_rech_data_6"].fillna(0) * raw["av_rech_amt_data_6"].fillna(0)
+        rech_amt_7 = raw["total_rech_amt_7"] + raw["total_rech_data_7"].fillna(0) * raw["av_rech_amt_data_7"].fillna(0)
+        df["avg_rech_amt_6_7"] = (rech_amt_6 + rech_amt_7) / 2.0
+        cut = df["avg_rech_amt_6_7"].quantile(0.70)
+        df["is_high_value"] = (df["avg_rech_amt_6_7"] >= cut).astype(int)
+
+        # 2. Month-on-month differentials used in the diagnostic and predictive work.
+        df["arpu_diff_7_6"] = df["arpu_7"] - df["arpu_6"]
+        df["arpu_diff_8_7"] = df["arpu_8"] - df["arpu_7"]
+        df["avg_arpu_6_7"] = (df["arpu_6"] + df["arpu_7"]) / 2.0
+        df["total_og_mou_diff_8_7"] = df["total_og_mou_8"] - df["total_og_mou_7"]
+        df["total_ic_mou_diff_8_7"] = df["total_ic_mou_8"] - df["total_ic_mou_7"]
+        df["total_rech_num_diff_8_7"] = df["total_rech_num_8"] - df["total_rech_num_7"]
+        df["total_rech_amt_diff_8_7"] = df["total_rech_amt_8"] - df["total_rech_amt_7"]
+
+        # 3. Tenure and recharge-frequency helpers used for description only.
+        df["tenure_months"] = (df["aon"] / 30.44).astype(int)
+        df["tenure_group"] = pd.cut(df["tenure_months"], bins=[-1, 12, 24, 48, 9999],
+                                    labels=["0-1 yr", "1-2 yrs", "2-4 yrs", "4+ yrs"])
+        df["rech_freq_bucket_6"] = pd.qcut(df["total_rech_num_6"], q=3, labels=["Low", "Medium", "High"])
+
+        # 4. Data pack purchase: any data recharge in M6 or M7. This is a purchase
+        #    flag, not a usage flag; 6,041 lines bought a pack in M7 and have no M6 volume.
+        df["has_data_plan"] = ((raw["total_rech_data_6"].fillna(0) > 0) |
+                               (raw["total_rech_data_7"].fillna(0) > 0)).astype(int)
+        df["data_user_label"] = df["has_data_plan"].map({1: "Data User (2G/3G)", 0: "Voice/SMS Only"})
+        df["churn_label"] = df["churn_probability"].map({0: "Retained", 1: "Churned"})
+
+        OUT.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(OUT, index=False)
+        print(f"read  {RAW} ({raw.shape[0]:,} rows x {raw.shape[1]} columns)")
+        print(f"wrote {OUT} ({df.shape[0]:,} rows x {df.shape[1]} columns)")
+        print(f"high-value cut at Rs {cut:.2f}: {df.is_high_value.sum():,} rows ({df.is_high_value.mean():.1%})")
+        print(f"data-plan flag: {df.has_data_plan.sum():,} rows ({df.has_data_plan.mean():.1%})")
+
+
+    if __name__ == "__main__":
+        main()
