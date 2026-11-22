@@ -2,6 +2,8 @@
 
 A single reproducible Quarto report covering Descriptive, Diagnostic, Predictive and Prescriptive analytics for an Indian telecom subscriber sample, with the national TRAI market series as context.
 
+**Live report:** https://telecom.souptik.xyz
+
 **Submission:** `reports/Analysis.pdf` and `reports/Analysis.html`
 **Source:** `notebooks/Analysis.qmd` — the only notebook; it contains every figure, table and line of narrative.
 
